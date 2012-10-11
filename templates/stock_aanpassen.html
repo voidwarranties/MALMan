@@ -1,27 +1,17 @@
 <html>
 	<head>
 		<title>MALman -- Stockcheck</title>
-		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
 	</head>
 	<body>
-<?php
-	if ( isset ( $_POST['amount_1'] )) {
-		include ("functions.php");
-	}
-?>
-		<form id="stock_aanpassen" method="POST" action="stock_aanpassen.php">
-			<label>Fanta</label>
-			<input value="9" name="amount_1" />
+		{{ bericht }}
+		<form id="stock_aanpassen" method="POST">
+			{% for entry in lijst %}
+				<label>{{ entry.name }}</label>
+				<input value="{{ entry.aantal }}" name="amount_{{ entry.id }}" {% if entry.aantal < 0 %}class="error"{% endif %} />
+				<input type="hidden" name="ind[]" value="{{ entry.id }}">
+			{% endfor %}
 
-			<label>Cola</label>
-			<input value="12" name="amount_2" />
-			
-			<label>Duvel</label>
-			<input value="6" name="amount_3" />
-			
-			<label>Cecemel</label>
-			<input value="-2" name="amount_4" class="error" />
-			
 			<input type="submit" name="stock_aanpassen" value="ok!" />
 		</form>
 	</body>
