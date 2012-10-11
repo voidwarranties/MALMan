@@ -11,8 +11,11 @@
 				<li><a href="controleren">Stock aanpassen</a></li>
 				<li><a href="aanvullen">Stock aanvullen</a></li>
 			</ul>
-{% if bericht %}
-			<div id="confirmation">{{ bericht }}</div>
+{% if confirmation %}
+			<div id="confirmation">{{ confirmation }}</div>
+{% endif %}
+{% if error %}
+			<div id="error">{{ error }}</div>
 {% endif %}
 			<form id="stock_aanvullen" method="post" class="cf">
 				<ul>
