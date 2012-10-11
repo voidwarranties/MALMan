@@ -37,7 +37,9 @@
 
 /*messages*/
 #confirmation {
-	background-color: 99FF99;
+	background-color: #DDFFDD;
+	border: 1px solid #00FF00;
+	padding: 5px;
 }
 
 /*forms*/
