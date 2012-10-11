@@ -11,7 +11,9 @@
 				<li><a href="controleren">Stock aanpassen</a></li>
 				<li><a href="aanvullen">Stock aanvullen</a></li>
 			</ul>
+{% if bericht %}
 			<div id="confirmation">{{ bericht }}</div>
+{% endif %}
 			<form id="stock_aanvullen" method="post" class="cf">
 				<ul>
 {% for entry in lijst %}
