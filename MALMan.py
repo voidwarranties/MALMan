@@ -21,7 +21,7 @@ def stock_aanvullen():
 
 
 @app.route("/controleren", methods=['GET', 'POST'])
-def stock_aanvullen():
+def stock_aanpassen():
 	bericht = ""
 	if request.method == 'POST':
 		for ind in request.form.getlist('ind[]'):
@@ -41,4 +41,3 @@ def stock_aanvullen():
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
