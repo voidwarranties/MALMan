@@ -1,22 +1,4 @@
-<html>
-	<head>
-		<title>MALman</title>
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	</head>
-	<body>
-		<div id="wrapper">
-			<h1>MALMAN</h1>
-			<ul id="menu" class="cf">
-				<li><a href="controleren">Stock aanpassen</a></li>
-				<li><a href="aanvullen">Stock aanvullen</a></li>
-			</ul>
-{% if confirmation %}
-			<div id="confirmation">{{ confirmation }}</div>
-{% endif %}
-{% if error %}
-			<div id="error">{{ error }}</div>
-{% endif %}
+{% include 'header.html' %}
 			<form id="stock_aanpassen" method="POST" class="cf">
 				<ul>
 {% for entry in lijst %}
@@ -29,6 +11,4 @@
 				</ul>
 				<input type="submit" name="stock_aanpassen" value="ok!" />
 			</form>
-		</div>
-	</body>
-</html>
+{% include 'footer.html' %}
