@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<title>MALman -- Stock aanvullen</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+	</head>
+	<body>
+		{{ bericht }}
+		<form id="stock_aanvullen" method="post">
+			{% for entry in lijst %}
+				<label>{{ entry.name }}</label>
+				<input type="checkbox" value="{{ entry.id }}" name="check[]" />
+				<input type="text" value="{{ entry.aantal }}" name="amount_{{ entry.id }}" />
+			{% endfor %}
+
+			<input type="submit" name="stock_aanvullen" value="ok!" />
+		</form>
+	</body>
+</html>

@@ -1,0 +1,39 @@
+/*General*/
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	}
+form {
+	width: 200px;
+	margin: 50px;
+}
+form * {
+	border-bottom: 1px solid #CCC;
+	box-sizing: border-box;
+	height: 20px;
+}
+label {
+	width: 70%;
+	float:left;
+	clear: both;
+	}
+input {
+	width: 30%;
+	float: right;
+	text-align: right;
+	}
+#stock_aanvullen input {
+	width: 15%;
+	}
+input:focus {
+	background-color: #DDD;
+	}
+input[type="submit"] {
+	clear: left;
+	width: 100% !important;
+	text-align: center;
+	}
+.error {
+	background-color: #FAA;
+}
