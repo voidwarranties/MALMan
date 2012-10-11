@@ -1,18 +1,29 @@
 <html>
 	<head>
-		<title>MALman -- Stockcheck</title>
+		<title>MALman</title>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
 		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	</head>
 	<body>
-		{{ bericht }}
-		<form id="stock_aanpassen" method="POST">
-			{% for entry in lijst %}
-				<label>{{ entry.name }}</label>
-				<input value="{{ entry.aantal }}" name="amount_{{ entry.id }}" {% if entry.aantal < 0 %}class="error"{% endif %} />
-				<input type="hidden" name="ind[]" value="{{ entry.id }}">
-			{% endfor %}
-			<input type="submit" name="stock_aanpassen" value="ok!" />
-		</form>
+		<div id="wrapper">
+			<h1>MALMAN</h1>
+			<ul id="menu" class="cf">
+				<li><a href="controleren">Stock aanpassen</a></li>
+				<li><a href="aanvullen">Stock aanvullen</a></li>
+			</ul>
+			<div id="confirmation">{{ bericht }}</div>
+			<form id="stock_aanpassen" method="POST" class="cf">
+				<ul>
+{% for entry in lijst %}
+					<li class="cf">
+						<label>{{ entry.name }}</label>
+						<input type="text" value="{{ entry.aantal }}" name="amount_{{ entry.id }}" {% if entry.aantal < 0 %}class="error"{% endif %} />
+						<input type="hidden" name="ind[]" value="{{ entry.id }}">
+					</li>
+{% endfor %}
+				</ul>
+				<input type="submit" name="stock_aanpassen" value="ok!" />
+			</form>
+		</div>
 	</body>
 </html>

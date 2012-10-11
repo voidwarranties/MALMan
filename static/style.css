@@ -3,37 +3,77 @@
 	margin: 0;
 	padding: 0;
 	border: 0;
+	color: #000;
+	list-style: none;
 	}
+.cf:before,.cf:after {
+    content: " ";
+    display: table;
+    height: 0;    
+	overflow: hidden;	
+}
+.cf:after {
+    clear: both;
+}
+
+/*Laying out the big blocks*/
+#wrapper {
+	margin: 30px; 
+	border: 1px solid #AAA;
+}
+#wrapper > * {
+	margin: 5px;
+}
+
+/*menu*/
+#menu {
+	list-style: none;
+	background-color: #DDD;
+}
+#menu li {
+	float: left;
+	margin: 5px;
+}
+
+/*messages*/
+#confirmation {
+	background-color: 99FF99;
+}
+
+/*forms*/
 form {
 	width: 200px;
-	margin: 50px;
+	border: 1px solid #AAA;
+	padding: 5px;
 }
-form * {
+form li {
 	border-bottom: 1px solid #CCC;
-	box-sizing: border-box;
-	height: 20px;
+	padding-bottom: 1px;
+	margin-bottom: 4px;
 }
 label {
-	width: 70%;
+	width: 100px;
 	float:left;
-	clear: both;
 	}
 input {
-	width: 30%;
 	float: right;
 	text-align: right;
+	margin-left: 5px;
 	}
-#stock_aanvullen input {
-	width: 15%;
-	}
+input[type="text"] {
+	width:40px;
+}
+input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+}
+input[type="submit"] {
+	width: 100%;
+	text-align: center;
+}
 input:focus {
 	background-color: #DDD;
-	}
-input[type="submit"] {
-	clear: left;
-	width: 100% !important;
-	text-align: center;
-	}
+}
 .error {
-	background-color: #FAA;
+	background-color: #FAA;	
 }

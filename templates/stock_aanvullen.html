@@ -1,18 +1,29 @@
 <html>
 	<head>
-		<title>MALman -- Stock aanvullen</title>
+		<title>MALman</title>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
 		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 	</head>
 	<body>
-		{{ bericht }}
-		<form id="stock_aanvullen" method="post">
-			{% for entry in lijst %}
-				<label>{{ entry.name }}</label>
-				<input type="checkbox" value="{{ entry.id }}" name="check[]" />
-				<input type="text" value="{{ entry.aantal }}" name="amount_{{ entry.id }}" />
-			{% endfor %}
-			<input type="submit" name="stock_aanvullen" value="ok!" />
-		</form>
+		<div id="wrapper">
+			<h1>MALMAN</h1>
+			<ul id="menu" class="cf">
+				<li><a href="controleren">Stock aanpassen</a></li>
+				<li><a href="aanvullen">Stock aanvullen</a></li>
+			</ul>
+			<div id="confirmation">{{ bericht }}</div>
+			<form id="stock_aanvullen" method="post" class="cf">
+				<ul>
+{% for entry in lijst %}
+					<li class="cf">
+						<label>{{ entry.name }}</label>
+						<input type="checkbox" value="{{ entry.id }}" name="check[]" />
+						<input type="text" value="{{ entry.aantal }}" name="amount_{{ entry.id }}" />
+					</li>
+{% endfor %}
+				<input type="submit" name="stock_aanvullen" value="ok!" />
+				<ul>
+			</form>
+		</div>
 	</body>
 </html>
