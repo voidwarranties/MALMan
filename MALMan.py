@@ -4,7 +4,33 @@ app = Flask(__name__)
 app.config.from_pyfile('MALMan.cfg')
 db = SQLAlchemy(app)
 
+
+class Dranken(db.Model):
+    __tablename__ = 'Dranken'
+    id = db.Column(db.Integer, primary_key=True)
+    naam = db.Column(db.String(50))
+    aanvullenTot = db.Column(db.Integer)
+    prijs = db.Column(db.Numeric(5,2))
+    categorieID = db.Column(db.Integer, db.ForeignKey('Drankcat.id'))
+    categorie = db.relationship("Drankcat")
+    josto = db.Column(db.Boolean)
+
+    def __repr__(self):
+        return '<Drank %r>' % self.categorie.beschrijving
+
+
+class Drankcat(db.Model):
+    __tablename__ = 'Drankcat'
+    id = db.Column(db.Integer, primary_key=True)
+    beschrijving = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '<Category %r>' % self.beschrijving
+
+
 error = "errors are not implemented yet!"
+test = Dranken.query.first()
+print test.categorie.beschrijving
 
 @app.route("/account", methods=['GET'])
 def account():
