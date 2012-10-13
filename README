@@ -1,0 +1,13 @@
+Om dit te kunnen gebruiken moet je een bestand MALMan.cfg maken met daarin devolgende informatie. Let er op om dat bestand niet te comitten (normaal gezien staat het op de SVN ignore list):
+
+
+
+SQLALCHEMY_DATABASE_URI = 'mysql://gebruikersnaam:wachtwoord@localhost/MALMan'
+DEBUG = True
+SQLALCHEMY_ECHO = False
+
+
+
+waar gebruikersnaam en wachtwoord uiteraard worden vervangen en MALMan in de dabase URI de database is waarin alle info zit
+
+Voor productie moet DEBUG op false worden gezet, en die SQL ECHO kan al eens handig zijn om DB te debuggen, dan worden de uitgevoerde sql commando's weergegeven.

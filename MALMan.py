@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request
+from flaskext.sqlalchemy import SQLAlchemy
 app = Flask(__name__)
+app.config.from_pyfile('MALMan.cfg')
+db = SQLAlchemy(app)
 
 error = "errors are not implemented yet!"
 
@@ -57,5 +60,4 @@ def stock():
 	return render_template('stock.html', lijst=cust, confirmation=confirmation, error=error)
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()
