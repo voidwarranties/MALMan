@@ -1,0 +1,39 @@
+{% set category = "boekhouding" %}
+{% include 'header.html' %}
+<script type="text/javascript" src="static/jquery-latest.js"></script> 
+<script type="text/javascript" src="static/jquery.tablesorter.js"></script> 
+<script type="text/javascript">
+		$(function() { $("#transacties").tablesorter(); } ); 
+</script>
+
+<table id="transacties">
+	<thead>
+		<tr>
+			<th>Factuurnummer</th>
+			<th>Datum</th>
+			<th>van/naar</th>
+			<th>Omschrijving</th>
+			<th>Categorie</th>
+			<th>Bedrag</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>20/12/2011</td>
+			<td>freddy</td>
+			<td>lidgeld mei freddy</td>
+			<td>lidgeld</td>
+			<td>+15</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>27/12/2011</td>
+			<td>Brico Borsbeek</td>
+			<td>rattenvergif halen</td>
+			<td>uitzonderlijke kosten</td>
+			<td>-5</td>
+		</tr>
+	</tbody>
+</table>
+{% include 'footer.html' %}

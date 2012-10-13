@@ -15,14 +15,50 @@
 .cf:after {
     clear: both;
 }
+a[href^="#"] {
+	color: #F00;
+}
+
+/* tables */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+table th {
+	background-color: #DDD;
+	margin: 4px;
+}
+td {
+	padding: 4px;
+}
+tr {
+	border-bottom: 1px solid #DDD;
+}
+tr:hover {
+	background-color: #F7F7F7;
+}
+.headerSortUp {
+	background-image: url(asc.gif);
+}
+.headerSortDown {
+	background-image: url(desc.gif);
+}
+.headerSortDown, .headerSortUp {
+	background-color: #AAA;
+	background-repeat: no-repeat;
+	background-position: center right;
+}
+
 
 /*Laying out the big blocks*/
 #wrapper {
 	margin: 30px; 
+	padding: 5px;
 	border: 1px solid #AAA;
 }
 #wrapper > * {
-	margin: 5px;
+	margin-bottom:5px;
 }
 
 /*menu*/
@@ -34,6 +70,7 @@
 	float: left;
 	margin: 5px;
 }
+
 
 /*messages*/
 #confirmation {
@@ -85,3 +122,4 @@ input:focus {
 .error {
 	background-color: #FAA;	
 }
+

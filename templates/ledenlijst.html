@@ -1,0 +1,50 @@
+{% set category = "leden" %}
+{% include 'header.html' %}
+<script type="text/javascript" src="static/jquery-latest.js"></script> 
+<script type="text/javascript" src="static/jquery.tablesorter.js"></script> 
+<script type="text/javascript">
+		$(function() { $("#ledenlijst").tablesorter(); } ); 
+</script>
+
+<table id="ledenlijst">
+	<thead>
+		<tr>
+			<th>Naam</th>
+			<th>Lid sinds</th>
+			<th>Telefoon</th>
+			<th>email</th>
+			<th>student</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Alice</td>
+			<td>altijd</td>
+			<td>0448587425</td>
+			<td>Alice@f.d</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>Bob</td>
+			<td>21/10/2012</td>
+			<td>0458987425</td>
+			<td>Bob@f.d</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>Alice</td>
+			<td>altijd</td>
+			<td>0458517425</td>
+			<td>Alice@f.d</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>Bob</td>
+			<td>21/10/2012</td>
+			<td>0458687425</td>
+			<td>Bob@f.d</td>
+			<td>1</td>
+		</tr>
+	</tbody>
+</table>
+{% include 'footer.html' %}
