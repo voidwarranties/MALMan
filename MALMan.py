@@ -15,8 +15,10 @@ class Dranken(db.Model):
     categorie = db.relationship("Drankcat", backref="dranken", lazy="joined")
     josto = db.Column(db.Boolean)
     aankopen = db.relationship("Dranklog", backref="Drank")
-    #Berekeningen
-    aantal = 33
+
+    @property
+    def stock(self): #dit kan waarschijnlijk beter, maar op deze manier werkt het
+        return sum(item.aantal for item in self.aankopen)
 
     def __init__(self, naam, aanvullenTot, prijs, categorieID, josto):
         self.naam = naam
@@ -33,6 +35,7 @@ class Drankcat(db.Model):
     __tablename__ = 'Drankcat'
     id = db.Column(db.Integer, primary_key=True)
     beschrijving = db.Column(db.String(50))
+
     def __repr__(self):
         return '<Category %r>' % self.beschrijving
 
@@ -48,8 +51,6 @@ class Dranklog(db.Model):
 
 
 error = "errors are not implemented yet!"
-test = Dranken.query.first()
-print test.aankopen
 
 
 @app.route("/account", methods=['GET'])
@@ -98,12 +99,8 @@ def stock():
             confirmation += ", "
 
     #dit moet uiteraard dynamisch worden
-    cust= [    {"id":1,"name":u"name 1","aantal":5},
-        {"id":2,"name":u"name 2","aantal":3},
-        {"id":3,"name":u"name 3","aantal":-7},
-        {"id":4,"name":u"name 4","aantal":6}
-            ]
-    return render_template('stock.html', lijst=cust, confirmation=confirmation, error=error)
+    dranken = Dranken.query.all()
+    return render_template('stock.html', lijst=dranken, confirmation=confirmation, error=error)
 
 if __name__ == '__main__':
     app.run()
