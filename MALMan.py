@@ -12,7 +12,7 @@ class Dranken(db.Model):
     aanvullenTot = db.Column(db.Integer)
     prijs = db.Column(db.Numeric(5,2))
     categorieID = db.Column(db.Integer, db.ForeignKey('Drankcat.id'))
-    categorie = db.relationship("Drankcat")
+    categorie = db.relationship("Drankcat", backref="dranken")
     josto = db.Column(db.Boolean)
 
     def __repr__(self):
