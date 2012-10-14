@@ -1,16 +1,25 @@
 {% set category = "stock" %}
 {% include 'header.html' %}
-			<form id="stock_aanpassen" method="POST" class="cf">
-				<ul>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+<script type="text/javascript">
+		$(function() { $("#drankenlijst").tablesorter(); } ); 
+</script>
+
+<table id="drankenlijst">
+	<thead>
+		<tr>
+			<th>Naam</th>
+			<th>aantal</th>
+		</tr>
+	</thead>
+	<tbody>
 {% for entry in lijst %}
-					<li class="cf">
-						<label>{{ entry.naam }}</label>
-						<input type="text" value="{{ entry.stock }}" name="amount_{{ entry.id }}" {% if entry.stock < 0 %}class="error"{% endif %} />
-						<input type="hidden" name="ind[]" value="{{ entry.id }}">
-					</li>
+		<tr>
+			<td>{{ entry.naam }}</td>
+			<td>{{ entry.stock }}</td>
+		</tr>
 {% endfor %}
-				</ul>
-				<input type="submit" name="stock_aanpassen" value="ok!" />
-			</form>
-			<p><a href="aanvullen">Josto stock aanvullen</a></p>
+	</tbody>
+</table>
 {% include 'footer.html' %}

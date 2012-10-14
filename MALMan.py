@@ -73,22 +73,27 @@ def ledenlijst():
     return render_template('ledenlijst.html')
 
 
+@app.route("/stock")
+def stock():
+    dranken = Dranken.query.all()
+    return render_template('stock.html', lijst=dranken, error=error)
+
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 def stock_aanvullen():
+    dranken = Dranken.query.filter_by(josto=True).all()
     confirmation = ""
-    if request.method == 'POST':
+    if request.method == 'POST': 
         for ind in request.form.getlist('check[]'):
             confirmation += ind
             confirmation += "="
             confirmation += request.form["amount_" + ind]
             confirmation += ", "
-
-    dranken = Dranken.query.filter_by(josto=True).all()
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 
-@app.route("/stock", methods=['GET', 'POST'])
-def stock():
+@app.route("/stock_aanpassen", methods=['GET', 'POST'])
+def stock_aanpassen():
+    dranken = Dranken.query.all()
     confirmation = ""
     if request.method == 'POST':
         for ind in request.form.getlist('ind[]'):
@@ -96,10 +101,7 @@ def stock():
             confirmation += "="
             confirmation += request.form["amount_" + ind]
             confirmation += ", "
-
-    #dit moet uiteraard dynamisch worden
-    dranken = Dranken.query.all()
-    return render_template('stock.html', lijst=dranken, confirmation=confirmation, error=error)
+    return render_template('stock_aanpassen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 if __name__ == '__main__':
     app.run()
