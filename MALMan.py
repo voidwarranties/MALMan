@@ -17,8 +17,12 @@ class Dranken(db.Model):
     aankopen = db.relationship("Dranklog", backref="Drank")
 
     @property
-    def stock(self): #dit kan waarschijnlijk beter, maar op deze manier werkt het
-        return sum(item.aantal for item in self.aankopen)
+    def stock(self): 
+        return sum(item.aantal for item in self.aankopen) #dit kan waarschijnlijk beter, maar op deze manier werkt het
+
+    @property
+    def aanvullen(self):
+        return (self.aanvullenTot - self.stock)
 
     def __init__(self, naam, aanvullenTot, prijs, categorieID, josto):
         self.naam = naam
@@ -79,13 +83,8 @@ def stock_aanvullen():
             confirmation += request.form["amount_" + ind]
             confirmation += ", "
 
-    #dit moet uiteraard dynamisch worden
-    cust= [    {"id":1,"name":u"name 1","aantal":5},
-        {"id":2,"name":u"name 2","aantal":3},
-        {"id":3,"name":u"name 3","aantal":7},
-        {"id":4,"name":u"name 4","aantal":6}
-            ]
-    return render_template('stock_aanvullen.html', lijst=cust, confirmation=confirmation, error=error)
+    dranken = Dranken.query.filter_by(josto=True).all()
+    return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 
 @app.route("/stock", methods=['GET', 'POST'])

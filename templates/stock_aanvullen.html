@@ -4,9 +4,9 @@
 				<ul>
 {% for entry in lijst %}
 					<li class="cf">
-						<label>{{ entry.name }}</label>
+						<label>{{ entry.naam }}</label>
 						<input type="checkbox" value="{{ entry.id }}" name="check[]" />
-						<input type="text" value="{{ entry.aantal }}" name="amount_{{ entry.id }}" />
+						<input type="text" value="{{ entry.aanvullen }}" name="amount_{{ entry.id }}" />
 					</li>
 {% endfor %}
 				<input type="submit" name="stock_aanvullen" value="ok!" />
