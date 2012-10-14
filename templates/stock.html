@@ -28,7 +28,7 @@
 			<td>{{ entry.stock }}</td>
 			<td>?</td>
 			<td>{{ entry.aanvullenTot }}</td>
-			<td>{{ entry.categorie }}</td>
+			<td>{{ entry.categorie.beschrijving }}</td>
 			<td>{% if entry.josto == 1 %} Josto {% else %} Niet Josto {% endif %}</td>
 		</tr>
 {% endfor %}
