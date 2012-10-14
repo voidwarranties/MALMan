@@ -48,6 +48,16 @@ class Dranklog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     drankID = db.Column(db.Integer, db.ForeignKey('Dranken.id'))
     aantal = db.Column(db.Integer)
+    totaalprijs = db.Column(db.Numeric(5, 2))
+    gebruikerID = db.Column(db.Integer)
+    beschrijving = db.Column(db.String(50))
+
+    def __init__(self, drankID, aantal, totaalprijs, gebruikerID, beschrijving):
+        self.drankID = drankID
+        self.aantal = aantal
+        self.totaalprijs = totaalprijs
+        self.gebruikerID = gebruikerID
+        self.beschrijving = beschrijving
 
     def __repr__(self):
         return '<id %r>' % self.id
@@ -83,10 +93,10 @@ def stock_aanvullen():
     confirmation = ""
     if request.method == 'POST': 
         for ind in request.form.getlist('check[]'):
-            confirmation += ind
-            confirmation += "="
-            confirmation += request.form["amount_" + ind]
-            confirmation += ", "
+            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen")
+            db.session.add(changes)
+            db.session.commit()
+            confirmation += "aangevuld"
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 
