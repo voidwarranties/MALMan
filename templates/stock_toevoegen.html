@@ -1,0 +1,48 @@
+{% set category = "stock" %}
+{% include 'header.html' %}
+			<form id="stock_toevoegen" method="post" class="cf">
+				<ul>
+					<li class="cf">
+						<label>Naam</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Aankoopprijs (vb: 1.25)</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Verkoopprijs (vb: 1.25)</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Huidige stock</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Minimumstock</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Maximumstock</label>
+						<input type="text" value="0" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Categorie</label>
+						<select name="categorie">
+{% for id, categorie in [('1', 'Non Alcoholisch'), ('2', 'Alcoholisch'), ('3', 'Food')] %}
+							<option value="{{ id }}">{{ categorie }}</option>
+{% endfor %}
+						</select>
+					</li>
+					<li class="cf">
+						<label>Oorsprong</label>
+						<select name="oorsprong">
+{% for id, oorsprong in [('1', 'Josto'), ('2', 'Ebay'), ('3', 'Carrefour')] %}
+							<option value="{{ id }}">{{ oorsprong }}</option>
+{% endfor %}
+						</select>
+					</li>
+				<input type="submit" name="stock_aanvullen" value="ok!" />
+				<ul>
+			</form>
+{% include 'footer.html' %}

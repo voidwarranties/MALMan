@@ -10,14 +10,26 @@
 	<thead>
 		<tr>
 			<th>Naam</th>
-			<th>aantal</th>
+			<th>Aankoopprijs</th>
+			<th>Verkoopprijs</th>
+			<th>Aantal in stock</th>
+			<th>Minimale stock</th>
+			<th>Maximale stock</th>
+			<th>Categorie</th>
+			<th>Oorsprong</th>
 		</tr>
 	</thead>
 	<tbody>
 {% for entry in lijst %}
 		<tr>
 			<td>{{ entry.naam }}</td>
+			<td>?</td>
+			<td>€{{ entry.prijs }}</td>
 			<td>{{ entry.stock }}</td>
+			<td>?</td>
+			<td>{{ entry.aanvullenTot }}</td>
+			<td>{{ entry.categorie }}</td>
+			<td>{% if entry.josto == 1 %} Josto {% else %} Niet Josto {% endif %}</td>
 		</tr>
 {% endfor %}
 	</tbody>

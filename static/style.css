@@ -108,6 +108,21 @@ input {
 input[type="text"] {
 	width:40px;
 }
+#stock_toevoegen {
+	width: 500px;
+}
+#stock_toevoegen input[type="text"]{
+	width:200px;
+	border: 1 px solid #000;
+} 
+#stock_toevoegen label {
+	width: 200px;
+}
+select {
+	float: right;
+	text-align: right;
+	margin-left: 5px;
+}
 input[type="checkbox"] {
 	width: 18px;
 	height: 18px;

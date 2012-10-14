@@ -72,7 +72,6 @@ def boekhouding():
 def ledenlijst():
     return render_template('ledenlijst.html')
 
-
 @app.route("/stock")
 def stock():
     dranken = Dranken.query.all()
@@ -102,6 +101,10 @@ def stock_aanpassen():
             confirmation += request.form["amount_" + ind]
             confirmation += ", "
     return render_template('stock_aanpassen.html', lijst=dranken, confirmation=confirmation, error=error)
+
+@app.route("/stock_toevoegen")
+def stock_toevoegen():
+    return render_template('stock_toevoegen.html', error=error)
 
 if __name__ == '__main__':
     app.run()
