@@ -106,8 +106,8 @@ def stock_aanpassen():
 
 @app.route("/stock_toevoegen")
 def stock_toevoegen():
-    dranken = Drankcat.query.all()
-    return render_template('stock_toevoegen.html', categorieen=dranken, error=error)
+    drankcats = Drankcat.query.all()
+    return render_template('stock_toevoegen.html', categorieen=drankcats, error=error)
 
 if __name__ == '__main__':
     app.run()
