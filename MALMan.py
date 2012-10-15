@@ -93,10 +93,10 @@ def stock_aanvullen():
     confirmation = ""
     if request.method == 'POST': 
         for ind in request.form.getlist('check[]'):
-            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen")
+            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
             db.session.add(changes)
             db.session.commit()
-            confirmation += "aangevuld"
+            confirmation = "aangevuld"
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 
@@ -106,10 +106,12 @@ def stock_aanpassen():
     confirmation = ""
     if request.method == 'POST':
         for ind in request.form.getlist('ind[]'):
-            confirmation += ind
-            confirmation += "="
-            confirmation += request.form["amount_" + ind]
-            confirmation += ", "
+            drankopbject = Dranken.query.filter_by(id=ind).first()
+            if (int(request.form["amount_" + ind]) - int(drankopbject.stock)) != 0:
+                changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankopbject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die de correctie doet
+                db.session.add(changes)
+                db.session.commit()
+                confirmation = "aangepast"
     return render_template('stock_aanpassen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 @app.route("/stock_toevoegen")
