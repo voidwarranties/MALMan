@@ -61,23 +61,24 @@ class Dranklog(db.Model):
 
     def __repr__(self):
         return '<id %r>' % self.id
+    
 
 
 error = "errors are not implemented yet!"
 
 
-@app.route("/account", methods=['GET'])
+@app.route("/account")
 def account():
     user = "testuser"
     drankrekening = "0"
     lidgeld = "Februari 2012"
     return render_template('account.html', user=user, drankrekening=drankrekening, lidgeld=lidgeld)
 
-@app.route("/boekhouding", methods=['GET'])
+@app.route("/boekhouding")
 def boekhouding():
     return render_template('boekhouding.html')
 
-@app.route("/ledenlijst", methods=['GET'])
+@app.route("/ledenlijst")
 def ledenlijst():
     return render_template('ledenlijst.html')
 
