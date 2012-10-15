@@ -48,6 +48,16 @@ class Dranklog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     drankID = db.Column(db.Integer, db.ForeignKey('Dranken.id'))
     aantal = db.Column(db.Integer)
+    totaalprijs = db.Column(db.Numeric(5, 2))
+    gebruikerID = db.Column(db.Integer)
+    beschrijving = db.Column(db.String(50))
+
+    def __init__(self, drankID, aantal, totaalprijs, gebruikerID, beschrijving):
+        self.drankID = drankID
+        self.aantal = aantal
+        self.totaalprijs = totaalprijs
+        self.gebruikerID = gebruikerID
+        self.beschrijving = beschrijving
 
     def __repr__(self):
         return '<id %r>' % self.id
