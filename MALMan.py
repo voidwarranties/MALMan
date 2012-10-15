@@ -48,16 +48,6 @@ class Dranklog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     drankID = db.Column(db.Integer, db.ForeignKey('Dranken.id'))
     aantal = db.Column(db.Integer)
-    totaalprijs = db.Column(db.Numeric(5, 2))
-    gebruikerID = db.Column(db.Integer)
-    beschrijving = db.Column(db.String(50))
-
-    def __init__(self, drankID, aantal, totaalprijs, gebruikerID, beschrijving):
-        self.drankID = drankID
-        self.aantal = aantal
-        self.totaalprijs = totaalprijs
-        self.gebruikerID = gebruikerID
-        self.beschrijving = beschrijving
 
     def __repr__(self):
         return '<id %r>' % self.id
@@ -67,18 +57,18 @@ class Dranklog(db.Model):
 error = "errors are not implemented yet!"
 
 
-@app.route("/account", methods=['GET'])
+@app.route("/account")
 def account():
     user = "testuser"
     drankrekening = "0"
     lidgeld = "Februari 2012"
     return render_template('account.html', user=user, drankrekening=drankrekening, lidgeld=lidgeld)
 
-@app.route("/boekhouding", methods=['GET'])
+@app.route("/boekhouding")
 def boekhouding():
     return render_template('boekhouding.html')
 
-@app.route("/ledenlijst", methods=['GET'])
+@app.route("/ledenlijst")
 def ledenlijst():
     return render_template('ledenlijst.html')
 
@@ -116,7 +106,8 @@ def stock_aanpassen():
 
 @app.route("/stock_toevoegen")
 def stock_toevoegen():
-    return render_template('stock_toevoegen.html', error=error)
+    dranken = Drankcat.query.all()
+    return render_template('stock_toevoegen.html', categorieen=dranken, error=error)
 
 if __name__ == '__main__':
     app.run()

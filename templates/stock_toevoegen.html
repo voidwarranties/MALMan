@@ -29,8 +29,8 @@
 					<li class="cf">
 						<label>Categorie</label>
 						<select name="categorie">
-{% for id, categorie in [('1', 'Non Alcoholisch'), ('2', 'Alcoholisch'), ('3', 'Food')] %}
-							<option value="{{ id }}">{{ categorie }}</option>
+{% for categorie in categorieen %}
+							<option value="{{ categorie.id }}">{{ categorie.beschrijving }}</option>
 {% endfor %}
 						</select>
 					</li>
