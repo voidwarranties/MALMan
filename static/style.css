@@ -28,6 +28,7 @@ table {
 table th {
 	background-color: #DDD;
 	margin: 4px;
+	padding:4px;
 }
 td {
 	padding: 4px;
@@ -87,7 +88,7 @@ tr:hover {
 
 /*forms*/
 form {
-	width: 200px;
+	/*width: 200px;*/
 	border: 1px solid #AAA;
 	padding: 5px;
 }
@@ -105,8 +106,15 @@ input {
 	text-align: right;
 	margin-left: 5px;
 	}
+input {
+	float: left;
+	text-align: left;
+	}
 input[type="text"] {
 	width:40px;
+}
+table input[type="text"] {
+	width:100%;
 }
 #stock_toevoegen {
 	width: 500px;
@@ -119,7 +127,7 @@ input[type="text"] {
 	width: 200px;
 }
 select {
-	float: right;
+	float: left;
 	text-align: right;
 	margin-left: 5px;
 }

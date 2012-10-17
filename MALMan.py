@@ -99,10 +99,10 @@ def stock_aanvullen():
             confirmation = "aangevuld"
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
-
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 def stock_aanpassen():
     dranken = Dranken.query.all()
+    drankcats = Drankcat.query.all()
     confirmation = ""
     if request.method == 'POST':
         for ind in request.form.getlist('ind[]'):
@@ -112,7 +112,12 @@ def stock_aanpassen():
                 db.session.add(changes)
                 db.session.commit()
                 confirmation = "aangepast"
-    return render_template('stock_aanpassen.html', lijst=dranken, confirmation=confirmation, error=error)
+    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, confirmation=confirmation, error=error)
+
+@app.route("/stock_tellen")
+def stock_tellen():
+    dranken = Dranken.query.all()
+    return render_template('stock_tellen.html', lijst=dranken, error=error)
 
 @app.route("/stock_toevoegen")
 def stock_toevoegen():

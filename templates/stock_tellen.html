@@ -1,0 +1,15 @@
+{% set category = "stock" %}
+{% include 'header.html' %}
+			<form id="stock_tellen" method="POST" class="cf">
+				<ul>
+{% for entry in lijst %}
+					<li class="cf">
+						<label>{{ entry.naam }}</label>
+						<input type="text" value="{{ entry.stock }}" name="amount_{{ entry.id }}" {% if entry.stock < 0 %}class="error"{% endif %} />
+						<input type="hidden" name="ind[]" value="{{ entry.id }}">
+					</li>
+{% endfor %}
+				</ul>
+				<input type="submit" name="stock_tellen" value="ok!" />
+			</form>
+{% include 'footer.html' %}
