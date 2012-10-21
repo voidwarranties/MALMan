@@ -6,7 +6,7 @@
 					<li class="cf">
 						<label>{{ entry.naam }}</label>
 						<input type="text" value="{{ entry.stock }}" name="amount_{{ entry.id }}" {% if entry.stock < 0 %}class="error"{% endif %} />
-						<input type="hidden" name="ind[]" value="{{ entry.id }}">
+						<input type="hidden" value="{{ entry.id }}" name="check[]" />
 					</li>
 {% endfor %}
 				</ul>

@@ -1,0 +1,20 @@
+Find a way so we don't have to repeat to send the same variables to the template over and over again. 
+The current state:
+	confirmation = ""
+	error = ""
+	dranken = Dranken.query.all()
+	...
+	return render_template('page.html', confirmation=confirmation, error=error, dranken=dranken, ...)
+Possible improvement:
+	vars = {}
+	vars['confirmation'] = ""
+	vars['error'] = ""
+	vars['dranken'] = Dranken.query.all()
+	...
+	render_template('page.html', **vars)
+
+Only write to DB and display a confirmation for ids for which the value we received in the POST does not equal the value in the DB
+
+write the values POSTed to stock_aanpassen to DB
+
+add items POSTed to stock_toevoegen to DB

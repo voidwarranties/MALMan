@@ -81,17 +81,20 @@ def stock():
     dranken = Dranken.query.all()
     return render_template('stock.html', lijst=dranken, error=error)
 
-@app.route("/stock_aanvullen", methods=['GET', 'POST'])
-def stock_aanvullen():
+@app.route("/stock_tellen", methods=['GET', 'POST'])
+def stock_tellen():
     confirmation = ""
-    dranken = Dranken.query.filter_by(josto=True).all()
-    if request.method == 'POST': 
+    dranken = Dranken.query.all()
+    if request.method == 'POST':
+        confirmation = "aangevuld: "
         for ind in request.form.getlist('check[]'):
-            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
-            db.session.add(changes)
-            db.session.commit()
-            confirmation = "aangevuld"
-    return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
+            ## only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
+            #  if request.form["amount_" + ind] in dranken:
+                changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+                db.session.add(changes)
+                db.session.commit()
+                confirmation += ind + " = " + request.form["amount_" + ind] + ", "
+    return render_template('stock_tellen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 def stock_aanpassen():
@@ -108,12 +111,19 @@ def stock_aanpassen():
                 confirmation = "aangepast"
     return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, confirmation=confirmation, error=error)
 
-@app.route("/stock_tellen")
-def stock_tellen():
-    dranken = Dranken.query.all()
-    return render_template('stock_tellen.html', lijst=dranken, error=error)
+@app.route("/stock_aanvullen", methods=['GET', 'POST'])
+def stock_aanvullen():
+    confirmation = ""
+    dranken = Dranken.query.filter_by(josto=True).all()
+    if request.method == 'POST': 
+        for ind in request.form.getlist('check[]'):
+            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+            db.session.add(changes)
+            db.session.commit()
+            confirmation = "aangevuld"
+    return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
-@app.route("/stock_toevoegen")
+@app.route("/stock_toevoegen", methods=['GET', 'POST'])
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
     return render_template('stock_toevoegen.html', categorieen=drankcats, error=error)
