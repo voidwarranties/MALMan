@@ -61,24 +61,18 @@ class Dranklog(db.Model):
 
     def __repr__(self):
         return '<id %r>' % self.id
-    
 
 
-error = "errors are not implemented yet!"
+error = ""
 
-
-@app.route("/account")
+@app.route("/")
 def account():
     user = "testuser"
     drankrekening = "0"
     lidgeld = "Februari 2012"
     return render_template('account.html', user=user, drankrekening=drankrekening, lidgeld=lidgeld)
 
-@app.route("/boekhouding")
-def boekhouding():
-    return render_template('boekhouding.html')
-
-@app.route("/ledenlijst")
+@app.route("/leden")
 def ledenlijst():
     return render_template('ledenlijst.html')
 
@@ -89,8 +83,8 @@ def stock():
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 def stock_aanvullen():
-    dranken = Dranken.query.filter_by(josto=True).all()
     confirmation = ""
+    dranken = Dranken.query.filter_by(josto=True).all()
     if request.method == 'POST': 
         for ind in request.form.getlist('check[]'):
             changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
@@ -101,9 +95,9 @@ def stock_aanvullen():
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 def stock_aanpassen():
+    confirmation = ""
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
-    confirmation = ""
     if request.method == 'POST':
         for ind in request.form.getlist('ind[]'):
             drankopbject = Dranken.query.filter_by(id=ind).first()
@@ -123,6 +117,10 @@ def stock_tellen():
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
     return render_template('stock_toevoegen.html', categorieen=drankcats, error=error)
+
+@app.route("/boekhouding")
+def boekhouding():
+    return render_template('boekhouding.html')
 
 if __name__ == '__main__':
     app.run()
