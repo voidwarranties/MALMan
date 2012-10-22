@@ -63,6 +63,7 @@ class Dranklog(db.Model):
         return '<id %r>' % self.id
 
 aanpassing = "Deze waarden werden aangepast: "
+error = ""
 
 @app.route("/")
 def account():

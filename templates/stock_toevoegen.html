@@ -1,5 +1,7 @@
+{% extends "base.html" %}
 {% set category = "stock" %}
-{% include 'header.html' %}
+{% block title %}stock item toevoegen{% endblock %}
+{% block content %}
 			<form id="stock_toevoegen" method="post" class="cf">
 				<ul>
 					<li class="cf">
@@ -45,4 +47,4 @@
 				<input type="submit" name="stock_aanvullen" value="ok!" />
 				<ul>
 			</form>
-{% include 'footer.html' %}
+{% endblock %}

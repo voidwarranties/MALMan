@@ -1,11 +1,15 @@
+{% extends "base.html" %}
 {% set category = "stock" %}
-{% include 'header.html' %}
+{% block title %}stock{% endblock %}
+{% block head %}
+{{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
 		$(function() { $("#drankenlijst").tablesorter(); } ); 
 </script>
-
+{% endblock %}
+{% block content %}
 <table id="drankenlijst">
 	<thead>
 		<tr>
@@ -32,4 +36,4 @@
 {% endfor %}
 	</tbody>
 </table>
-{% include 'footer.html' %}
+{% endblock %}

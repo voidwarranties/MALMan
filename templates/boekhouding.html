@@ -1,11 +1,15 @@
+{% extends "base.html" %}
 {% set category = "boekhouding" %}
-{% include 'header.html' %}
+{% block title %}boekhouding{% endblock %}
+{% block head %}
+{{ super() }}
 <script type="text/javascript" src="static/jquery-latest.js"></script> 
 <script type="text/javascript" src="static/jquery.tablesorter.js"></script> 
 <script type="text/javascript">
 		$(function() { $("#transacties").tablesorter(); } ); 
 </script>
-
+{% endblock %}
+{% block content %}
 <table id="transacties">
 	<thead>
 		<tr>
@@ -36,4 +40,4 @@
 		</tr>
 	</tbody>
 </table>
-{% include 'footer.html' %}
+{% endblock %}

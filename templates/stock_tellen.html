@@ -1,5 +1,7 @@
+{% extends "base.html" %}
 {% set category = "stock" %}
-{% include 'header.html' %}
+{% block title %}stock tellen{% endblock %}
+{% block content %}
 			<form id="stock_tellen" method="POST" class="cf">
 				<ul>
 {% for entry in lijst %}
@@ -12,4 +14,4 @@
 				</ul>
 				<input type="submit" name="stock_tellen" value="ok!" />
 			</form>
-{% include 'footer.html' %}
+{% endblock %}

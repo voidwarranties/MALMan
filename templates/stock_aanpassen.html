@@ -1,10 +1,15 @@
+{% extends "base.html" %}
 {% set category = "stock" %}
-{% include 'header.html' %}
+{% block title %}stock aanpassen{% endblock %}
+{% block head %}
+{{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
 		$(function() { $("#drankenlijst").tablesorter(); } ); 
 </script>
+{% endblock %}
+{% block content %}
 <form id="stock_aanpassen" method="POST" class="cf">
 	<table id="drankenlijst">
 		<thead>
@@ -59,4 +64,4 @@
 	</table>
 	<input type="submit" name="stock_aanpassen" value="ok!" />
 </form>
-{% include 'footer.html' %}
+{% endblock %}
