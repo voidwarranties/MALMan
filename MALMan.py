@@ -62,8 +62,7 @@ class Dranklog(db.Model):
     def __repr__(self):
         return '<id %r>' % self.id
 
-
-error = ""
+aanpassing = "Deze waarden werden aangepast: "
 
 @app.route("/")
 def account():
@@ -84,16 +83,23 @@ def stock():
 @app.route("/stock_tellen", methods=['GET', 'POST'])
 def stock_tellen():
     confirmation = ""
+    error = ""
     dranken = Dranken.query.all()
     if request.method == 'POST':
-        confirmation = "aangevuld: "
+        confirmation = aanpassing
         for ind in request.form.getlist('check[]'):
-            ## only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
-            #  if request.form["amount_" + ind] in dranken:
-                changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+            drankopbject = Dranken.query.filter_by(id=ind).first()
+            # only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
+            if int(request.form["amount_" + ind]) != int(drankopbject.stock):
+                changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankopbject.stock)), 0, 0, "aanpassen") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
                 db.session.commit()
-                confirmation += ind + " = " + request.form["amount_" + ind] + ", "
+                if confirmation != aanpassing:
+                    confirmation += ", "
+                confirmation += "stock " + drankopbject.naam + " = " + request.form["amount_" + ind]
+        if confirmation == aanpassing:
+            confirmation = ""
+            error = "Er zijn geen veranderingen door te voeren "
     return render_template('stock_tellen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
@@ -114,13 +120,22 @@ def stock_aanpassen():
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 def stock_aanvullen():
     confirmation = ""
+    error = ""
     dranken = Dranken.query.filter_by(josto=True).all()
     if request.method == 'POST': 
+        confirmation = aanpassing
         for ind in request.form.getlist('check[]'):
-            changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
-            db.session.add(changes)
-            db.session.commit()
-            confirmation = "aangevuld"
+            drankopbject = Dranken.query.filter_by(id=ind).first()
+            if int(request.form["amount_" + ind]) != 0:
+                changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+                db.session.add(changes)
+                db.session.commit()
+                if confirmation != aanpassing:
+                    confirmation += ", "
+                confirmation += "stock " + drankopbject.naam + " = +" + request.form["amount_" + ind]
+        if confirmation == aanpassing:
+            confirmation = ""
+            error += "Er zijn geen veranderingen door te voeren "
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
