@@ -1,0 +1,54 @@
+<html>
+	<head>
+{%- block head %}
+		<title>MALMan -- {% block title -%}{%- endblock -%}</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{%- endblock -%}
+	</head>
+	<body onload="clickMenu('menu')">
+		<div id="wrapper">
+			<h1>MALMAN</h1>
+			<ul id="menu" class="cf">
+				<li><a href="/">mijn account</a></li>
+				<li><a href="leden">leden</a></li>
+				<li><a href="stock">stock bar</a></li>
+				<li><a href="boekhouding">boekhouding</a></li>
+			</ul>
+{%- if category == "account" -%}
+	{% set menu = [ ('/', 'overzicht'),
+		('#', 'mijn gegevens'), 
+		('#', 'mijn rekening'), 
+		('#', 'mijn wachtwoord aanpassen')] %}	
+{%- elif category == "leden" -%}
+	{% set menu = [ ('leden', 'ledenlijst'),
+		('#', 'ledenlijst met niet publieke data (A)'), 
+		('#', 'gegevens aanpassen (A)')] %}
+{%- elif category == "stock" -%}
+	{% set menu = [ ('stock', 'stock weergeven'),
+		('stock_tellen', 'stock tellen (A)'), 
+		('stock_aanpassen', 'stock aanpassen (A)'),
+		('stock_aanvullen', 'stock aanvullen (Josto) (A)'),
+		('stock_toevoegen', 'item toevoegen (A)')] %}
+{%- elif category == "boekhouding" -%}
+	{% set menu = [ ('boekhouding', 'rekeningsstand'),
+		('#', 'transacties bekijken'), 
+		('#', 'aanvraag tot terugbetaling'),
+		('#', 'goedkeuring terugbetalingen (A)'),
+		('#', 'transactie aanpassen (A)')] %}
+{%- endif %}
+			<ul id="menu" class="cf">
+{%- for href, caption in menu %}
+				<li><a href="{{ href }}">{{ caption }}</a></li>
+{%- endfor %}
+			</ul>
+{%- if confirmation %}
+			<div id="confirmation">{{ confirmation }}</div>
+{%- endif %}
+{%- if error %}
+			<div id="error">{{ error }}</div>
+{%- endif %}
+{% block content %}{%- endblock %}
+		</div>
+	</body>
+</html>
