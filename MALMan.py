@@ -1,9 +1,10 @@
 import sys
 from flask import Flask, render_template, request
-if sys.version_info >= (2, 7):
-	from flaskext.sqlalchemy import SQLAlchemy
-else:
-	from flask_sqlalchemy import SQLAlchemy
+
+try:
+    from flaskext.sqlalchemy import SQLAlchemy
+except ImportError:
+    from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_pyfile('MALMan.cfg')
