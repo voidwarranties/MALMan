@@ -145,4 +145,14 @@ input:focus {
 .error {
 	background-color: #FAA;	
 }
-
+.empty {
+	border: none;
+	padding: 0;
+	margin:0;
+}
+.revert { 
+    background: url(/static/revert.png) 0px 0px no-repeat;
+	height: 50px;
+	width: 50px !important;
+	color: transparent;
+}

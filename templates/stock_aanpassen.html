@@ -53,8 +53,8 @@
 				</td>
 				<td>
 					<select name="josto_{{ entry.id }}">
-{% for id, oorsprong in [('1', 'Josto'), ('2', 'Ebay'), ('3', 'Carrefour')] %}
-							<option value="{{ id }}">{{ oorsprong }}</option>
+{% for oorsprong in oorsprongen %}
+							<option value="{{ id }}">{{ oorsprong.beschrijving }}</option>
 {% endfor %}
 					</select>
 				</td>

@@ -19,7 +19,8 @@ class Dranken(db.Model):
     prijs = db.Column(db.Numeric(5, 2))
     categorieID = db.Column(db.Integer, db.ForeignKey('Drankcat.id'))
     categorie = db.relationship("Drankcat", backref="dranken", lazy="joined")
-    josto = db.Column(db.Integer)
+    josto = db.Column(db.Integer, db.ForeignKey('stock_oorsprong.id'))
+    oorsprong = db.relationship("stock_oorsprong", backref="dranken", lazy="joined")
     aankopen = db.relationship("Dranklog", backref="Drank")
 
     @property
@@ -30,8 +31,7 @@ class Dranken(db.Model):
     def aanvullen(self):
         return (self.aanvullenTot - self.stock)
 
-    def __init__(self, drankID, naam, aanvullenTot, prijs, categorieID, josto):
-        self.drankID = drankID
+    def __init__(self, naam, aanvullenTot, prijs, categorieID, josto):
         self.naam = naam
         self.aanvullenTot = aanvullenTot
         self.prijs = prijs
@@ -44,6 +44,14 @@ class Dranken(db.Model):
 
 class Drankcat(db.Model):
     __tablename__ = 'Drankcat'
+    id = db.Column(db.Integer, primary_key=True)
+    beschrijving = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '<Category %r>' % self.beschrijving
+
+class stock_oorsprong(db.Model):
+    __tablename__ = 'stock_oorsprong'
     id = db.Column(db.Integer, primary_key=True)
     beschrijving = db.Column(db.String(50))
 
@@ -118,6 +126,7 @@ def stock_aanpassen():
     error = ""
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
+    oorsprongen = stock_oorsprong.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
         for ind in request.form.getlist('ind[]'):
@@ -143,7 +152,7 @@ def stock_aanpassen():
         if confirmation == aanpassing and error == "":
             confirmation = ""
             error = "Er zijn geen veranderingen door te voeren "
-    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, confirmation=confirmation, error=error)
+    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, confirmation=confirmation, error=error)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 def stock_aanvullen():
@@ -168,13 +177,24 @@ def stock_aanvullen():
 
 @app.route("/stock_log", methods=['GET', 'POST'])
 def stock_log():
+    if request.method == 'POST': 
+        changes = Dranklog.query.filter_by(id=request.form["revert"]).first()
+        db.session.delete(changes)
+        db.session.commit()
     log = Dranklog.query.all()
     return render_template('stock_log.html', log=log, error=error)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 def stock_toevoegen():
+    confirmation = ""
     drankcats = Drankcat.query.all()
-    return render_template('stock_toevoegen.html', categorieen=drankcats, error=error)
+    oorsprongen = stock_oorsprong.query.all()
+    if request.method == 'POST': 
+        changes = Dranken(request.form["naam"], request.form["aanvullenTot"], request.form["prijs"], request.form["categorieID"], request.form["josto"])
+        db.session.add(changes)
+        db.session.commit()
+        confirmation = "stockitem toegevoegd: " + request.form["naam"]
+    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, confirmation=confirmation, error=error)
 
 @app.route("/boekhouding")
 def boekhouding():

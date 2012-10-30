@@ -13,8 +13,3 @@ Possible improvement:
 	...
 	render_template('page.html', **vars)
 
-Only write to DB and display a confirmation for ids for which the value we received in the POST does not equal the value in the DB
-
-write the values POSTed to stock_aanpassen to DB
-
-add items POSTed to stock_toevoegen to DB

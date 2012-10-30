@@ -31,7 +31,7 @@
 			<td>?</td>
 			<td>{{ entry.aanvullenTot }}</td>
 			<td>{{ entry.categorie.beschrijving }}</td>
-			<td>{% if entry.josto == 1 %} Josto {% else %} Niet Josto {% endif %}</td>
+			<td>{{ entry.oorsprong.beschrijving }}</td>
 		</tr>
 {% endfor %}
 	</tbody>
