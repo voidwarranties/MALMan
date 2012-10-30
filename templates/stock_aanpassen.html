@@ -45,14 +45,14 @@
 					<input type="text" value="{{ entry.aanvullenTot }}" name="aanvullenTot_{{ entry.id }}" />
 				</td>
 				<td>
-					<select name="categorie">
+					<select name="categorieID_{{ entry.id }}">
 {% for categorie in categorieen %}
-							<option value="{{ categorie.id }}">{{ categorie.beschrijving }}</option>
+							<option value="{{ categorie.id }}"{% if categorie.id == entry.categorieID %} selected="selected"{% endif %}>{{ categorie.beschrijving }}</option>
 {% endfor %}
 					</select>
 				</td>
 				<td>
-					<select name="oorsprong">
+					<select name="josto_{{ entry.id }}">
 {% for id, oorsprong in [('1', 'Josto'), ('2', 'Ebay'), ('3', 'Carrefour')] %}
 							<option value="{{ id }}">{{ oorsprong }}</option>
 {% endfor %}
