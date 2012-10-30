@@ -53,8 +53,10 @@ class Dranklog(db.Model):
     __tablename__ = 'Dranklog'
     id = db.Column(db.Integer, primary_key=True)
     drankID = db.Column(db.Integer, db.ForeignKey('Dranken.id'))
+    stock_naam = db.relationship("Dranken", backref="Dranklog", lazy="joined")
     aantal = db.Column(db.Integer)
     totaalprijs = db.Column(db.Numeric(5, 2))
+    datetime = db.Column(db.String(120))
     gebruikerID = db.Column(db.Integer)
     beschrijving = db.Column(db.String(50))
 
@@ -98,7 +100,7 @@ def stock_tellen():
             drankopbject = Dranken.query.filter_by(id=ind).first()
             # only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
             if int(request.form["amount_" + ind]) != int(drankopbject.stock):
-                changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankopbject.stock)), 0, 0, "aanpassen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+                changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankopbject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
                 db.session.commit()
                 if confirmation != aanpassing:
@@ -134,7 +136,7 @@ def stock_aanvullen():
         for ind in request.form.getlist('check[]'):
             drankopbject = Dranken.query.filter_by(id=ind).first()
             if int(request.form["amount_" + ind]) != 0:
-                changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvullen") #userID moet nog worden ingevuld naar de user die dit toevoegt
+                changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvulling") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
                 db.session.commit()
                 if confirmation != aanpassing:
@@ -144,6 +146,11 @@ def stock_aanvullen():
             confirmation = ""
             error += "Er zijn geen veranderingen door te voeren "
     return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
+
+@app.route("/stock_log", methods=['GET', 'POST'])
+def stock_log():
+    log = Dranklog.query.all()
+    return render_template('stock_log.html', log=log, error=error)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 def stock_toevoegen():
