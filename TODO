@@ -13,3 +13,4 @@ Possible improvement:
 	...
 	render_template('page.html', **vars)
 
+
