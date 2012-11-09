@@ -43,12 +43,17 @@
 				<li><a href="{{ href }}">{{ caption }}</a></li>
 {%- endfor %}
 			</ul>
-{%- if confirmation %}
-			<div id="confirmation">{{ confirmation }}</div>
-{%- endif %}
-{%- if error %}
-			<div id="error">{{ error }}</div>
-{%- endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  	{% if messages %}
+    	<ul>
+    		{% for category, message in messages %}
+    			<li class="{{ category }}">{{ message }}</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
+
 {% block content %}{%- endblock %}
 		</div>
 	</body>

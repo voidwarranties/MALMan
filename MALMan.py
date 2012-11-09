@@ -1,5 +1,5 @@
 import sys
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash 
 
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -8,6 +8,7 @@ except ImportError:
 
 app = Flask(__name__)
 app.config.from_pyfile('MALMan.cfg')
+app.secret_key = 'some_secret'
 db = SQLAlchemy(app)
 
 
@@ -96,12 +97,10 @@ def ledenlijst():
 @app.route("/stock")
 def stock():
     dranken = Dranken.query.all()
-    return render_template('stock.html', lijst=dranken, error=error)
+    return render_template('stock.html', lijst=dranken)
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
 def stock_tellen():
-    confirmation = ""
-    error = ""
     dranken = Dranken.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
@@ -116,14 +115,13 @@ def stock_tellen():
                     confirmation += ", "
                 confirmation += "stock " + drankobject.naam + " = " + request.form["amount_" + ind]
         if confirmation == aanpassing:
-            confirmation = ""
-            error = "Er zijn geen veranderingen door te voeren "
-    return render_template('stock_tellen.html', lijst=dranken, confirmation=confirmation, error=error)
+            flash("Er zijn geen veranderingen door te voeren", "error")
+        else:
+            flash(confirmation, "confirmation")
+    return render_template('stock_tellen.html', lijst=dranken)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 def stock_aanpassen():
-    confirmation = ""
-    error = ""
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
@@ -149,15 +147,14 @@ def stock_aanpassen():
                         confirmation += "categorie" + " " + drankobject.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")"
                     else:
                         confirmation += atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")"
-        if confirmation == aanpassing and error == "":
-            confirmation = ""
-            error = "Er zijn geen veranderingen door te voeren "
-    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, confirmation=confirmation, error=error)
+        if confirmation == aanpassing:
+            flash("Er zijn geen veranderingen door te voeren", "error")
+        else: 
+            flash(confirmation, "confirmation")
+    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 def stock_aanvullen():
-    confirmation = ""
-    error = ""
     dranken = Dranken.query.filter_by(josto=True).all()
     if request.method == 'POST': 
         confirmation = aanpassing
@@ -171,9 +168,10 @@ def stock_aanvullen():
                     confirmation += ", "
                 confirmation += "stock " + drankopbject.naam + " = +" + request.form["amount_" + ind]
         if confirmation == aanpassing:
-            confirmation = ""
-            error += "Er zijn geen veranderingen door te voeren "
-    return render_template('stock_aanvullen.html', lijst=dranken, confirmation=confirmation, error=error)
+            flash('Er zijn geen veranderingen door te voeren', 'error')
+        else:
+            flash(confirmation, 'confirmation')
+    return render_template('stock_aanvullen.html', lijst=dranken)
 
 @app.route("/stock_log", methods=['GET', 'POST'])
 def stock_log():
@@ -182,19 +180,18 @@ def stock_log():
         db.session.delete(changes)
         db.session.commit()
     log = Dranklog.query.all()
-    return render_template('stock_log.html', log=log, error=error)
+    return render_template('stock_log.html', log=log)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 def stock_toevoegen():
-    confirmation = ""
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
     if request.method == 'POST': 
         changes = Dranken(request.form["naam"], request.form["aanvullenTot"], request.form["prijs"], request.form["categorieID"], request.form["josto"])
         db.session.add(changes)
         db.session.commit()
-        confirmation = "stockitem toegevoegd: " + request.form["naam"]
-    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, confirmation=confirmation, error=error)
+        flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
+    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen)
 
 @app.route("/boekhouding")
 def boekhouding():
