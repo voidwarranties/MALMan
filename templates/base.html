@@ -8,13 +8,22 @@
 	</head>
 	<body onload="clickMenu('menu')">
 		<div id="wrapper">
-			<h1>MALMAN</h1>
+			<div id="header" class="cf">
+				<h1>MALMAN</h1>
+{%- if user -%}
+				<span>ingelogd als {{ user }} (<a href="logout">log out</a>)</span>
+{%- else -%}
+				<span>u bent niet ingelogd (<a href="login">log in</a>)</span>
+{%- endif -%}
+			</div>
+{%-	if category != "login" -%}
 			<ul id="menu" class="cf">
 				<li><a href="/">mijn account</a></li>
 				<li><a href="leden">leden</a></li>
 				<li><a href="stock">stock bar</a></li>
 				<li><a href="boekhouding">boekhouding</a></li>
 			</ul>
+{%- endif -%}
 {%- if category == "account" -%}
 	{% set menu = [ ('/', 'overzicht'),
 		('#', 'mijn gegevens'), 
@@ -37,6 +46,11 @@
 		('#', 'aanvraag tot terugbetaling'),
 		('#', 'goedkeuring terugbetalingen (A)'),
 		('#', 'transactie aanpassen (A)')] %}
+{%-	elif category == "login" -%}
+	{% set menu = [ ('login', 'login'),
+		('register', 'register'), 
+		('reset', 'forgot password'),
+		('confirm', 'confirm account'),] %}
 {%- endif %}
 			<ul id="menu" class="cf">
 {%- for href, caption in menu %}

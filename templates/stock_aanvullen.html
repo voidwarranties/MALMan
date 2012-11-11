@@ -3,17 +3,15 @@
 {% block title %}stock aanvullen{% endblock %}
 {% block content %}
 			<form id="stock_aanvullen" method="post" class="cf">
-				<ul>
 {% for entry in lijst if entry.aanvullen != 0 %}
-					<li class="cf">
+					<p class="cf">
 						<label>{{ entry.naam }}</label>
 						<input type="checkbox" value="{{ entry.id }}" name="check[]" />
 						<input type="text" value="{{ entry.aanvullen }}" name="amount_{{ entry.id }}" />
-					</li>
+					</p>
 {% else %}
 					<p>Er valt niets aan te vullen!</p>
 {% endfor %}
 					<input type="submit" name="stock_aanvullen" value="ok!" />
-				</ul>
 			</form>
 {% endblock %}

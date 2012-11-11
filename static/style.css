@@ -62,6 +62,15 @@ tr:hover {
 	margin-bottom:5px;
 }
 
+/*header*/
+#header h1{
+	float:left;
+}
+#header span{
+	float:right;
+}
+
+
 /*menu*/
 #menu {
 	list-style: none;
@@ -74,12 +83,12 @@ tr:hover {
 
 
 /*messages*/
-.confirmation {
+.confirmation, .success {
 	background-color: #DDFFDD;
 	border: 1px solid #00FF00;
 	padding: 5px;
 }
-.error {
+.error, .message {
 	background-color: #FFDDDD;
 	border: 1px solid #FF0000;
 	padding: 5px;
@@ -92,43 +101,29 @@ form {
 	border: 1px solid #AAA;
 	padding: 5px;
 }
-form li {
+form p {
 	border-bottom: 1px solid #CCC;
 	padding-bottom: 1px;
 	margin-bottom: 4px;
 }
 label {
 	width: 100px;
-	float:left;
+	/*float:left;*/
 	}
 input {
 	float: right;
 	text-align: right;
 	margin-left: 5px;
-	}
-input {
-	float: left;
-	text-align: left;
+	border: 1px solid #CCC;
 	}
 input[type="text"] {
-	width:40px;
+	/*width:40px;*/
 }
 table input[type="text"] {
 	width:100%;
 }
-#stock_toevoegen {
-	width: 500px;
-}
-#stock_toevoegen input[type="text"]{
-	width:200px;
-	border: 1 px solid #000;
-} 
-#stock_toevoegen label {
-	width: 200px;
-}
 select {
-	float: left;
-	text-align: right;
+	float: right;
 	margin-left: 5px;
 }
 input[type="checkbox"] {
@@ -138,9 +133,6 @@ input[type="checkbox"] {
 input[type="submit"] {
 	width: 100%;
 	text-align: center;
-}
-input:focus {
-	background-color: #DDD;
 }
 .empty {
 	border: none;

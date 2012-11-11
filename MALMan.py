@@ -1,5 +1,8 @@
 import sys
-from flask import Flask, render_template, request, flash 
+from flask import Flask, render_template, request, flash, session, redirect
+from flask.ext.mail import Mail
+from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
+from flask.ext.login import current_user, login_required
 
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -11,6 +14,43 @@ app.config.from_pyfile('MALMan.cfg')
 app.secret_key = 'some_secret'
 db = SQLAlchemy(app)
 
+## begin of User Managment
+# configuration
+app.config['SECURITY_REGISTERABLE'] = True
+app.config['SECURITY_CONFIRMABLE'] = True
+app.config['SECURITY_RECOVERABLE'] = True
+app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
+app.config['SECURITY_PASSWORD_SALT'] = 'MALMan'
+app.config['DEFAULT_MAIL_SENDER'] = 'MALMan@voidwarranties.be'
+
+# Setup mail extension
+mail = Mail(app)
+
+# Define models
+roles_users = db.Table('roles_users',
+        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(255))
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+
+    def __str__(self):
+        return '<User id=%s email=%s>' % (self.id, self.email)
+
+# Setup Flask-Security
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+## end of User Managment
 
 class Dranken(db.Model):
     __tablename__ = 'Dranken'
@@ -80,27 +120,38 @@ class Dranklog(db.Model):
     def __repr__(self):
         return '<id %r>' % self.id
 
+# create missing tables in db
+# should only be run once, remove this when db is stable
+db.create_all()
+
 aanpassing = "Deze waarden werden aangepast: "
 error = ""
 
 @app.route("/")
-def account():
-    user = "testuser"
-    drankrekening = "0"
-    lidgeld = "Februari 2012"
-    return render_template('account.html', user=user, drankrekening=drankrekening, lidgeld=lidgeld)
+def index():
+    if current_user.is_active() == True:
+        user = current_user.email
+        return render_template('account.html', user=user)
+    else:
+        return redirect('login')
 
 @app.route("/leden")
+@login_required
 def ledenlijst():
-    return render_template('ledenlijst.html')
+    user = current_user.email
+    return render_template('ledenlijst.html', user=user)
 
 @app.route("/stock")
+@login_required
 def stock():
+    user = current_user.email
     dranken = Dranken.query.all()
-    return render_template('stock.html', lijst=dranken)
+    return render_template('stock.html', lijst=dranken, user=user)
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
+@login_required
 def stock_tellen():
+    user = current_user.email
     dranken = Dranken.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
@@ -118,10 +169,12 @@ def stock_tellen():
             flash("Er zijn geen veranderingen door te voeren", "error")
         else:
             flash(confirmation, "confirmation")
-    return render_template('stock_tellen.html', lijst=dranken)
+    return render_template('stock_tellen.html', lijst=dranken, user=user)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
+@login_required
 def stock_aanpassen():
+    user = current_user.email
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
@@ -151,10 +204,12 @@ def stock_aanpassen():
             flash("Er zijn geen veranderingen door te voeren", "error")
         else: 
             flash(confirmation, "confirmation")
-    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen)
+    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, user=user)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
+@login_required
 def stock_aanvullen():
+    user = current_user.email
     dranken = Dranken.query.filter_by(josto=True).all()
     if request.method == 'POST': 
         confirmation = aanpassing
@@ -171,19 +226,23 @@ def stock_aanvullen():
             flash('Er zijn geen veranderingen door te voeren', 'error')
         else:
             flash(confirmation, 'confirmation')
-    return render_template('stock_aanvullen.html', lijst=dranken)
+    return render_template('stock_aanvullen.html', lijst=dranken, user=user)
 
 @app.route("/stock_log", methods=['GET', 'POST'])
+@login_required
 def stock_log():
+    user = current_user.email
     if request.method == 'POST': 
         changes = Dranklog.query.filter_by(id=request.form["revert"]).first()
         db.session.delete(changes)
         db.session.commit()
     log = Dranklog.query.all()
-    return render_template('stock_log.html', log=log)
+    return render_template('stock_log.html', log=log, user=user)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
+@login_required
 def stock_toevoegen():
+    user = current_user.email
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
     if request.method == 'POST': 
@@ -191,11 +250,13 @@ def stock_toevoegen():
         db.session.add(changes)
         db.session.commit()
         flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
-    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen)
+    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, user=user)
 
 @app.route("/boekhouding")
+@login_required
 def boekhouding():
-    return render_template('boekhouding.html')
+    user = current_user.email
+    return render_template('boekhouding.html', user=user)
 
 if __name__ == '__main__':
     app.run()
