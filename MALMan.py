@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, flash, session, redirect
 from flask.ext.mail import Mail
 from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask.ext.login import current_user, login_required
+from flask.ext.principal import Principal, Permission, RoleNeed, identity_loaded, UserNeed
 
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -50,6 +51,20 @@ class User(db.Model, UserMixin):
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
+
+permission_stock = Permission(RoleNeed('stock'))
+
+#load principal extension
+principals = Principal(app)
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+    # Get the user information from the db
+    account = User.query.filter_by(id=identity.name).first()
+    # Update the roles that a user can provide
+    if account:
+        for role in account.roles:
+            identity.provides.add(RoleNeed(role))
 ## end of User Managment
 
 class Dranken(db.Model):
@@ -150,6 +165,7 @@ def stock():
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
 @login_required
+@permission_stock.require(http_exception=403)
 def stock_tellen():
     user = current_user.email
     dranken = Dranken.query.all()
@@ -173,6 +189,7 @@ def stock_tellen():
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 @login_required
+@permission_stock.require(http_exception=403)
 def stock_aanpassen():
     user = current_user.email
     dranken = Dranken.query.all()
@@ -208,6 +225,7 @@ def stock_aanpassen():
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 @login_required
+@permission_stock.require(http_exception=403)
 def stock_aanvullen():
     user = current_user.email
     dranken = Dranken.query.filter_by(josto=True).all()
@@ -241,6 +259,7 @@ def stock_log():
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 @login_required
+@permission_stock.require(http_exception=403)
 def stock_toevoegen():
     user = current_user.email
     drankcats = Drankcat.query.all()

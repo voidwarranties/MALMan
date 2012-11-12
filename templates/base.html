@@ -25,46 +25,51 @@
 			</ul>
 {%- endif -%}
 {%- if category == "account" -%}
-	{% set menu = [ ('/', 'overzicht'),
-		('#', 'mijn gegevens'), 
-		('#', 'mijn rekening'), 
-		('#', 'mijn wachtwoord aanpassen')] %}	
-{%- elif category == "leden" -%}
-	{% set menu = [ ('leden', 'ledenlijst'),
-		('#', 'ledenlijst met niet publieke data (A)'), 
-		('#', 'gegevens aanpassen (A)')] %}
-{%- elif category == "stock" -%}
-	{% set menu = [ ('stock', 'stock weergeven'),
-		('stock_tellen', 'stock tellen (A)'), 
-		('stock_aanpassen', 'stock aanpassen (A)'),
-		('stock_aanvullen', 'stock aanvullen (Josto) (A)'),
-		('stock_log', 'stock logboek (A)'),
-		('stock_toevoegen', 'item toevoegen (A)')] %}
-{%- elif category == "boekhouding" -%}
-	{% set menu = [ ('boekhouding', 'rekeningsstand'),
-		('#', 'transacties bekijken'), 
-		('#', 'aanvraag tot terugbetaling'),
-		('#', 'goedkeuring terugbetalingen (A)'),
-		('#', 'transactie aanpassen (A)')] %}
-{%-	elif category == "login" -%}
-	{% set menu = [ ('login', 'login'),
-		('register', 'register'), 
-		('reset', 'forgot password'),
-		('confirm', 'confirm account'),] %}
-{%- endif %}
 			<ul id="menu" class="cf">
-{%- for href, caption in menu %}
-				<li><a href="{{ href }}">{{ caption }}</a></li>
-{%- endfor %}
+				<li><a href="/">overzicht</a></li>
+				<li><a href="#">mijn gegevens</a></li>
+				<li><a href="#">mijn rekening</a></li>
+				<li><a href="#">mijn wachtwoord aanpassen</a></li>
 			</ul>
+{%- elif category == "leden" -%}			
+			<ul id="menu" class="cf">
+				<li><a href="leden">ledenlijst</a></li>
+				<li><a href="#">ledenlijst met niet publieke data (A)</a></li>
+				<li><a href="#">gegevens aanpassen (A)</a></li>
+			</ul>
+{%- elif category == "stock" -%}
+			<ul id="menu" class="cf">
+				<li><a href="stock">stock weergeven</a></li>
+				<li><a href="stock_tellen">stock tellen (A)</a></li>
+				<li><a href="stock_aanpassen">stock aanpassen (A)</a></li>
+				<li><a href="stock_aanvullen">stock aanvullen (Josto) (A)</a></li>
+				<li><a href="stock_log">stock logboek (A)</a></li>
+				<li><a href="stock_toevoegen">item toevoegen (A)</a></li>
+			</ul>
+{%- elif category == "boekhouding" -%}
+			<ul id="menu" class="cf">
+				<li><a href="boekhouding">rekeningsstand</a></li>
+				<li><a href="#">transacties bekijken</a></li>
+				<li><a href="#">aanvraag tot terugbetaling</a></li>
+				<li><a href="#">goedkeuring terugbetalingen (A)</a></li>
+				<li><a href="#">transactie aanpassen (A)</a></li>
+			</ul>
+{%-	elif category == "login" -%}
+			<ul id="menu" class="cf">
+				<li><a href="login">login</a></li>
+				<li><a href="register">register</a></li>
+				<li><a href="reset">forgot password</a></li>
+				<li><a href="confirm">confirm account</a></li>
+			</ul>
+{%- endif %}
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   	{% if messages %}
-    	<ul>
+    		<ul>
     		{% for category, message in messages %}
     			<li class="{{ category }}">{{ message }}</li>
 			{% endfor %}
-		</ul>
+			</ul>
 	{% endif %}
 {% endwith %}
 
