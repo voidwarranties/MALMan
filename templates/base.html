@@ -9,7 +9,7 @@
 	<body onload="clickMenu('menu')">
 		<div id="wrapper">
 			<div id="header" class="cf">
-				<h1>MALMAN</h1>
+				<a href="/"><h1>MALMAN</h1></a>
 {%- if user -%}
 				<span>ingelogd als {{ user }} (<a href="logout">log out</a>)</span>
 {%- else -%}
@@ -27,14 +27,13 @@
 {%- if category == "account" -%}
 			<ul id="menu" class="cf">
 				<li><a href="/">overzicht</a></li>
-				<li><a href="#">mijn gegevens</a></li>
+				<li><a href="leden_edit_own_account">mijn gegevens wijzigen</a></li>
 				<li><a href="#">mijn rekening</a></li>
 				<li><a href="#">mijn wachtwoord aanpassen</a></li>
 			</ul>
 {%- elif category == "leden" -%}			
 			<ul id="menu" class="cf">
 				<li><a href="leden">ledenlijst</a></li>
-				<li><a href="#">ledenlijst met niet publieke data (A)</a></li>
 				<li><a href="#">gegevens aanpassen (A)</a></li>
 			</ul>
 {%- elif category == "stock" -%}

@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, flash, session, redirect
 from flask.ext.mail import Mail
 from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask.ext.login import current_user, login_required
-from flask.ext.principal import Principal, Permission, RoleNeed, identity_loaded, UserNeed
+from flask.ext.principal import Principal, Permission, RoleNeed, identity_loaded, UserNeed, Need
 
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -37,11 +37,27 @@ class Role(db.Model, RoleMixin):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
+    def __repr__(self):
+        return self.name
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
+    street = db.Column(db.String(255))
+    number = db.Column(db.Integer)
+    bus = db.Column(db.String(255))
+    postalcode = db.Column(db.Integer)
+    gemeente = db.Column(db.String(255))
+    geboortedatum = db.Column(db.DateTime())
+    telephone = db.Column(db.String(255))
+    actief_lid = db.Column(db.Boolean())
+    member_since = db.Column(db.DateTime())
+    membership_dues = db.Column(db.Integer)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
+    show_telephone = db.Column(db.Boolean())
+    show_email = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
@@ -154,7 +170,38 @@ def index():
 @login_required
 def ledenlijst():
     user = current_user.email
-    return render_template('ledenlijst.html', user=user)
+    users = User.query.all()
+    perm_members = Permission(Need('role', 'members')).can()
+    return render_template('ledenlijst.html', users=users, perm_members=perm_members, user=user)
+
+@app.route('/leden_edit_own_account', methods=['GET', 'POST'])
+@login_required
+def leden_edit():
+    user = current_user.email
+    userdata = User.query.filter_by(id=current_user.id).first()
+    if request.method == 'POST':
+        confirmation = aanpassing
+        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
+        for atribute in atributes:
+            var = request.form.get(atribute)
+            # Hack to interpret booleans correctly
+            if var == None:
+                var = False
+            elif var == "True":
+                var = True
+            oldvar = str(getattr(userdata, atribute))
+            if str(var) != oldvar:
+                obj = User.query.get(current_user.id)
+                setattr(obj, atribute, var)
+                db.session.commit()
+                if confirmation != aanpassing:
+                    confirmation += ", "
+                confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
+        if confirmation == aanpassing:
+            flash("Er zijn geen veranderingen door te voeren", "error")
+        else: 
+            flash(confirmation, "confirmation")
+    return render_template('leden_edit_own_account.html', user=user, userdata=userdata)
 
 @app.route("/stock")
 @login_required
@@ -276,6 +323,10 @@ def stock_toevoegen():
 def boekhouding():
     user = current_user.email
     return render_template('boekhouding.html', user=user)
+
+@app.errorhandler(403)
+def forbidden(error):
+    return render_template('403.html'), 403
 
 if __name__ == '__main__':
     app.run()
