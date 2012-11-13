@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% set category = "stock" %}
+{% block title %}stock item toevoegen{% endblock %}
+{% block content %}
+			<form id="stock_toevoegen" method="post" class="cf">
+				<ul>
+					<li class="cf">
+						<label>Naam</label>
+						<input type="text" name="naam" />
+					</li>
+					<li class="cf">
+						<label>Verkoopprijs (vb: 1.25)</label>
+						<input type="text" name="prijs" />
+					</li>
+					<li class="cf">
+						<label>Maximumstock</label>
+						<input type="text" value="0" name="aanvullenTot" />
+					</li>
+					<li class="cf">
+						<label>Categorie</label>
+						<select name="categorieID">
+{% for categorie in categorieen %}
+							<option value="{{ categorie.id }}">{{ categorie.beschrijving }}</option>
+{% endfor %}
+						</select>
+					</li>
+					<li class="cf">
+						<label>Oorsprong</label>
+						<select name="josto">
+{% for oorsprong in oorsprongen %}
+							<option value="{{ id }}">{{ oorsprong.beschrijving }}</option>
+{% endfor %}
+						</select>
+					</li>
+				<input type="submit" name="stock_aanvullen" value="ok!" />
+				<ul>
+			</form>
+{% endblock %}

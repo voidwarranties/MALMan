@@ -12,6 +12,7 @@ except ImportError:
 
 app = Flask(__name__)
 app.config.from_pyfile('MALMan.cfg')
+CSRF_ENABLED = True
 app.secret_key = 'some_secret'
 db = SQLAlchemy(app)
 
@@ -68,7 +69,6 @@ class User(db.Model, UserMixin):
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-permission_stock = Permission(RoleNeed('stock'))
 
 #load principal extension
 principals = Principal(app)
@@ -151,14 +151,15 @@ class Dranklog(db.Model):
     def __repr__(self):
         return '<id %r>' % self.id
 
+    def remove(entry):
+        db.session.delete(entry)
+        db.session.commit()
+
 # create missing tables in db
 # should only be run once, remove this when db is stable
-db.create_all()
+#db.create_all()
 
-aanpassing = "Deze waarden werden aangepast: "
-error = ""
-
-from app import views
+from MALMan import views
 
 if __name__ == '__main__':
     app.run()

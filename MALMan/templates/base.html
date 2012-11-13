@@ -1,0 +1,78 @@
+<html>
+	<head>
+{%- block head %}
+		<title>MALMan -- {% block title -%}{%- endblock -%}</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+		<link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+{%- endblock -%}
+	</head>
+	<body onload="clickMenu('menu')">
+		<div id="wrapper">
+			<div id="header" class="cf">
+				<a href="/"><h1>MALMAN</h1></a>
+{%- if user -%}
+				<span>ingelogd als {{ user }} (<a href="logout">log out</a>)</span>
+{%- else -%}
+				<span>u bent niet ingelogd (<a href="login">log in</a>)</span>
+{%- endif -%}
+			</div>
+{%-	if category != "login" -%}
+			<ul id="menu" class="cf">
+				<li><a href="/">mijn account</a></li>
+				<li><a href="leden">leden</a></li>
+				<li><a href="stock">stock bar</a></li>
+				<li><a href="boekhouding">boekhouding</a></li>
+			</ul>
+{%- endif -%}
+{%- if category == "account" -%}
+			<ul id="menu" class="cf">
+				<li><a href="/">overzicht</a></li>
+				<li><a href="leden_edit_own_account">mijn gegevens wijzigen</a></li>
+				<li><a href="#">mijn rekening</a></li>
+				<li><a href="#">mijn wachtwoord aanpassen</a></li>
+			</ul>
+{%- elif category == "leden" -%}			
+			<ul id="menu" class="cf">
+				<li><a href="leden">ledenlijst</a></li>
+				<li><a href="#">gegevens aanpassen (A)</a></li>
+			</ul>
+{%- elif category == "stock" -%}
+			<ul id="menu" class="cf">
+				<li><a href="stock">stock weergeven</a></li>
+				<li><a href="stock_tellen">stock tellen (A)</a></li>
+				<li><a href="stock_aanpassen">stock aanpassen (A)</a></li>
+				<li><a href="stock_aanvullen">stock aanvullen (Josto) (A)</a></li>
+				<li><a href="stock_log">stock logboek (A)</a></li>
+				<li><a href="stock_toevoegen">item toevoegen (A)</a></li>
+			</ul>
+{%- elif category == "boekhouding" -%}
+			<ul id="menu" class="cf">
+				<li><a href="boekhouding">rekeningsstand</a></li>
+				<li><a href="#">transacties bekijken</a></li>
+				<li><a href="#">aanvraag tot terugbetaling</a></li>
+				<li><a href="#">goedkeuring terugbetalingen (A)</a></li>
+				<li><a href="#">transactie aanpassen (A)</a></li>
+			</ul>
+{%-	elif category == "login" -%}
+			<ul id="menu" class="cf">
+				<li><a href="login">login</a></li>
+				<li><a href="register">register</a></li>
+				<li><a href="reset">forgot password</a></li>
+				<li><a href="confirm">confirm account</a></li>
+			</ul>
+{%- endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  	{% if messages %}
+    		<ul>
+    		{% for category, message in messages %}
+    			<li class="{{ category }}">{{ message }}</li>
+			{% endfor %}
+			</ul>
+	{% endif %}
+{% endwith %}
+
+{% block content %}{%- endblock %}
+		</div>
+	</body>
+</html>

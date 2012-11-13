@@ -1,0 +1,153 @@
+/*General*/
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: #000;
+	list-style: none;
+	}
+.cf:before,.cf:after {
+    content: " ";
+    display: table;
+    height: 0;    
+	overflow: hidden;	
+}
+.cf:after {
+    clear: both;
+}
+a[href^="#"] {
+	color: #F00;
+}
+
+/* tables */
+table {
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+}
+table th {
+	background-color: #DDD;
+	margin: 4px;
+	padding:4px;
+}
+td {
+	padding: 4px;
+}
+tr {
+	border-bottom: 1px solid #DDD;
+}
+tr:hover {
+	background-color: #F7F7F7;
+}
+.headerSortUp {
+	background-image: url(asc.gif);
+}
+.headerSortDown {
+	background-image: url(desc.gif);
+}
+.headerSortDown, .headerSortUp {
+	background-color: #AAA;
+	background-repeat: no-repeat;
+	background-position: center right;
+}
+
+
+/*Laying out the big blocks*/
+#wrapper {
+	margin: 30px; 
+	padding: 5px;
+	border: 1px solid #AAA;
+}
+#wrapper > * {
+	margin-bottom:5px;
+}
+
+/*header*/
+#header h1{
+	float:left;
+}
+#header span{
+	float:right;
+}
+
+
+/*menu*/
+#menu {
+	list-style: none;
+	background-color: #DDD;
+}
+#menu li {
+	float: left;
+	margin: 5px;
+}
+
+
+/*messages*/
+.confirmation, .success {
+	background-color: #DDFFDD;
+	border: 1px solid #00FF00;
+	padding: 5px;
+}
+.error, .message {
+	background-color: #FFDDDD;
+	border: 1px solid #FF0000;
+	padding: 5px;
+}
+
+
+/*forms*/
+form {
+	/*width: 200px;*/
+	border: 1px solid #AAA;
+	padding: 5px;
+}
+form p {
+	border-bottom: 1px solid #CCC;
+	padding-bottom: 1px;
+	margin-bottom: 4px;
+}
+label {
+	width: 100px;
+	/*float:left;*/
+	}
+input {
+	float: right;
+	text-align: right;
+	margin-left: 5px;
+	border: 1px solid #CCC;
+	}
+input[type="text"] {
+	/*width:40px;*/
+}
+table input[type="text"] {
+	width:100%;
+}
+select {
+	float: right;
+	margin-left: 5px;
+}
+input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+}
+input[type="submit"] {
+	width: 100%;
+	text-align: center;
+}
+.empty {
+	border: none;
+	padding: 0;
+	margin:0;
+}
+.revert { 
+    background: url(/static/revert.png) 0px 0px no-repeat;
+	height: 50px;
+	width: 50px !important;
+	color: transparent;
+}
+.modify { 
+    background: url(/static/edit.gif) 0px 0px no-repeat;
+	height: 20px;
+	width: 20px !important;
+	color: transparent;
+}

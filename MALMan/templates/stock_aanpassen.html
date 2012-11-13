@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% set category = "stock" %}
+{% block title %}stock aanpassen{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+<script type="text/javascript">
+		$(function() { $("#drankenlijst").tablesorter(); } ); 
+</script>
+{% endblock %}
+{% block content %}
+<form id="stock_aanpassen" method="POST" class="cf">
+	<table id="drankenlijst">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>Naam</th>
+				<th>Verkoopprijs</th>
+				<th>Aantal in stock</th>
+				<th>Minimale stock</th>
+				<th>Maximale stock</th>
+				<th>Categorie</th>
+				<th>Oorsprong</th>
+			</tr>
+		</thead>
+		<tbody>
+{% for entry in lijst %}
+			<tr>
+				<td>
+					{{ entry.id }}
+					<input type="hidden" name="ind[]" value="{{ entry.id }}">
+				</td>
+				<td>
+					<input type="text" value="{{ entry.naam }}" name="naam_{{ entry.id }}" />
+				</td>
+				<td>
+					<input type="text" value="{{ entry.prijs }}" name="prijs_{{ entry.id }}" />
+				</td>
+				<td>{{ entry.stock }}</td>
+				<td>
+					<input type="text" value="0" name="minStock_{{ entry.id }}" />
+				</td>
+				<td>
+					<input type="text" value="{{ entry.aanvullenTot }}" name="aanvullenTot_{{ entry.id }}" />
+				</td>
+				<td>
+					<select name="categorieID_{{ entry.id }}">
+{% for categorie in categorieen %}
+							<option value="{{ categorie.id }}"{% if categorie.id == entry.categorieID %} selected="selected"{% endif %}>{{ categorie.beschrijving }}</option>
+{% endfor %}
+					</select>
+				</td>
+				<td>
+					<select name="josto_{{ entry.id }}">
+{% for oorsprong in oorsprongen %}
+							<option value="{{ id }}">{{ oorsprong.beschrijving }}</option>
+{% endfor %}
+					</select>
+				</td>
+			</tr>
+{% endfor %}
+		</tbody>
+	</table>
+	<input type="submit" name="stock_aanpassen" value="ok!" />
+</form>
+{% endblock %}
