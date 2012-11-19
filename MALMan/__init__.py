@@ -1,7 +1,7 @@
 import sys
 from flask import Flask, render_template, request, flash, session, redirect
 from flask.ext.mail import Mail
-from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
+from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask.ext.login import current_user, login_required
 from flask.ext.principal import Principal, Permission, RoleNeed, identity_loaded, UserNeed, Need
 
@@ -160,6 +160,3 @@ class Dranklog(db.Model):
 #db.create_all()
 
 from MALMan import views
-
-if __name__ == '__main__':
-    app.run()

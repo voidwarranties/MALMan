@@ -1,6 +1,9 @@
 from MALMan import app, User, Dranken, Drankcat, stock_oorsprong, Dranklog, db
 from flask import render_template, request, redirect, flash
 from flask.ext.login import current_user, login_required
+from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
+from flask_security.forms import ConfirmRegisterForm
+from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, BooleanField, EqualTo, Email, ValidationError, Length, validators
 from flask.ext.principal import Principal, Permission, RoleNeed, Need
 try:
     from flaskext.sqlalchemy import SQLAlchemy
