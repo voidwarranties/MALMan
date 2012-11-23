@@ -1,8 +1,4 @@
-updating the register form with additional fields and processing them
-
 editting other accounts (including giving them permissions)
-
-getting a user's permissions the right way in jinja2 (check the overview of the members, it is a raw object)
 
 client side form validation
 

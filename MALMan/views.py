@@ -1,4 +1,4 @@
-from MALMan import app, User, Dranken, Drankcat, stock_oorsprong, Dranklog, db
+from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db
 from flask import render_template, request, redirect, flash
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -9,8 +9,13 @@ try:
     from flaskext.sqlalchemy import SQLAlchemy
 except ImportError:
     from flask_sqlalchemy import SQLAlchemy
+from flask import current_app
+from werkzeug.local import LocalProxy
+_datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
 permission_stock = Permission(RoleNeed('stock'))
+permission_members = Permission(RoleNeed('members'))
+
 
 aanpassing = "Deze waarden werden aangepast: "
 error = ""
@@ -33,7 +38,7 @@ def ledenlijst():
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
 @login_required
-def leden_edit():
+def leden_edit_own():
     user = current_user.email
     userdata = User.query.filter_by(id=current_user.id).first()
     if request.method == 'POST':
@@ -59,6 +64,66 @@ def leden_edit():
         else: 
             flash(confirmation, "confirmation")
     return render_template('leden_edit_own_account.html', user=user, userdata=userdata)
+
+@app.route('/leden_edit_<userid>', methods=['GET', 'POST'])
+@login_required
+@permission_members.require(http_exception=403)
+def leden_edit(userid):
+    user = current_user
+    userdata = User.query.filter_by(id=current_user.id).first()
+    roles = Role.query.all()
+    if request.method == 'POST':
+        confirmation = aanpassing
+        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
+        for atribute in atributes:
+            var = request.form.get(atribute)
+            # Hack to interpret booleans correctly
+            if var == None:
+                var = False
+            elif var == "True":
+                var = True
+            oldvar = str(getattr(userdata, atribute))
+            if str(var) != oldvar:
+                obj = User.query.get(userid)
+                setattr(obj, atribute, var)
+                db.session.commit()
+                if confirmation != aanpassing:
+                    confirmation += ", "
+                confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
+        for atribute in ['stock','members']:
+            var = request.form.get('perm_' + atribute)
+            # Hack to interpret booleans correctly
+            if var == None:
+                var = False
+            else:
+                var = True
+            if atribute in userdata.roles:
+                oldvar = True
+            else:
+                oldvar = False
+            if var != oldvar:
+                if str(var) == "True":
+#                    changes = roles_users(userid, atribute)
+#                    db.session.add(changes)
+#                    db.session.commit()
+#    def _prepare_role_modify_args(self, user, role):
+#        role = role.name if isinstance(role, self.role_model) else role
+#        return self.find_user(email=user.email), self.find_role(role)
+ #                   user, role = self._prepare_role_modify_args(user, role)
+                    role = Role.query.filter_by(name=atribute).first()
+                    user.roles.append(role)
+
+                #else:
+                #    changes = roles_users.query.filter_by(user_id=userid).filter_by(role_id=atribute).first()
+                #    roles_users.remove(changes)
+                if confirmation != aanpassing:
+                    confirmation += ", "
+                confirmation += "toggled permission for " + atribute
+        if confirmation == aanpassing:
+            flash("Er zijn geen veranderingen door te voeren", "error")
+        else: 
+            flash(confirmation, "confirmation")
+    return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
 
 @app.route("/stock")
 @login_required

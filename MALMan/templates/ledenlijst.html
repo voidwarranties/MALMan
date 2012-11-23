@@ -25,23 +25,29 @@
 		</tr>
 	</thead>
 	<tbody>
-{% for user in users %}
+{%- for user in users %}
 		<tr>
 			<td>{{ user.name }}</td>
 			<td>{{ user.geboortedatum }}</td>
 			<td>
-				{% if user.show_email or perm_members %}{{ user.email }}{% else %} hidden {% endif %}
-				{% if not user.show_email and perm_members %} (hidden){% endif %}
+				{%- if user.show_email or perm_members -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
+				{%- if not user.show_email and perm_members -%} (hidden){%- endif -%}
 			</td>
 			<td>
-				{% if user.show_telephone or perm_members %}{{ user.telephone }}{% else %} hidden {% endif %}
-				{% if not user.show_telephone and perm_members %} (hidden){% endif %}
+				{%- if user.show_telephone or perm_members -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
+				{%- if not user.show_telephone and perm_members -%} (hidden){%- endif -%}
 			</td>
 			<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</td>
 			<td>{{ user.member_since }}</td>
-			<td>{{ user.roles }}</td>
+			<td>{%- set i = user.roles|length -%}
+				{%- for perm in user.roles -%}
+					{{perm}}
+					{%- if i > 1 -%},{%- endif -%}
+					{%- set i = i - 1 -%}
+				{%- endfor -%}
+			</td>
 			<td>€{{ user.membership_dues }}</td>
-			{% if perm_members %}<td><a href="#"><img src="static/edit.gif" \></a></td>{% endif %}
+			{% if perm_members %}<td><a href="leden_edit_{{user.id}}"><img src="static/edit.gif" \></a></td>{% endif %}
 		</tr>
 {% endfor %}
 	</tbody>

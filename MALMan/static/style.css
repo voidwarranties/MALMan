@@ -105,6 +105,7 @@ form p {
 	border-bottom: 1px solid #CCC;
 	padding-bottom: 1px;
 	margin-bottom: 4px;
+	clear:both;
 }
 label {
 	width: 100px;

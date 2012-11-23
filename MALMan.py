@@ -28,9 +28,20 @@ app.config['DEFAULT_MAIL_SENDER'] = 'MALMan@voidwarranties.be'
 mail = Mail(app)
 
 # Define models
-roles_users = db.Table('roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+#roles_users = db.Table('roles_users',
+#        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+#        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+
+class roles_users(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('role.id'))
+
+    def __init__(self, user_id, role_id):
+        self.user_id = user_id
+        self.role_id = role_id
+
 
 class Role(db.Model, RoleMixin):
     id = db.Column(db.Integer(), primary_key=True)
