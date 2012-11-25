@@ -1,4 +1,4 @@
-from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db
+from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
 from flask import render_template, request, redirect, flash
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -16,8 +16,7 @@ _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 permission_stock = Permission(RoleNeed('stock'))
 permission_members = Permission(RoleNeed('members'))
 
-
-aanpassing = "Deze waarden werden aangepast: "
+aanpassing = "These values were updated: "
 error = ""
 
 @app.route("/")
@@ -101,29 +100,36 @@ def leden_edit(userid):
                 oldvar = True
             else:
                 oldvar = False
+            # Only update changed values
             if var != oldvar:
-                if str(var) == "True":
-#                    changes = roles_users(userid, atribute)
-#                    db.session.add(changes)
-#                    db.session.commit()
-#    def _prepare_role_modify_args(self, user, role):
-#        role = role.name if isinstance(role, self.role_model) else role
-#        return self.find_user(email=user.email), self.find_role(role)
- #                   user, role = self._prepare_role_modify_args(user, role)
-                    role = Role.query.filter_by(name=atribute).first()
-                    user.roles.append(role)
-
-                #else:
-                #    changes = roles_users.query.filter_by(user_id=userid).filter_by(role_id=atribute).first()
-                #    roles_users.remove(changes)
-                if confirmation != aanpassing:
-                    confirmation += ", "
-                confirmation += "toggled permission for " + atribute
+                #check if we are adding or removing permissions
+                if var:
+                    ## add permission
+                    # role = Role.query.filter_by(name=atribute).first()
+                    # user_datastore.add_role_to_user(userdata, role)
+                    # confirmation
+                    if confirmation != aanpassing:
+                        confirmation += ", "
+                    confirmation += "added permission for " + atribute
+                else:
+                    ## remove permission
+                    # changes = roles_users.query.filter_by(user_id=userid).filter_by(role_id=atribute).first()
+                    # roles_users.remove(changes)
+                    if confirmation != aanpassing:
+                        confirmation += ", "
+                    confirmation += "removed permission for " + atribute
         if confirmation == aanpassing:
             flash("Er zijn geen veranderingen door te voeren", "error")
         else: 
             flash(confirmation, "confirmation")
     return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
+
+# test functions in user_datastore
+@app.route("/test")
+def test():
+    userdata = User.query.filter_by(id='4')
+    user_datastore.delete_user(userdata)
+    return 'test'
 
 @app.route("/stock")
 @login_required
