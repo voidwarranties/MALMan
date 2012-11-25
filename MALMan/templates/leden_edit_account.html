@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set category = "leden" %}
+{% block title %}leden-modify{% endblock %}
+{% block content %}
+<form id="leden_edit_account.html" method="POST" class="cf">
+	<h2>Personal data</h2>
+	<p class="cf"><label>name</label><input type="text" value="{{ userdata.name }}" name="name" \></p>
+	<p class="cf"><label>date of birth</label><input type="text" value="{{ userdata.geboortedatum }}" name="geboortedatum" \></p>
+	<p class="cf"><label>email</label><input type="text" value="{{ userdata.email }}" name="email" \></p>
+	<p class="cf"><label>telephone</label><input type="text" value="{{ userdata.telephone }}" name="telephone" \></p>
+	<p class="cf">
+		<label>address</label>
+		<input type="text" value="{{ userdata.gemeente }}" name="gemeente" \>
+		<input type="text" value="{{ userdata.postalcode }}" name="postalcode" \> 
+		<input type="text" value="{{ userdata.bus }}" name="bus" \>
+		<input type="text" value="{{ userdata.number }}" name="number" \> 
+		<input type="text" value="{{ userdata.street }}" name="street" \> 
+	</p>
+	<h2>Privacy settings</h2>
+	<p class="cf"><label>show email</label><input type="checkbox" name="show_email" value="True" {% if userdata.show_email %} checked {%endif%} \></p>
+	<p class="cf"><label>show telephone</label><input type="checkbox" name="show_telephone" value="True" {% if userdata.show_telephone %} checked {%endif%} \></p>
+	<h2>Permissions</h2>
+	{% for role in roles %}
+		<p class="cf"><label>{{ role.name }}</label><input type="checkbox" name="perm_{{ role.name }}" value="True" 
+			{%- for perm in userdata.roles -%}
+				{%- if role == perm %} checked {% endif %}
+			{%- endfor -%} 
+		\></p>
+		
+	{% endfor %}
+	<input type="submit" value="pas de gegevens aan!" />
+</form>
+{% endblock %}
