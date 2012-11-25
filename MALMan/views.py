@@ -68,8 +68,8 @@ def leden_edit_own():
 @login_required
 @permission_members.require(http_exception=403)
 def leden_edit(userid):
-    user = current_user
-    userdata = User.query.filter_by(id=current_user.id).first()
+    user = current_user.email
+    userdata = User.query.filter_by(id=userid).first()
     roles = Role.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
@@ -89,14 +89,14 @@ def leden_edit(userid):
                 if confirmation != aanpassing:
                     confirmation += ", "
                 confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
-        for atribute in ['stock','members']:
-            var = request.form.get('perm_' + atribute)
+        for permission_field in roles :
+            var = request.form.get('perm_' + str(permission_field))
             # Hack to interpret booleans correctly
             if var == None:
                 var = False
             else:
                 var = True
-            if atribute in userdata.roles:
+            if permission_field in userdata.roles:
                 oldvar = True
             else:
                 oldvar = False
@@ -104,32 +104,27 @@ def leden_edit(userid):
             if var != oldvar:
                 #check if we are adding or removing permissions
                 if var:
-                    ## add permission
-                    # role = Role.query.filter_by(name=atribute).first()
-                    # user_datastore.add_role_to_user(userdata, role)
+                    # add permission
+                    role = Role.query.filter_by(name=permission_field).first()
+                    user_datastore.add_role_to_user(userdata, role)
+                    db.session.commit()
                     # confirmation
                     if confirmation != aanpassing:
                         confirmation += ", "
-                    confirmation += "added permission for " + atribute
+                    confirmation += "added permission for " + str(permission_field)
                 else:
-                    ## remove permission
-                    # changes = roles_users.query.filter_by(user_id=userid).filter_by(role_id=atribute).first()
-                    # roles_users.remove(changes)
+                    # remove permission
+                    role = Role.query.filter_by(name=permission_field).first()
+                    user_datastore.remove_role_from_user(userdata, role)
+                    db.session.commit()
                     if confirmation != aanpassing:
                         confirmation += ", "
-                    confirmation += "removed permission for " + atribute
+                    confirmation += "removed permission for " + str(permission_field)
         if confirmation == aanpassing:
             flash("Er zijn geen veranderingen door te voeren", "error")
         else: 
             flash(confirmation, "confirmation")
     return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
-
-# test functions in user_datastore
-@app.route("/test")
-def test():
-    userdata = User.query.filter_by(id='4')
-    user_datastore.delete_user(userdata)
-    return 'test'
 
 @app.route("/stock")
 @login_required
