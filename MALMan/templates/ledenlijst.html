@@ -31,11 +31,11 @@
 			<td>{{ user.geboortedatum }}</td>
 			<td>
 				{%- if user.show_email or perm_members -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
-				{%- if not user.show_email and perm_members -%} (hidden){%- endif -%}
+				{%- if not user.show_email and perm_members %} (hidden){%- endif -%}
 			</td>
 			<td>
 				{%- if user.show_telephone or perm_members -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
-				{%- if not user.show_telephone and perm_members -%} (hidden){%- endif -%}
+				{%- if not user.show_telephone and perm_members %} (hidden){%- endif -%}
 			</td>
 			<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</td>
 			<td>{{ user.member_since }}</td>

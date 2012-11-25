@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% set category = "leden" %}
+{% block title %}leden{% endblock %}
+{% block content %}
+<form action="new_members" id="new_members" method="POST" class="cf">
+{%- for user in users %}
+	<dl>
+		<dt>name: </dt><dd>{{ user.name }}</dd>
+		<dt>date of birth: </dt><dd>{{ user.geboortedatum }}</dd>
+		<dt>email: </dt><dd>{{- user.email -}}</dd>
+		<dt>telephone: </dt><dd>{{- user.telephone -}}</dd>
+		<dt>address: </dt><dd>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</dd>
+		<dt>registration date: </dt><dd>{{ user.member_since }}</dd>
+    	<dt>Activate User: </dt><dd><input type="checkbox" name="activate_{{ user.id }}" /></dd>
+    	<p>
+	</dl>
+{% endfor %}
+	<input type="submit" value="activate!" />
+</form>
+
+
+{% endblock %}

@@ -26,8 +26,10 @@
 				{%- if role == perm %} checked {% endif %}
 			{%- endfor -%} 
 		\></p>
-		
 	{% endfor %}
+	<h2>Membership</h2>
+		<p class="cf"><label>is an active member</label><input type="checkbox" name="actief_lid" value="True" {% if userdata.actief_lid %} checked {%endif%} \></p>
+		<p class="cf"><label>Monthly dues (€)</label><input type="text" value="{{ userdata.membership_dues }}" name="membership_dues" \></p>
 	<input type="submit" value="pas de gegevens aan!" />
 </form>
 {% endblock %}

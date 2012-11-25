@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, flash
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask_security.forms import ConfirmRegisterForm
-from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, BooleanField, EqualTo, Email, ValidationError, Length, validators
+from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, NumberRange, BooleanField, EqualTo, Email, ValidationError, Length, validators
 from flask.ext.principal import Principal, Permission, RoleNeed, Need
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -17,6 +17,8 @@ permission_stock = Permission(RoleNeed('stock'))
 permission_members = Permission(RoleNeed('members'))
 
 aanpassing = "These values were updated: "
+def nothingchanged():
+    flash("No changes were specified", "error")
 error = ""
 
 @app.route("/")
@@ -31,9 +33,37 @@ def index():
 @login_required
 def ledenlijst():
     user = current_user.email
-    users = User.query.all()
+    users = User.query.filter_by(actief_lid='1')
     perm_members = Permission(Need('role', 'members')).can()
     return render_template('ledenlijst.html', users=users, perm_members=perm_members, user=user)
+
+@app.route("/new_members", methods=['GET', 'POST'])
+@login_required
+@permission_members.require(http_exception=403)
+def new_members():
+    user = current_user.email
+    users = User.query.filter_by(actief_lid='0')
+    if request.method == 'POST':
+        confirmation = ''
+        for user in users:
+            var = request.form.get('activate_' + str(user.id))
+            # Hack to interpret booleans correctly
+            if var == None:
+                var = False
+            else:
+                var = True
+            oldvar = str(user.actief_lid)
+            if var != user.actief_lid:
+                setattr(user, 'actief_lid', True)
+                db.session.commit()
+                if confirmation != '':
+                    confirmation += ", "
+                confirmation += user.email + " was made an active member"
+        if confirmation == '':
+            nothingchanged()
+        else: 
+            flash(confirmation, "confirmation")
+    return render_template('new_members.html', users=users, user=user)
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
 @login_required
@@ -59,7 +89,7 @@ def leden_edit_own():
                     confirmation += ", "
                 confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
         if confirmation == aanpassing:
-            flash("Er zijn geen veranderingen door te voeren", "error")
+            nothingchanged()
         else: 
             flash(confirmation, "confirmation")
     return render_template('leden_edit_own_account.html', user=user, userdata=userdata)
@@ -73,7 +103,7 @@ def leden_edit(userid):
     roles = Role.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
-        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
+        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
         for atribute in atributes:
             var = request.form.get(atribute)
             # Hack to interpret booleans correctly
@@ -121,7 +151,7 @@ def leden_edit(userid):
                         confirmation += ", "
                     confirmation += "removed permission for " + str(permission_field)
         if confirmation == aanpassing:
-            flash("Er zijn geen veranderingen door te voeren", "error")
+            nothingchanged()
         else: 
             flash(confirmation, "confirmation")
     return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
@@ -152,7 +182,7 @@ def stock_tellen():
                     confirmation += ", "
                 confirmation += "stock " + drankobject.naam + " = " + request.form["amount_" + ind]
         if confirmation == aanpassing:
-            flash("Er zijn geen veranderingen door te voeren", "error")
+            nothingchanged()
         else:
             flash(confirmation, "confirmation")
     return render_template('stock_tellen.html', lijst=dranken, user=user)
@@ -188,7 +218,7 @@ def stock_aanpassen():
                     else:
                         confirmation += atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")"
         if confirmation == aanpassing:
-            flash("Er zijn geen veranderingen door te voeren", "error")
+            nothingchanged()
         else: 
             flash(confirmation, "confirmation")
     return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, user=user)
@@ -211,7 +241,7 @@ def stock_aanvullen():
                     confirmation += ", "
                 confirmation += "stock " + drankopbject.naam + " = +" + request.form["amount_" + ind]
         if confirmation == aanpassing:
-            flash('Er zijn geen veranderingen door te voeren', 'error')
+            nothingchanged()
         else:
             flash(confirmation, 'confirmation')
     return render_template('stock_aanvullen.html', lijst=dranken, user=user)
