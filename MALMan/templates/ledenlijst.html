@@ -39,10 +39,13 @@
 			</td>
 			<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</td>
 			<td>{{ user.member_since }}</td>
-			<td>{%- set i = user.roles|length -%}
-				{%- for perm in user.roles -%}
-					{{perm}}
-					{%- if i > 1 -%},{%- endif -%}
+			<td>
+				{%- set i = user.roles|length -%}
+				{%- for perm in user.roles|sort -%}
+					{% if perm != 'membership' %}
+						{{perm}}
+						{%- if i > 1 -%},{%- endif -%}
+					{% endif %}
 					{%- set i = i - 1 -%}
 				{%- endfor -%}
 			</td>

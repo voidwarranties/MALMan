@@ -37,7 +37,7 @@ def permission_required(*roles):
 
 @app.route("/")
 def index():
-    if current_user and current_user.is_active() and User.query.filter_by(id=current_user.id).first().actief_lid:
+    if current_user and current_user.is_active() and User.query.get(current_user.id).actief_lid:
         # is an aproved member
         user = current_user.email
         return render_template('account.html', user=user)
@@ -88,7 +88,7 @@ def new_members():
 @login_required
 def leden_edit_own():
     user = current_user.email
-    userdata = User.query.filter_by(id=current_user.id).first()
+    userdata = User.query.get(current_user.id)
     if request.method == 'POST':
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
@@ -117,7 +117,7 @@ def leden_edit_own():
 @permission_required('membership', 'members')
 def leden_edit(userid):
     user = current_user.email
-    userdata = User.query.filter_by(id=userid).first()
+    userdata = User.query.get(userid)
     roles = Role.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
@@ -190,7 +190,7 @@ def stock_tellen():
     if request.method == 'POST':
         confirmation = aanpassing
         for ind in request.form.getlist('check[]'):
-            drankobject = Dranken.query.filter_by(id=ind).first()
+            drankobject = Dranken.query.get(ind)
             # only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
             if int(request.form["amount_" + ind]) != int(drankobject.stock):
                 changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankobject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
@@ -215,7 +215,7 @@ def stock_aanpassen():
     if request.method == 'POST':
         confirmation = aanpassing
         for ind in request.form.getlist('ind[]'):
-            drankobject = Dranken.query.filter_by(id=ind).first()
+            drankobject = Dranken.query.get(ind)
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
             atributes = ['naam', 'prijs', 'aanvullenTot', 'categorieID'] #josto is not implemented jet
             for atribute in atributes:
@@ -229,8 +229,8 @@ def stock_aanpassen():
                     if atribute == "naam":
                         confirmation += oudewaarde + " => " + request.form["naam_" + ind]
                     elif atribute == "categorieID":
-                        newcat = Drankcat.query.filter_by(id=request.form[atribute + "_" + ind]).first().beschrijving
-                        oldcat = Drankcat.query.filter_by(id=oudewaarde).first().beschrijving
+                        newcat = Drankcat.query.get(request.form[atribute + "_" + ind]).beschrijving
+                        oldcat = Drankcat.query.get(oudewaarde).beschrijving
                         confirmation += "categorie" + " " + drankobject.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")"
                     else:
                         confirmation += atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")"
@@ -248,7 +248,7 @@ def stock_aanvullen():
     if request.method == 'POST': 
         confirmation = aanpassing
         for ind in request.form.getlist('check[]'):
-            drankopbject = Dranken.query.filter_by(id=ind).first()
+            drankopbject = Dranken.query.get(ind)
             if int(request.form["amount_" + ind]) != 0:
                 changes = Dranklog(ind, request.form["amount_" + ind], 0, 0, "aanvulling") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
@@ -267,7 +267,7 @@ def stock_aanvullen():
 def stock_log():
     user = current_user.email
     if request.method == 'POST': 
-        changes = Dranklog.query.filter_by(id=request.form["revert"]).first()
+        changes = Dranklog.query.get(request.form["revert"])
         Dranklog.remove(changes)
     log = Dranklog.query.all()
     return render_template('stock_log.html', log=log, user=user)
