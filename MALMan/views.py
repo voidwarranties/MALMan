@@ -11,26 +11,46 @@ except ImportError:
     from flask_sqlalchemy import SQLAlchemy
 from flask import current_app
 from werkzeug.local import LocalProxy
+from functools import wraps
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
-permission_stock = Permission(RoleNeed('stock'))
-permission_members = Permission(RoleNeed('members'))
-
 aanpassing = "These values were updated: "
+error = ""
 def nothingchanged():
     flash("No changes were specified", "error")
-error = ""
+
+def permission_required(*roles):
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            perms = [Permission(RoleNeed(role)) for role in roles]
+            for role in roles:
+                if not Permission(RoleNeed(role)).can():
+                    if role == 'member':
+                       flash ('You need to be aproved as a member to access this resource', 'error') 
+                    else:
+                        flash('You need the permission \'' + str(role) + '\' to access this resource.', 'error')
+                    return redirect(request.referrer or '/')
+            return fn(*args, **kwargs)
+        return decorated_view
+    return wrapper
 
 @app.route("/")
 def index():
-    if current_user.is_active() == True:
+    if current_user and current_user.is_active() and User.query.filter_by(id=current_user.id).first().actief_lid:
+        # is an aproved member
         user = current_user.email
         return render_template('account.html', user=user)
+    elif current_user and current_user.is_active():
+        # is logged in but not aproved yet
+        user = current_user.email
+        return render_template('waiting_aproval.html', user=user)
     else:
+        # is not logged in
         return redirect('login')
 
 @app.route("/leden")
-@login_required
+@permission_required('membership', 'members')
 def ledenlijst():
     user = current_user.email
     users = User.query.filter_by(actief_lid='1')
@@ -38,8 +58,7 @@ def ledenlijst():
     return render_template('ledenlijst.html', users=users, perm_members=perm_members, user=user)
 
 @app.route("/new_members", methods=['GET', 'POST'])
-@login_required
-@permission_members.require(http_exception=403)
+@permission_required('membership', 'members')
 def new_members():
     user = current_user.email
     users = User.query.filter_by(actief_lid='0')
@@ -95,8 +114,7 @@ def leden_edit_own():
     return render_template('leden_edit_own_account.html', user=user, userdata=userdata)
 
 @app.route('/leden_edit_<userid>', methods=['GET', 'POST'])
-@login_required
-@permission_members.require(http_exception=403)
+@permission_required('membership', 'members')
 def leden_edit(userid):
     user = current_user.email
     userdata = User.query.filter_by(id=userid).first()
@@ -119,37 +137,38 @@ def leden_edit(userid):
                 if confirmation != aanpassing:
                     confirmation += ", "
                 confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
-        for permission_field in roles :
-            var = request.form.get('perm_' + str(permission_field))
-            # Hack to interpret booleans correctly
-            if var == None:
-                var = False
-            else:
-                var = True
-            if permission_field in userdata.roles:
-                oldvar = True
-            else:
-                oldvar = False
-            # Only update changed values
-            if var != oldvar:
-                #check if we are adding or removing permissions
-                if var:
-                    # add permission
-                    role = Role.query.filter_by(name=permission_field).first()
-                    user_datastore.add_role_to_user(userdata, role)
-                    db.session.commit()
-                    # confirmation
-                    if confirmation != aanpassing:
-                        confirmation += ", "
-                    confirmation += "added permission for " + str(permission_field)
+        for permission_field in roles:
+            if permission_field != "membership":
+                var = request.form.get('perm_' + str(permission_field))
+                # Hack to interpret booleans correctly
+                if var == None:
+                    var = False
                 else:
-                    # remove permission
-                    role = Role.query.filter_by(name=permission_field).first()
-                    user_datastore.remove_role_from_user(userdata, role)
-                    db.session.commit()
-                    if confirmation != aanpassing:
-                        confirmation += ", "
-                    confirmation += "removed permission for " + str(permission_field)
+                    var = True
+                if permission_field in userdata.roles:
+                    oldvar = True
+                else:
+                    oldvar = False
+                # Only update changed values
+                if var != oldvar:
+                    #check if we are adding or removing permissions
+                    if var:
+                        # add permission
+                        role = Role.query.filter_by(name=permission_field).first()
+                        user_datastore.add_role_to_user(userdata, role)
+                        db.session.commit()
+                        # confirmation
+                        if confirmation != aanpassing:
+                            confirmation += ", "
+                        confirmation += "added permission for " + str(permission_field)
+                    else:
+                        # remove permission
+                        role = Role.query.filter_by(name=permission_field).first()
+                        user_datastore.remove_role_from_user(userdata, role)
+                        db.session.commit()
+                        if confirmation != aanpassing:
+                            confirmation += ", "
+                        confirmation += "removed permission for " + str(permission_field)
         if confirmation == aanpassing:
             nothingchanged()
         else: 
@@ -157,15 +176,14 @@ def leden_edit(userid):
     return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
 
 @app.route("/stock")
-@login_required
+@permission_required('membership')
 def stock():
     user = current_user.email
     dranken = Dranken.query.all()
     return render_template('stock.html', lijst=dranken, user=user)
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
-@login_required
-@permission_stock.require(http_exception=403)
+@permission_required('membership', 'stock')
 def stock_tellen():
     user = current_user.email
     dranken = Dranken.query.all()
@@ -188,8 +206,7 @@ def stock_tellen():
     return render_template('stock_tellen.html', lijst=dranken, user=user)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
-@login_required
-@permission_stock.require(http_exception=403)
+@permission_required('membership', 'stock')
 def stock_aanpassen():
     user = current_user.email
     dranken = Dranken.query.all()
@@ -224,8 +241,7 @@ def stock_aanpassen():
     return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, user=user)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
-@login_required
-@permission_stock.require(http_exception=403)
+@permission_required('membership', 'stock')
 def stock_aanvullen():
     user = current_user.email
     dranken = Dranken.query.filter_by(josto=True).all()
@@ -247,7 +263,7 @@ def stock_aanvullen():
     return render_template('stock_aanvullen.html', lijst=dranken, user=user)
 
 @app.route("/stock_log", methods=['GET', 'POST'])
-@login_required
+@permission_required('membership', 'stock')
 def stock_log():
     user = current_user.email
     if request.method == 'POST': 
@@ -257,8 +273,7 @@ def stock_log():
     return render_template('stock_log.html', log=log, user=user)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
-@login_required
-@permission_stock.require(http_exception=403)
+@permission_required('membership', 'stock')
 def stock_toevoegen():
     user = current_user.email
     drankcats = Drankcat.query.all()
@@ -271,11 +286,7 @@ def stock_toevoegen():
     return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, user=user)
 
 @app.route("/boekhouding")
-@login_required
+@permission_required('membership')
 def boekhouding():
     user = current_user.email
     return render_template('boekhouding.html', user=user)
-
-@app.errorhandler(403)
-def forbidden(error):
-    return render_template('403.html'), 403

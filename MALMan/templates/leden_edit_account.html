@@ -21,11 +21,13 @@
 	<p class="cf"><label>show telephone</label><input type="checkbox" name="show_telephone" value="True" {% if userdata.show_telephone %} checked {%endif%} \></p>
 	<h2>Permissions</h2>
 	{% for role in roles %}
+		{% if role != "membership" %}
 		<p class="cf"><label>{{ role.name }}</label><input type="checkbox" name="perm_{{ role.name }}" value="True" 
 			{%- for perm in userdata.roles -%}
 				{%- if role == perm %} checked {% endif %}
 			{%- endfor -%} 
 		\></p>
+		{% endif %}
 	{% endfor %}
 	<h2>Membership</h2>
 		<p class="cf"><label>is an active member</label><input type="checkbox" name="actief_lid" value="True" {% if userdata.actief_lid %} checked {%endif%} \></p>
