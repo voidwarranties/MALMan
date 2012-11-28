@@ -181,9 +181,6 @@ class NewFormFields():
     gemeente = TextField('gemeente', [validators.Length(min=1, max=25)])
     geboortedatum = TextField('geboortedatum', [validators.Length(min=1, max=25)])
     telephone = TextField('telephone', [validators.Length(min=1, max=25)])
-    actief_lid = BooleanField('actief_lid')
-    membership_dues = TextField('membership_dues', [validators.Length(min=1, max=25)])
-    member_since = TextField('member_since', [validators.Length(min=1, max=25)])
     show_telephone = BooleanField('show_telephone')
     show_email = BooleanField('show_email')   
 
@@ -200,9 +197,6 @@ class ConfirmRegisterForm(Form, RegisterFormMixin, UniqueEmailFormMixin, NewPass
        	    gemeente=self.gemeente.data,
            	geboortedatum=self.geboortedatum.data,
            	telephone=self.telephone.data,
-       	    actief_lid=self.actief_lid.data,
-           	membership_dues=self.membership_dues.data,
-           	member_since=self.member_since.data,
            	show_telephone=self.show_telephone.data,
            	show_email=self.show_email.data)
 
