@@ -11,47 +11,48 @@
 			<div id="header" class="cf">
 				<a href="/"><h1>MALMAN</h1></a>
 {%- if user -%}
-				<span>ingelogd als {{ user }} (<a href="logout">log out</a>)</span>
+				<span>logged in as {{ user }} (<a href="logout">log out</a>)</span>
 {%- else -%}
-				<span>u bent niet ingelogd (<a href="login">log in</a>)</span>
+				<span>you are not logged in (<a href="login">log in</a>)</span>
 {%- endif -%}
 			</div>
 {%-	if category != "login" -%}
 			<ul id="menu" class="cf">
-				<li><a href="/">mijn account</a></li>
-				<li><a href="leden">leden</a></li>
+				<li><a href="/">my account</a></li>
+				<li><a href="leden">members</a></li>
 				<li><a href="stock">stock bar</a></li>
-				<li><a href="boekhouding">boekhouding</a></li>
+				<li><a href="accounting">accounting</a></li>
 			</ul>
 {%- endif -%}
 {%- if category == "account" -%}
 			<ul id="menu" class="cf">
-				<li><a href="/">overzicht</a></li>
-				<li><a href="leden_edit_own_account">mijn gegevens wijzigen</a></li>
-				<li><a href="#">mijn rekening</a></li>
-				<li><a href="#">mijn wachtwoord aanpassen</a></li>
+				<li><a href="/">overview</a></li>
+				<li><a href="leden_edit_own_account">edit my profile information</a></li>
+				<li><a href="#">my account</a></li>
+				<li><a href="#">edit my password</a></li>
 			</ul>
 {%- elif category == "leden" -%}			
 			<ul id="menu" class="cf">
-				<li><a href="leden">ledenlijst</a></li>
+				<li><a href="leden">memberlist</a></li>
 				<li><a href="new_members">new members (A)</a></li>
 			</ul>
 {%- elif category == "stock" -%}
 			<ul id="menu" class="cf">
-				<li><a href="stock">stock weergeven</a></li>
-				<li><a href="stock_tellen">stock tellen (A)</a></li>
-				<li><a href="stock_aanpassen">stock aanpassen (A)</a></li>
-				<li><a href="stock_aanvullen">stock aanvullen (Josto) (A)</a></li>
-				<li><a href="stock_log">stock logboek (A)</a></li>
-				<li><a href="stock_toevoegen">item toevoegen (A)</a></li>
+				<li><a href="stock">list stock</a></li>
+				<li><a href="stock_tellen">edit stock amount (A)</a></li>
+				<li><a href="stock_aanpassen">edit stock (A)</a></li>
+				<li><a href="stock_aanvullen">stock up (Josto) (A)</a></li>
+				<li><a href="stock_log">stock log (A)</a></li>
+				<li><a href="stock_toevoegen">add stock item (A)</a></li>
 			</ul>
-{%- elif category == "boekhouding" -%}
+{%- elif category == "accounting" -%}
 			<ul id="menu" class="cf">
-				<li><a href="boekhouding">rekeningsstand</a></li>
-				<li><a href="#">transacties bekijken</a></li>
-				<li><a href="#">aanvraag tot terugbetaling</a></li>
-				<li><a href="#">goedkeuring terugbetalingen (A)</a></li>
-				<li><a href="#">transactie aanpassen (A)</a></li>
+				<li><a href="accounting">overview</a></li>
+				<li><a href="accounting_log">transaction log</a></li>
+				<li><a href="accounting_requestreimbursement">request reimbursement</a></li>
+				<li><a href="accounting_approvereimbursements">approve reimbursements (A)</a></li>
+				<li><a href="accounting_addtransaction">add transaction (A)</a></li>
+				<li><a href="accounting_edittransaction">edit transactions (A)</a></li>
 			</ul>
 {%-	elif category == "login" -%}
 			<ul id="menu" class="cf">

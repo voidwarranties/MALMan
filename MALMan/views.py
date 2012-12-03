@@ -12,6 +12,7 @@ except ImportError:
 from flask import current_app
 from werkzeug.local import LocalProxy
 from functools import wraps
+from datetime import date
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
 aanpassing = "These values were updated: "
@@ -74,6 +75,7 @@ def new_members():
             oldvar = str(user.actief_lid)
             if var != user.actief_lid:
                 setattr(user, 'actief_lid', True)
+                setattr(user, 'member_since', date.today())
                 db.session.commit()
                 if confirmation != '':
                     confirmation += ", "
@@ -285,8 +287,35 @@ def stock_toevoegen():
         flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
     return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, user=user)
 
-@app.route("/boekhouding")
-@permission_required('membership')
-def boekhouding():
+@app.route("/accounting")
+def accounting():
     user = current_user.email
-    return render_template('boekhouding.html', user=user)
+    return render_template('accounting.html', user=user)
+
+@app.route("/accounting_log")
+def accounting_log():
+    user = current_user.email
+    return render_template('accounting_log.html', user=user)
+
+@app.route("/accounting_requestreimbursement")
+def accounting_requestreimbursement():
+    user = current_user.email
+    return render_template('accounting_requestreimbursement.html', user=user)
+
+@app.route("/accounting_approvereimbursements")
+@permission_required('finances')
+def accounting_approvereimbursements():
+    user = current_user.email
+    return render_template('accounting_approvereimbursements.html', user=user)
+
+@app.route("/accounting_addtransaction")
+@permission_required('finances')
+def accounting_edittransation():
+    user = current_user.email
+    return render_template('accounting_addtransaction.html', user=user)
+
+@app.route("/accounting_edittransaction")
+@permission_required('finances')
+def accounting_edittransation():
+    user = current_user.email
+    return render_template('accounting_edittransaction.html', user=user)
