@@ -54,7 +54,7 @@ def index():
 def ledenlijst():
     users = User.query.filter_by(actief_lid='1')
     perm_members = Permission(Need('role', 'members')).can()
-    return render_template('ledenlijst.html', perm_members=perm_members)
+    return render_template('ledenlijst.html', perm_members=perm_members, users=users)
 
 @app.route("/new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
@@ -111,7 +111,7 @@ def leden_edit_own():
             flash(confirmation, "confirmation")
     return render_template('leden_edit_own_account.html', userdata=userdata)
 
-@app.route('/leden_edit_<userid>', methods=['GET', 'POST'])
+@app.route('/leden_edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def leden_edit(userid):
     userdata = User.query.get(userid)

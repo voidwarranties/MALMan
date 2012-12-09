@@ -8,11 +8,7 @@ translate everything to english
 
 use "return redirect" afther proccesing POSTs to prevent data from being submitted twice if users refresh the page
 
-use "@app.route('/something/<int:page>" to get integrals in dynami urls
-
 Use wtforms for all forms
 
 return a 401 status if not allowed
 	    return render_template('page_not_found.html'), 404
-
-move secret key to config file

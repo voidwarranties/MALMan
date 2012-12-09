@@ -19,3 +19,6 @@ MAIL_PASSWORD = 'password'
 
 ## error mails
 ADMINS = ['yourname@example.com']
+
+## session cookie encryption key
+SECRET_KEY = 'some_secret'

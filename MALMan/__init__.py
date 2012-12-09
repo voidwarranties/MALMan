@@ -13,7 +13,7 @@ except ImportError:
 app = Flask(__name__)
 app.config.from_pyfile('MALMan.cfg')
 CSRF_ENABLED = True
-app.secret_key = 'some_secret'
+app.secret_key = app.config['SECRET_KEY']
 db = SQLAlchemy(app)
 
 ## begin of User Managment
