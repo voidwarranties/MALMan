@@ -1,5 +1,5 @@
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from flask import render_template, request, redirect, flash
+from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask_security.forms import ConfirmRegisterForm
@@ -28,10 +28,11 @@ def permission_required(*roles):
             for role in roles:
                 if not Permission(RoleNeed(role)).can():
                     if role == 'member':
-                       flash ('You need to be aproved as a member to access this resource', 'error') 
+                        flash ('You need to be aproved as a member to access this resource', 'error') 
+                        abort(401)
                     else:
                         flash('You need the permission \'' + str(role) + '\' to access this resource.', 'error')
-                    return redirect(request.referrer or '/')
+                        abort(403)
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
@@ -302,3 +303,21 @@ def accounting_edittransation():
 @permission_required('finances')
 def accounting_edittransation():
     return render_template('accounting_edittransaction.html')
+
+@app.errorhandler(401)
+def error_401(error):
+    error = "401 Unauthorized"
+    lastpage = request.referrer
+    return render_template('error.html', error=error, lastpage=lastpage), 401
+
+@app.errorhandler(403)
+def error_403(error):
+    error = "403 Forbidden"
+    lastpage = request.referrer
+    return render_template('error.html', error=error, lastpage=lastpage), 403
+
+@app.errorhandler(404)
+def error_404(error):
+    error = "404 Not Found"
+    lastpage = request.referrer
+    return render_template('error.html', error=error, lastpage=lastpage), 404
