@@ -25,6 +25,41 @@ app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 app.config['SECURITY_PASSWORD_SALT'] = 'MALMan'
 app.config['DEFAULT_MAIL_SENDER'] = 'MALMan@voidwarranties.be'
 
+# error logging
+if not app.debug:
+    import logging
+    # send out error mails if run in production mode
+    from logging import Formatter
+    mail_handler.setFormatter(Formatter('''
+    Message type:       %(levelname)s
+    Location:           %(pathname)s:%(lineno)d
+    Module:             %(module)s
+    Function:           %(funcName)s
+    Time:               %(asctime)s
+
+    Message:
+
+    %(message)s
+    '''))
+    from logging.handlers import SMTPHandler
+    mail_handler = SMTPHandler(app.MAIL_SERVER,
+                               'MALMan',
+                               app.ADMINS,
+                               'MALMan Failed',
+                               credentials=(MAIL_USERNAME,MAIL_PASSWORD))
+    mail_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(mail_handler)
+    # save logfiles
+    from logging import Formatter
+    file_handler.setFormatter(Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+       '[in %(pathname)s:%(lineno)d]'
+    ))
+    from logging.handlers import RotatingFileHandler
+    file_handler = RotatingFileHandler('logs/MALMan.log', maxBytes=0, backupCount=10 )
+    file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
+
 # Setup mail extension
 mail = Mail(app)
 

@@ -1,13 +1,21 @@
-Om dit te kunnen gebruiken moet je een bestand MALMan.cfg maken met daarin devolgende informatie. Let er op om dat bestand niet te comitten (normaal gezien staat het op de SVN ignore list):
+Make the configuration file MALMan.cfg in the directory MALMan. Edit and save to following content to this file.
 
+## database
+SQLALCHEMY_DATABASE_URI = 'mysql://user;password@localhost/MALMan'
 
-
-SQLALCHEMY_DATABASE_URI = 'mysql://gebruikersnaam:wachtwoord@localhost/MALMan'
+## debugging options
+## turn these of on production systems!
 DEBUG = True
-SQLALCHEMY_ECHO = False
+TRAP_BAD_REQUEST_ERRORS = True
+SQLALCHEMY_ECHO = True
 
+## mail server
+MAIL_SERVER = 'localhost'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'user'
+MAIL_PASSWORD = 'password'
 
-
-waar gebruikersnaam en wachtwoord uiteraard worden vervangen en MALMan in de dabase URI de database is waarin alle info zit
-
-Voor productie moet DEBUG op false worden gezet, en die SQL ECHO kan al eens handig zijn om DB te debuggen, dan worden de uitgevoerde sql commando's weergegeven.
+## error mails
+ADMINS = ['yourname@example.com']

@@ -40,12 +40,11 @@ def permission_required(*roles):
 def index():
     if current_user and current_user.is_active() and User.query.get(current_user.id).actief_lid:
         # is an aproved member
-        user = current_user.email
-        return render_template('account.html', user=user)
+        return render_template('account.html')
     elif current_user and current_user.is_active():
         # is logged in but not aproved yet
         user = current_user.email
-        return render_template('waiting_aproval.html', user=user)
+        return render_template('waiting_aproval.html')
     else:
         # is not logged in
         return redirect('login')
@@ -53,15 +52,13 @@ def index():
 @app.route("/leden")
 @permission_required('membership', 'members')
 def ledenlijst():
-    user = current_user.email
     users = User.query.filter_by(actief_lid='1')
     perm_members = Permission(Need('role', 'members')).can()
-    return render_template('ledenlijst.html', users=users, perm_members=perm_members, user=user)
+    return render_template('ledenlijst.html', perm_members=perm_members)
 
 @app.route("/new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def new_members():
-    user = current_user.email
     users = User.query.filter_by(actief_lid='0')
     if request.method == 'POST':
         confirmation = ''
@@ -84,12 +81,11 @@ def new_members():
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('new_members.html', users=users, user=user)
+    return render_template('new_members.html', users=users)
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
 @login_required
 def leden_edit_own():
-    user = current_user.email
     userdata = User.query.get(current_user.id)
     if request.method == 'POST':
         confirmation = aanpassing
@@ -113,12 +109,11 @@ def leden_edit_own():
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('leden_edit_own_account.html', user=user, userdata=userdata)
+    return render_template('leden_edit_own_account.html', userdata=userdata)
 
 @app.route('/leden_edit_<userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def leden_edit(userid):
-    user = current_user.email
     userdata = User.query.get(userid)
     roles = Role.query.all()
     if request.method == 'POST':
@@ -175,19 +170,17 @@ def leden_edit(userid):
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('leden_edit_account.html', user=user, userdata=userdata, roles=roles)
+    return render_template('leden_edit_account.html', userdata=userdata, roles=roles)
 
 @app.route("/stock")
 @permission_required('membership')
 def stock():
-    user = current_user.email
     dranken = Dranken.query.all()
-    return render_template('stock.html', lijst=dranken, user=user)
+    return render_template('stock.html', lijst=dranken)
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_tellen():
-    user = current_user.email
     dranken = Dranken.query.all()
     if request.method == 'POST':
         confirmation = aanpassing
@@ -205,12 +198,11 @@ def stock_tellen():
             nothingchanged()
         else:
             flash(confirmation, "confirmation")
-    return render_template('stock_tellen.html', lijst=dranken, user=user)
+    return render_template('stock_tellen.html', lijst=dranken)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_aanpassen():
-    user = current_user.email
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
@@ -240,12 +232,11 @@ def stock_aanpassen():
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen, user=user)
+    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_aanvullen():
-    user = current_user.email
     dranken = Dranken.query.filter_by(josto=True).all()
     if request.method == 'POST': 
         confirmation = aanpassing
@@ -262,22 +253,20 @@ def stock_aanvullen():
             nothingchanged()
         else:
             flash(confirmation, 'confirmation')
-    return render_template('stock_aanvullen.html', lijst=dranken, user=user)
+    return render_template('stock_aanvullen.html', lijst=dranken)
 
 @app.route("/stock_log", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_log():
-    user = current_user.email
     if request.method == 'POST': 
         changes = Dranklog.query.get(request.form["revert"])
         Dranklog.remove(changes)
     log = Dranklog.query.all()
-    return render_template('stock_log.html', log=log, user=user)
+    return render_template('stock_log.html', log=log)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_toevoegen():
-    user = current_user.email
     drankcats = Drankcat.query.all()
     oorsprongen = stock_oorsprong.query.all()
     if request.method == 'POST': 
@@ -285,37 +274,31 @@ def stock_toevoegen():
         db.session.add(changes)
         db.session.commit()
         flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
-    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, user=user)
+    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen)
 
 @app.route("/accounting")
 def accounting():
-    user = current_user.email
-    return render_template('accounting.html', user=user)
+    return render_template('accounting.html')
 
 @app.route("/accounting_log")
 def accounting_log():
-    user = current_user.email
-    return render_template('accounting_log.html', user=user)
+    return render_template('accounting_log.html')
 
 @app.route("/accounting_requestreimbursement")
 def accounting_requestreimbursement():
-    user = current_user.email
-    return render_template('accounting_requestreimbursement.html', user=user)
+    return render_template('accounting_requestreimbursement.html')
 
 @app.route("/accounting_approvereimbursements")
 @permission_required('finances')
 def accounting_approvereimbursements():
-    user = current_user.email
-    return render_template('accounting_approvereimbursements.html', user=user)
+    return render_template('accounting_approvereimbursements.html')
 
 @app.route("/accounting_addtransaction")
 @permission_required('finances')
 def accounting_edittransation():
-    user = current_user.email
-    return render_template('accounting_addtransaction.html', user=user)
+    return render_template('accounting_addtransaction.html')
 
 @app.route("/accounting_edittransaction")
 @permission_required('finances')
 def accounting_edittransation():
-    user = current_user.email
-    return render_template('accounting_edittransaction.html', user=user)
+    return render_template('accounting_edittransaction.html')
