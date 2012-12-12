@@ -10,7 +10,7 @@
 		<div id="wrapper">
 			<div id="header" class="cf">
 				<a href="/"><h1>MALMAN</h1></a>
-{%- if session -%}
+{%- if session.email -%}
 				<span>logged in as {{ session.email }} (<a href="logout">log out</a>)</span>
 {%- else -%}
 				<span>you are not logged in (<a href="login">log in</a>)</span>

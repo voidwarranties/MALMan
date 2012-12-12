@@ -59,7 +59,7 @@ def login_user(user, remember=True):
     
 
 def logout_user():
-    for key in ('identity.name', 'identity.auth_type'):
+    for key in ('identity.name', 'identity.auth_type', 'email'):
         session.pop(key, None)
     identity_changed.send(current_app._get_current_object(),
                           identity=AnonymousIdentity())

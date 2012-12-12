@@ -1,19 +1,26 @@
-client side form validation
+Funtionality
+	allow user to change his password
+	add transactions DB
+	make accounting forms
+	filtering of tables
+	pagination of tables
 
-add transaction DB
+Refactoring
+	translate everything to english
+	clean up forms:
+		reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
+		use wtforms
+		add necessary validators
+		form that need to be done:
+			stock_tellen
+			stock_aanpassen
+			stock_aanvullen
+			stock_log
+			stock_toevoegen
+	remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
 
-make accounting forms
-
-translate everything to english
-
-clean up forms:
-	reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
-	use wtforms
-	add necessary validators
-leden_edit_own_account
-leden_edit_<int:userid>
-stock_tellen
-stock_aanpassen
-stock_aanvullen
-stock_log
-stock_toevoegen
+Finishing touches
+	Minimize the number of times we read or write to the DB
+	check validity of XHTML, CSS & JS
+	have template produce beautiful XHTML
+	improve graphical design

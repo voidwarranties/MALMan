@@ -3,20 +3,23 @@
 {% block title %}leden-modify{% endblock %}
 {% block content %}
 
-{% from "security/_macros.html" import render_field_with_errors, render_field %}
+{% from "security/_macros.html" import render_field_with_errors %}
 <form id="leden_edit_own_account.html" method="POST" class="cf">
 	{{ form.hidden_tag() }}
+	<h2>Login info</h2>
+	{{ render_field_with_errors(form.email) }}
+	<h2>Personal info</h2>
 	{{ render_field_with_errors(form.name) }}
 	{{ render_field_with_errors(form.geboortedatum) }}
-	{{ render_field_with_errors(form.email) }}
 	{{ render_field_with_errors(form.telephone) }}
 	{{ render_field_with_errors(form.street) }}
 	{{ render_field_with_errors(form.number) }}
 	{{ render_field_with_errors(form.bus) }}
 	{{ render_field_with_errors(form.postalcode) }}
 	{{ render_field_with_errors(form.gemeente) }}
+	<h2>Privacy settings</h2>
 	{{ render_field_with_errors(form.show_email) }}
 	{{ render_field_with_errors(form.show_telephone) }}
-	<input type="submit" value="edit my account information!" />
+	{{ render_field_with_errors(form.submit) }}
 </form>
 {% endblock %}

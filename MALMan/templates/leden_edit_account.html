@@ -2,36 +2,32 @@
 {% set category = "leden" %}
 {% block title %}leden-modify{% endblock %}
 {% block content %}
+
+{% from "security/_macros.html" import render_field_with_errors %}
 <form id="leden_edit_account.html" method="POST" class="cf">
-	<h2>Personal data</h2>
-	<p class="cf"><label>name</label><input type="text" value="{{ userdata.name }}" name="name" \></p>
-	<p class="cf"><label>date of birth</label><input type="text" value="{{ userdata.geboortedatum }}" name="geboortedatum" \></p>
-	<p class="cf"><label>email</label><input type="text" value="{{ userdata.email }}" name="email" \></p>
-	<p class="cf"><label>telephone</label><input type="text" value="{{ userdata.telephone }}" name="telephone" \></p>
-	<p class="cf">
-		<label>address</label>
-		<input type="text" value="{{ userdata.gemeente }}" name="gemeente" \>
-		<input type="text" value="{{ userdata.postalcode }}" name="postalcode" \> 
-		<input type="text" value="{{ userdata.bus }}" name="bus" \>
-		<input type="text" value="{{ userdata.number }}" name="number" \> 
-		<input type="text" value="{{ userdata.street }}" name="street" \> 
-	</p>
+	{{ form.hidden_tag() }}
+	<h2>Personal info</h2>
+	{{ render_field_with_errors(form.name) }}
+	{{ render_field_with_errors(form.geboortedatum) }}
+	{{ render_field_with_errors(form.telephone) }}
+	{{ render_field_with_errors(form.street) }}
+	{{ render_field_with_errors(form.number) }}
+	{{ render_field_with_errors(form.bus) }}
+	{{ render_field_with_errors(form.postalcode) }}
+	{{ render_field_with_errors(form.gemeente) }}
 	<h2>Privacy settings</h2>
-	<p class="cf"><label>show email</label><input type="checkbox" name="show_email" value="True" {% if userdata.show_email %} checked {%endif%} \></p>
-	<p class="cf"><label>show telephone</label><input type="checkbox" name="show_telephone" value="True" {% if userdata.show_telephone %} checked {%endif%} \></p>
+	{{ render_field_with_errors(form.show_email) }}
+	{{ render_field_with_errors(form.show_telephone) }}
 	<h2>Permissions</h2>
-	{% for role in roles %}
-		{% if role != "membership" %}
-		<p class="cf"><label>{{ role.name }}</label><input type="checkbox" name="perm_{{ role.name }}" value="True" 
-			{%- for perm in userdata.roles -%}
-				{%- if role == perm %} checked {% endif %}
-			{%- endfor -%} 
-		\></p>
+	{% for input in form %}
+		{# get all input fields which start with 'perm_' #}
+		{% if input.name|truncate(length=5, killwords=True, end='') == "perm_" %}
+				{{ render_field_with_errors(input) }}
 		{% endif %}
 	{% endfor %}
 	<h2>Membership</h2>
-		<p class="cf"><label>is an active member</label><input type="checkbox" name="actief_lid" value="True" {% if userdata.actief_lid %} checked {%endif%} \></p>
-		<p class="cf"><label>Monthly dues (€)</label><input type="text" value="{{ userdata.membership_dues }}" name="membership_dues" \></p>
-	<input type="submit" value="pas de gegevens aan!" />
+	{{ render_field_with_errors(form.actief_lid) }}
+	{{ render_field_with_errors(form.membership_dues) }}
+	{{ render_field_with_errors(form.submit) }}
 </form>
 {% endblock %}

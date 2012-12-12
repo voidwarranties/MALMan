@@ -1,5 +1,5 @@
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_acount_form
+from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -94,7 +94,7 @@ def new_members():
 @login_required
 def leden_edit_own():
     userdata = User.query.get(current_user.id)
-    form = leden_edit_own_acount_form(obj=userdata)
+    form = leden_edit_own_account_form(obj=userdata)
     if form.validate_on_submit():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
@@ -103,7 +103,7 @@ def leden_edit_own():
             # Hack to interpret booleans correctly
             if var == None:
                 var = False
-            elif var == "True" or var == "y":
+            elif var == "y":
                 var = True
             oldvar = str(getattr(userdata, atribute))
             if str(var) != oldvar:
@@ -125,15 +125,25 @@ def leden_edit_own():
 def leden_edit(userid):
     userdata = User.query.get(userid)
     roles = Role.query.all()
+    # add roles to form
+    for role in roles:
+        if role != 'membership':
+            # check the checkbox if the user has the role
+            if role in userdata.roles:
+                setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name, default='y'))
+            else:
+                setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name))
+    form = leden_edit_account_form(obj=userdata)
+    del form.email
     if request.method == 'POST':
         confirmation = aanpassing
-        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
+        atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
         for atribute in atributes:
             var = request.form.get(atribute)
             # Hack to interpret booleans correctly
             if var == None:
                 var = False
-            elif var == "True":
+            elif var == "y":
                 var = True
             oldvar = str(getattr(userdata, atribute))
             if str(var) != oldvar:
@@ -179,7 +189,8 @@ def leden_edit(userid):
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('leden_edit_account.html', userdata=userdata, roles=roles)
+        return redirect(request.path)
+    return render_template('leden_edit_account.html', form=form)
 
 @app.route("/stock")
 @permission_required('membership')

@@ -90,7 +90,7 @@ class NextFormMixin():
 
 
 class RegisterFormMixin():
-    submit = SubmitField("Register")
+    submit = SubmitField("Create my account")
 
 
 class SendConfirmationForm(Form, UserEmailFormMixin):
@@ -172,17 +172,7 @@ class LoginForm(Form, NextFormMixin):
             return False
         return True
 
-class NewFormFields():
-    name = TextField('Name', [validators.Length(min=1, max=25)])
-    street = TextField('street', [validators.Length(min=1, max=25)])
-    number = TextField('number', [validators.Length(min=1, max=25)])
-    bus = TextField('bus', [validators.Length(min=1, max=25)])
-    postalcode = TextField('postalcode', [validators.Length(min=1, max=25)])
-    gemeente = TextField('gemeente', [validators.Length(min=1, max=25)])
-    geboortedatum = TextField('geboortedatum', [validators.Length(min=1, max=25)])
-    telephone = TextField('telephone', [validators.Length(min=1, max=25)])
-    show_telephone = BooleanField('show_telephone')
-    show_email = BooleanField('show_email')   
+from MALMan.forms import NewFormFields
 
 class ConfirmRegisterForm(Form, RegisterFormMixin, UniqueEmailFormMixin, NewPasswordFormMixin, NewFormFields):
     def to_dict(self):
