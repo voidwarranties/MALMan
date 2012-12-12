@@ -1,11 +1,11 @@
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form
+from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_tellen_form
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask_security.forms import ConfirmRegisterForm
 from flask_security.recoverable import update_password
-from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, NumberRange, BooleanField, EqualTo, Email, ValidationError, Length, validators
+from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, NumberRange, BooleanField, IntegerField, EqualTo, Email, ValidationError, Length, validators
 from flask.ext.principal import Principal, Permission, RoleNeed, Need
 try:
     from flaskext.sqlalchemy import SQLAlchemy
@@ -148,7 +148,7 @@ def leden_edit(userid):
             else:
                 setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name))
     form = leden_edit_account_form(obj=userdata)
-    del form.email, form.password, password_confirm
+    del form.email
     if request.method == 'POST':
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
@@ -216,23 +216,27 @@ def stock():
 @permission_required('membership', 'stock')
 def stock_tellen():
     dranken = Dranken.query.all()
-    if request.method == 'POST':
+    for drank in dranken:
+        setattr(stock_tellen_form, 'amount_' + str(drank.id), IntegerField(drank.naam, [
+            validators.NumberRange(min=0, message='please enter a positive number')], default=drank.stock))
+    form = stock_tellen_form()
+    if form.validate_on_submit():
         confirmation = aanpassing
-        for ind in request.form.getlist('check[]'):
-            drankobject = Dranken.query.get(ind)
+        for drankobject in dranken:
             # only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
-            if int(request.form["amount_" + ind]) != int(drankobject.stock):
-                changes = Dranklog(ind, (int(request.form["amount_" + ind]) - int(drankobject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
+            if int(request.form["amount_" + str(drankobject.id)]) != int(drankobject.stock):
+                changes = Dranklog(drankobject.id, (int(request.form["amount_" + str(drankobject.id)]) - int(drankobject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
                 db.session.commit()
                 if confirmation != aanpassing:
                     confirmation += ", "
-                confirmation += "stock " + drankobject.naam + " = " + request.form["amount_" + ind]
+                confirmation += "stock " + drankobject.naam + " = " + request.form["amount_" + str(drankobject.id)]
         if confirmation == aanpassing:
             nothingchanged()
         else:
             flash(confirmation, "confirmation")
-    return render_template('stock_tellen.html', lijst=dranken)
+        return redirect(request.path)
+    return render_template('stock_tellen.html', lijst=dranken, form=form)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -292,11 +296,13 @@ def stock_aanvullen():
 @app.route("/stock_log", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_log():
+    log = Dranklog.query.all()
+    form = stock_log_form()
     if request.method == 'POST': 
         changes = Dranklog.query.get(request.form["revert"])
         Dranklog.remove(changes)
-    log = Dranklog.query.all()
-    return render_template('stock_log.html', log=log)
+        return redirect(request.path)
+    return render_template('stock_log.html', log=log, form=form)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')

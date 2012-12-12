@@ -14,7 +14,6 @@ Refactoring
 			stock_tellen
 			stock_aanpassen
 			stock_aanvullen
-			stock_log
 			stock_toevoegen
 	remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
 

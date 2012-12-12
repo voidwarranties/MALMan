@@ -15,7 +15,7 @@ class leden_edit_own_account_form(Form):
 	street = TextField('Street', [
 		validators.Required()])
 	number = IntegerField('Number', [
-		validators.NumberRange(min=0, message='please enter a positive number'),])
+		validators.NumberRange(min=0, message='please enter a positive number')])
 	bus = TextField('Bus (optional)', [
 		validators.Optional()])
 	postalcode = TextField('Postal code', [
@@ -30,12 +30,11 @@ class leden_edit_own_account_form(Form):
 	submit = SubmitField("edit my account information")
 
 class leden_edit_password_form(Form):
-	password = PasswordField("Password", [
-    	validators.Length(message="Password must be at least 6 characters long", min=6, max=128)])
-	password_confirm = PasswordField("Retype Password", [
-        EqualTo('password', message="Passwords do not match")])
-	submit = SubmitField("change my password")
-
+ 	password = PasswordField("Password", [
+     	validators.Length(message="Password must be at least 6 characters long", min=6)])
+ 	password_confirm = PasswordField("Retype Password", [
+         EqualTo('password', message="Passwords do not match")])
+ 	submit = SubmitField("change my password")
 
 class leden_edit_account_form(leden_edit_own_account_form):
 	actief_lid = BooleanField('Is an active member')
@@ -45,4 +44,10 @@ class leden_edit_account_form(leden_edit_own_account_form):
 
 # this is used by flask_security to generate the register form
 class NewFormFields(leden_edit_own_account_form):
+	pass
+
+class stock_tellen_form(Form):
+	pass
+
+class stock_log_form(Form):
 	pass

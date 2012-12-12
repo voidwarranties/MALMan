@@ -62,18 +62,16 @@
 				<li><a href="confirm">confirm account</a></li>
 			</ul>
 {%- endif %}
-
-{% with messages = get_flashed_messages(with_categories=true) %}
-  	{% if messages %}
+{%- with messages = get_flashed_messages(with_categories=true) -%}
+  	{%- if messages -%}
     		<ul>
     		{% for category, message in messages %}
     			<li class="{{ category }}">{{ message }}</li>
 			{% endfor %}
 			</ul>
-	{% endif %}
-{% endwith %}
-
-{% block content %}{%- endblock %}
+	{%- endif -%}
+{%- endwith -%}
+{%- block content -%}{%- endblock -%}
 		</div>
 	</body>
 </html>
