@@ -8,6 +8,7 @@
 	{{ form.hidden_tag() }}
 	<h2>Login info</h2>
 	{{ render_field_with_errors(form.email) }}
+	<p><a href="leden_edit_password">click here to edit your password</a></p>
 	<h2>Personal info</h2>
 	{{ render_field_with_errors(form.name) }}
 	{{ render_field_with_errors(form.geboortedatum) }}
@@ -20,6 +21,6 @@
 	<h2>Privacy settings</h2>
 	{{ render_field_with_errors(form.show_email) }}
 	{{ render_field_with_errors(form.show_telephone) }}
-	{{ render_field_with_errors(form.submit) }}
+	{{ form.submit }}
 </form>
 {% endblock %}

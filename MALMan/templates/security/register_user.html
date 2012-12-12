@@ -21,6 +21,6 @@
     <h2>Privacy settings</h2>
     {{ render_field_with_errors(register_user_form.show_telephone) }}
     {{ render_field_with_errors(register_user_form.show_email) }}
-    {{ render_field_with_errors(register_user_form.submit) }}
+    {{ register_user_form.submit }}
 </form>
 {% endblock %}

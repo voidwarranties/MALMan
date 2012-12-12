@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form, FormField, BooleanField, TextField, PasswordField, HiddenField, DateField, IntegerField, SubmitField, validators
+from flask.ext.wtf import Form, Required, FormField, BooleanField, TextField, PasswordField, HiddenField, DateField, IntegerField, SubmitField, validators, EqualTo
 from flask_security.forms import unique_user_email
 
 # This form starts up empty, and is filled up with field by the view
@@ -29,8 +29,16 @@ class leden_edit_own_account_form(Form):
 	show_telephone = BooleanField('Display phone number to other members')
 	submit = SubmitField("edit my account information")
 
+class leden_edit_password_form(Form):
+	password = PasswordField("Password", [
+    	validators.Length(message="Password must be at least 6 characters long", min=6, max=128)])
+	password_confirm = PasswordField("Retype Password", [
+        EqualTo('password', message="Passwords do not match")])
+	submit = SubmitField("change my password")
+
+
 class leden_edit_account_form(leden_edit_own_account_form):
-	actief_lid = BooleanField('Is an ative member')
+	actief_lid = BooleanField('Is an active member')
 	membership_dues = IntegerField('Monthly dues (&euro;)', [
 		validators.NumberRange(min=0, message='please enter a positive number'),]) 
 	submit = SubmitField("edit account information")

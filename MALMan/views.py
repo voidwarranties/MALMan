@@ -1,9 +1,10 @@
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form
+from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 from flask_security.forms import ConfirmRegisterForm
+from flask_security.recoverable import update_password
 from flask.ext.wtf import Form as BaseForm, TextField, PasswordField, SubmitField, HiddenField, Required, NumberRange, BooleanField, EqualTo, Email, ValidationError, Length, validators
 from flask.ext.principal import Principal, Permission, RoleNeed, Need
 try:
@@ -120,6 +121,19 @@ def leden_edit_own():
         return redirect(request.path)
     return render_template('leden_edit_own_account.html', userdata=userdata, form=form)
 
+@app.route('/leden_edit_password', methods=['GET', 'POST'])
+@login_required
+def leden_edit_password():
+    form = leden_edit_password_form()
+    _security = LocalProxy(lambda: current_app.extensions['security'])
+    _datastore = LocalProxy(lambda: _security.datastore)
+    if form.validate_on_submit():
+        update_password(current_user, request.form['password'])
+        _datastore.commit()
+        flash("your password was updated", "confirmation")
+        return redirect(request.path)
+    return render_template('leden_edit_password.html', form=form)
+
 @app.route('/leden_edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def leden_edit(userid):
@@ -134,7 +148,7 @@ def leden_edit(userid):
             else:
                 setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name))
     form = leden_edit_account_form(obj=userdata)
-    del form.email
+    del form.email, form.password, password_confirm
     if request.method == 'POST':
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
