@@ -194,4 +194,4 @@ class Dranklog(db.Model):
 # should only be run once, remove this when db is stable
 #db.create_all()
 
-from MALMan import views
+from MALMan import forms, views

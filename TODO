@@ -6,6 +6,14 @@ make accounting forms
 
 translate everything to english
 
-use "return redirect" afther proccesing POSTs to prevent data from being submitted twice if users refresh the page
-
-Use wtforms for all forms
+clean up forms:
+	reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
+	use wtforms
+	add necessary validators
+leden_edit_own_account
+leden_edit_<int:userid>
+stock_tellen
+stock_aanpassen
+stock_aanvullen
+stock_log
+stock_toevoegen

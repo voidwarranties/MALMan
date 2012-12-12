@@ -1,4 +1,5 @@
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
+from forms import new_members_form, leden_edit_own_acount_form
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -60,10 +61,14 @@ def ledenlijst():
 @app.route("/new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def new_members():
-    users = User.query.filter_by(actief_lid='0')
-    if request.method == 'POST':
+    new_members = User.query.filter_by(actief_lid='0')
+    for user in new_members:
+        setattr(new_members_form, 'activate_' + str(user.id), BooleanField('Activate User'))
+    form = new_members_form()
+
+    if form.validate_on_submit():
         confirmation = ''
-        for user in users:
+        for user in new_members:
             var = request.form.get('activate_' + str(user.id))
             # Hack to interpret booleans correctly
             if var == None:
@@ -82,13 +87,15 @@ def new_members():
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('new_members.html', users=users)
+        return redirect(request.path)
+    return render_template('new_members.html', new_members=new_members, new_members_form=form)
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
 @login_required
 def leden_edit_own():
     userdata = User.query.get(current_user.id)
-    if request.method == 'POST':
+    form = leden_edit_own_acount_form(obj=userdata)
+    if form.validate_on_submit():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
         for atribute in atributes:
@@ -96,7 +103,7 @@ def leden_edit_own():
             # Hack to interpret booleans correctly
             if var == None:
                 var = False
-            elif var == "True":
+            elif var == "True" or var == "y":
                 var = True
             oldvar = str(getattr(userdata, atribute))
             if str(var) != oldvar:
@@ -110,7 +117,8 @@ def leden_edit_own():
             nothingchanged()
         else: 
             flash(confirmation, "confirmation")
-    return render_template('leden_edit_own_account.html', userdata=userdata)
+        return redirect(request.path)
+    return render_template('leden_edit_own_account.html', userdata=userdata, form=form)
 
 @app.route('/leden_edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
