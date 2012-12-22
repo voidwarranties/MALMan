@@ -1,5 +1,14 @@
-from flask.ext.wtf import Form, Required, FormField, BooleanField, TextField, PasswordField, HiddenField, DateField, IntegerField, SubmitField, validators, EqualTo
+from wtforms import Form as wtforms_Form
+from flask.ext.wtf import Form, Required, FormField, BooleanField, TextField, PasswordField, HiddenField, DateField, IntegerField, SubmitField, SelectField, DecimalField, validators, EqualTo, ListWidget, Input
+from wtforms.widgets import TextInput, CheckboxInput
 from flask_security.forms import unique_user_email
+
+def booleanfix(POST, var):
+    '''returns a boolean indicating if a variable was in the received form fields'''
+    if var in POST:
+        return True
+    else:
+        return False
 
 # This form starts up empty, and is filled up with field by the view
 class new_members_form(Form):
@@ -50,4 +59,15 @@ class stock_tellen_form(Form):
 	pass
 
 class stock_log_form(Form):
+	pass
+
+class stock_toevoegen_form(Form):
+	naam = TextField('name', [validators.Required()])
+	prijs = DecimalField('price (e.g. 1.52)', [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
+	aanvullenTot = IntegerField('Maximum stock', [validators.NumberRange(min=0, message='please enter a positive number')])
+	categorieID = SelectField('category', coerce=int)
+	josto = BooleanField('josto')
+	submit = SubmitField('add stock item')
+
+class stock_aanvullen_form(Form):
 	pass

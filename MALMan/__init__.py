@@ -16,6 +16,9 @@ CSRF_ENABLED = True
 app.secret_key = app.config['SECRET_KEY']
 db = SQLAlchemy(app)
 
+#from flask_debugtoolbar import DebugToolbarExtension
+#toolbar = DebugToolbarExtension(app)
+
 ## begin of User Managment
 # configuration
 app.config['SECURITY_REGISTERABLE'] = True
