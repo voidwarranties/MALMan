@@ -16,8 +16,7 @@ class new_members_form(Form):
 
 class leden_edit_own_account_form(Form):
 	email = TextField('Email', [
-		validators.Email(message='please enter a valid email address'),
-		unique_user_email])
+		validators.Email(message='please enter a valid email address')])
 	name = TextField('Name', [validators.Required()])
 	geboortedatum = DateField('Date of birth (yyyy-mm-dd)', [
 		validators.Required(message='please enter a date using the specified formatting')])

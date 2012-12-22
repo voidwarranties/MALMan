@@ -20,8 +20,16 @@ _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
 aanpassing = "These values were updated: "
 error = ""
-def nothingchanged():
-    flash("No changes were specified", "error")
+def add_confirmation(var, string):
+    if var != aanpassing:
+        var += ", "
+    var += string
+    return var
+def return_flash (confirmation):
+    if confirmation == aanpassing:
+        flash("No changes were specified", "error")
+    else:
+        flash(confirmation, 'confirmation')
 
 def permission_required(*roles):
     def wrapper(fn):
@@ -85,10 +93,7 @@ def new_members():
                 if confirmation != '':
                     confirmation += ", "
                 confirmation += user.email + " was made an active member"
-        if confirmation == '':
-            nothingchanged()
-        else: 
-            flash(confirmation, "confirmation")
+        return_flash(confirmation)
         return redirect(request.path)
     return render_template('new_members.html', new_members=new_members, new_members_form=form)
 
@@ -112,13 +117,8 @@ def leden_edit_own():
                 obj = User.query.get(current_user.id)
                 setattr(obj, atribute, var)
                 db.session.commit()
-                if confirmation != aanpassing:
-                    confirmation += ", "
-                confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
-        if confirmation == aanpassing:
-            nothingchanged()
-        else: 
-            flash(confirmation, "confirmation")
+                confirmation = add_confirmation(confirmation, atribute + " = " + str(var) + " (was " + oldvar + ")")
+        return_flash(confirmation)
         return redirect(request.path)
     return render_template('leden_edit_own_account.html', userdata=userdata, form=form)
 
@@ -197,13 +197,8 @@ def leden_edit(userid):
                         role = Role.query.filter_by(name=permission_field).first()
                         user_datastore.remove_role_from_user(userdata, role)
                         db.session.commit()
-                        if confirmation != aanpassing:
-                            confirmation += ", "
-                        confirmation += "removed permission for " + str(permission_field)
-        if confirmation == aanpassing:
-            nothingchanged()
-        else: 
-            flash(confirmation, "confirmation")
+                    confirmation = add_confirmation(confirmation, "removed permission for " + str(permission_field))
+        return_flash(confirmation)
         return redirect(request.path)
     return render_template('leden_edit_account.html', form=form)
 
@@ -229,13 +224,8 @@ def stock_tellen():
                 changes = Dranklog(drankobject.id, (int(request.form["amount_" + str(drankobject.id)]) - int(drankobject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
                 db.session.commit()
-                if confirmation != aanpassing:
-                    confirmation += ", "
-                confirmation += "stock " + drankobject.naam + " = " + request.form["amount_" + str(drankobject.id)]
-        if confirmation == aanpassing:
-            nothingchanged()
-        else:
-            flash(confirmation, "confirmation")
+                confirmation = add_confirmation(confirmation, "stock " + drankobject.naam + " = " + request.form["amount_" + str(drankobject.id)])
+        return_flash(confirmation)
         return redirect(request.path)
     return render_template('stock_tellen.html', lijst=dranken, form=form)
 
@@ -257,20 +247,15 @@ def stock_aanpassen():
                     obj = Dranken.query.get(ind)
                     setattr(obj, atribute, request.form[atribute + "_" + ind])
                     db.session.commit()
-                    if confirmation != aanpassing:
-                        confirmation += ", "
                     if atribute == "naam":
-                        confirmation += oudewaarde + " => " + request.form["naam_" + ind]
+                        confirmation = add_confirmation(confirmation, oudewaarde + " => " + request.form["naam_" + ind])
                     elif atribute == "categorieID":
                         newcat = Drankcat.query.get(request.form[atribute + "_" + ind]).beschrijving
                         oldcat = Drankcat.query.get(oudewaarde).beschrijving
-                        confirmation += "categorie" + " " + drankobject.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")"
+                        confirmation = add_confirmation(confirmation, "categorie" + " " + drankobject.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")")
                     else:
-                        confirmation += atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")"
-        if confirmation == aanpassing:
-            nothingchanged()
-        else: 
-            flash(confirmation, "confirmation")
+                        confirmation = add_confirmation(confirmation, atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")")
+        return_flash(confirmation)
     return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
@@ -285,7 +270,6 @@ def stock_aanvullen():
         if drank.aanvullen > 0:
             setattr(stock_aanvullen_form, 'amount_' + str(drank.id), IntegerField(drank.naam, [validators.NumberRange(min=0, message='please enter a positive number')], default=drank.aanvullen))
             setattr(stock_aanvullen_form, 'check_' + str(drank.id), BooleanField(drank.naam))
-            empty = False
     form = stock_aanvullen_form()
     if form.validate_on_submit():
         confirmation = aanpassing
@@ -297,13 +281,8 @@ def stock_aanvullen():
                     changes = Dranklog(drank.id, request.form["amount_" + str(drank.id)], 0, 0, "aanvulling") #userID moet nog worden ingevuld naar de user die dit toevoegt
                     db.session.add(changes)
                     db.session.commit()
-                    if confirmation != aanpassing:
-                        confirmation += ", "
-                    confirmation += "stock " + drankopbject.naam + " = +" + request.form["amount_" + str(drank.id)]
-        if confirmation == aanpassing:
-            nothingchanged()
-        else:
-            flash(confirmation, 'confirmation')
+                    confirmation = add_confirmation(confirmation, "stock " + drankopbject.naam + " = +" + request.form["amount_" + str(drank.id)])
+        return_flash(confirmation)
         return redirect(request.path)
     return render_template('stock_aanvullen.html', form=form)
 
