@@ -15,6 +15,7 @@ Refactoring
         handle booleans more gracefully
         check if setattrs are caried over
         take 'form' out of form names, import the whole form module
+        replace all empty forms with one single empty form
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
     Minimize the number of times we read or write to the DB
     improve python code quality (current pylint score:  2.99/10)

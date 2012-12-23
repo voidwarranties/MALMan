@@ -1,6 +1,6 @@
 import re
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_log_form_single, stock_tellen_form, stock_toevoegen_form, stock_aanvullen_form,stock_aanpassen_form, stock_aanpassen_form_single, booleanfix
+from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_tellen_form, stock_toevoegen_form, stock_aanvullen_form,stock_aanpassen_form, stock_aanpassen_form_single, booleanfix
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -307,8 +307,6 @@ def stock_aanvullen():
 @permission_required('membership', 'stock')
 def stock_log():
     log = Dranklog.query.all()
-    for item in log:
-        setattr(stock_log_form, str(item.id), FormField(stock_log_form_single))
     form = stock_log_form()
     if form.validate_on_submit():
         changes = Dranklog.query.get(request.form["revert"])
