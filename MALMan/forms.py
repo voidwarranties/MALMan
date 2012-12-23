@@ -70,3 +70,13 @@ class stock_toevoegen_form(Form):
 
 class stock_aanvullen_form(Form):
 	pass
+
+class stock_aanpassen_form_single(wtforms_Form):
+	naam = TextField('name', [validators.Required()])
+	prijs = DecimalField('price (e.g. 1.52)', [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
+	aanvullenTot = IntegerField('Maximum stock', [validators.NumberRange(min=0, message='please enter a positive number')])
+	categorieID = SelectField('category', coerce=int)
+	josto = BooleanField('josto')
+
+class stock_aanpassen_form(Form):
+	submit = SubmitField('add stock item')

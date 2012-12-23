@@ -1,6 +1,6 @@
 import re
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_tellen_form, stock_toevoegen_form, stock_aanvullen_form, booleanfix
+from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_tellen_form, stock_toevoegen_form, stock_aanvullen_form,stock_aanpassen_form, stock_aanpassen_form_single, booleanfix
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -30,6 +30,13 @@ def return_flash (confirmation):
         flash("No changes were specified", "error")
     else:
         flash(confirmation, 'confirmation')
+
+def formatbool(var):
+    '''take a boolean variable and output it the same way everytime'''
+    if var:
+        return True
+    else:
+        return False
 
 def permission_required(*roles):
     def wrapper(fn):
@@ -234,29 +241,39 @@ def stock_tellen():
 def stock_aanpassen():
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
-    oorsprongen = stock_oorsprong.query.all()
-    if request.method == 'POST':
+    for drank in dranken:
+        setattr(stock_aanpassen_form, str(drank.id), FormField(stock_aanpassen_form_single, default=drank, separator='_'))
+    form = stock_aanpassen_form()
+    for item in form:
+        if item.name != 'csrf_token' and item.name != 'submit':
+            item.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
+    if form.validate_on_submit():
         confirmation = aanpassing
-        for ind in request.form.getlist('ind[]'):
-            drankobject = Dranken.query.get(ind)
+        for drank in dranken:
+            drankobject = drank
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
-            atributes = ['naam', 'prijs', 'aanvullenTot', 'categorieID'] #josto is not implemented jet
+            atributes = ['naam' , 'prijs' , 'aanvullenTot', 'categorieID', 'josto']
             for atribute in atributes:
-                if str(request.form[atribute + "_" + ind]) != str(getattr(drankobject, atribute)):
-                    oudewaarde = str(getattr(drankobject, atribute))
-                    obj = Dranken.query.get(ind)
-                    setattr(obj, atribute, request.form[atribute + "_" + ind])
+                if atribute == 'josto':
+                    old_value = formatbool(getattr(drank, atribute))
+                    new_value = booleanfix(request.form, str(drank.id) + '_josto')
+                else: 
+                    old_value = getattr(drank, atribute)
+                    new_value = request.form[str(drank.id) + '_' + atribute]
+                if str(old_value) != str(new_value):
+                    setattr(drank, atribute, new_value)
                     db.session.commit()
                     if atribute == "naam":
-                        confirmation = add_confirmation(confirmation, oudewaarde + " => " + request.form["naam_" + ind])
+                        confirmation = add_confirmation(confirmation, old_value + " => " + new_value)
                     elif atribute == "categorieID":
-                        newcat = Drankcat.query.get(request.form[atribute + "_" + ind]).beschrijving
-                        oldcat = Drankcat.query.get(oudewaarde).beschrijving
-                        confirmation = add_confirmation(confirmation, "categorie" + " " + drankobject.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")")
+                        newcat = Drankcat.query.get(new_value).beschrijving
+                        oldcat = Drankcat.query.get(old_value).beschrijving
+                        confirmation = add_confirmation(confirmation, "categorie" + " " + drank.naam + " = \"" + newcat + "\" (was \"" + oldcat + "\")")
                     else:
-                        confirmation = add_confirmation(confirmation, atribute + " " + drankobject.naam + " = " + request.form[atribute + "_" + ind] + " (was " + oudewaarde + ")")
+                        confirmation = add_confirmation(confirmation, atribute + " " + drank.naam + " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
-    return render_template('stock_aanpassen.html', lijst=dranken, categorieen=drankcats, oorsprongen=oorsprongen)
+        return redirect(request.path)
+    return render_template('stock_aanpassen.html', form=form)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -302,7 +319,6 @@ def stock_log():
 @permission_required('membership', 'stock')
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
-    oorsprongen = stock_oorsprong.query.all()
     form = stock_toevoegen_form()
     form.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
     if form.validate_on_submit():
@@ -312,7 +328,7 @@ def stock_toevoegen():
         db.session.commit()
         flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
         return redirect(request.path)
-    return render_template('stock_toevoegen.html', categorieen=drankcats, oorsprongen=oorsprongen, form=form)
+    return render_template('stock_toevoegen.html', form=form)
 
 @app.route("/accounting")
 def accounting():

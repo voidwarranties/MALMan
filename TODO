@@ -1,24 +1,26 @@
 Funtionality
+	delete stock items
 	add transactions DB
 	make accounting forms
 	filtering of tables
 	pagination of tables
 
 Refactoring
+	change oorsprongen table by a boolean josto
 	translate everything to english
 	clean up forms:
 		reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
 		use wtforms
 		add necessary validators
-		form that need to be done:
-			stock_tellen
-			stock_aanpassen
-			stock_aanvullen
-			stock_toevoegen
+		handle booleans more gracefully
+		check if setattrs are caried over
+		take 'form' out of form names, import the whole form module
 	remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
-
-Finishing touches
 	Minimize the number of times we read or write to the DB
+	improve python code quality (current pyint score:  2.95/10)
+		replace tabs with spaces
 	check validity of XHTML, CSS & JS
-	have template produce beautiful XHTML
+	fix whitespace in produced XHTML
+
+Usability
 	improve graphical design

@@ -11,57 +11,34 @@
 {% endblock %}
 {% block content %}
 <form id="stock_aanpassen" method="POST" class="cf">
+	{{ form.hidden_tag() }}
 	<table id="drankenlijst">
 		<thead>
 			<tr>
-				<th>id</th>
 				<th>Naam</th>
 				<th>Verkoopprijs</th>
-				<th>Aantal in stock</th>
-				<th>Minimale stock</th>
 				<th>Maximale stock</th>
 				<th>Categorie</th>
-				<th>Oorsprong</th>
+				<th>Josto</th>
 			</tr>
 		</thead>
 		<tbody>
-{% for entry in lijst %}
+	{%- for item in form -%}
+		{%- if item.name != 'csrf_token' and item.name != 'submit' %}
 			<tr>
+				{%- for field in item %}
 				<td>
-					{{ entry.id }}
-					<input type="hidden" name="ind[]" value="{{ entry.id }}">
-				</td>
-				<td>
-					<input type="text" value="{{ entry.naam }}" name="naam_{{ entry.id }}" />
-				</td>
-				<td>
-					<input type="text" value="{{ entry.prijs }}" name="prijs_{{ entry.id }}" />
-				</td>
-				<td>{{ entry.stock }}</td>
-				<td>
-					<input type="text" value="0" name="minStock_{{ entry.id }}" />
-				</td>
-				<td>
-					<input type="text" value="{{ entry.aanvullenTot }}" name="aanvullenTot_{{ entry.id }}" />
-				</td>
-				<td>
-					<select name="categorieID_{{ entry.id }}">
-{% for categorie in categorieen %}
-							<option value="{{ categorie.id }}"{% if categorie.id == entry.categorieID %} selected="selected"{% endif %}>{{ categorie.beschrijving }}</option>
-{% endfor %}
-					</select>
-				</td>
-				<td>
-					<select name="josto_{{ entry.id }}">
-{% for oorsprong in oorsprongen %}
-							<option value="{{ id }}">{{ oorsprong.beschrijving }}</option>
-{% endfor %}
-					</select>
-				</td>
+					{{ field }}
+					{%- for error in field.errors -%}
+        				<span style="color: red; display: block;">{{ error }}</span>
+      				{%- endfor -%}
+      			</td>
+				{%- endfor %}
 			</tr>
-{% endfor %}
+		{%- endif -%}
+	{%- endfor -%}
 		</tbody>
 	</table>
-	<input type="submit" name="stock_aanpassen" value="ok!" />
+	{{ form.submit }}
 </form>
 {% endblock %}
