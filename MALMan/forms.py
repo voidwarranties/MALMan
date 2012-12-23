@@ -57,6 +57,8 @@ class NewFormFields(leden_edit_own_account_form):
 class stock_tellen_form(Form):
     pass
 
+class stock_log_form_single(BaseForm):
+    submit = SubmitField('')
 class stock_log_form(Form):
     pass
 

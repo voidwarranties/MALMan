@@ -36,9 +36,15 @@
                 <td>{% if entry.totaalprijs == 0 %}0{% else %}€{{ entry.totaalprijs }}{% endif %}</td>
                 <td>{{ entry.gebruikerID }}</td>
                 <td><input type="submit" class="revert" value="{{ entry.id }}" name="revert" /></td>
+                <td>{{entry.id}}</td>
             </tr>
         {%- endfor -%}
         </tbody>
     </table>
+    {% for entry in form %}
+        {% for field in entry %}
+            {{ field }}
+        {% endfor %}
+    {% endfor %}
 </form>
 {% endblock %}
