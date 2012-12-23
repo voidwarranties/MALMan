@@ -10,11 +10,11 @@ def booleanfix(POST, var):
     else:
         return False
 
-class new_members_form(Form):
+class new_members(Form):
     # some fields are added by the view
     submit = SubmitField("activate account(s)")
 
-class leden_edit_own_account_form(Form):
+class leden_edit_own_account(Form):
     email = TextField('Email', [
         validators.Email(message='please enter a valid email address')])
     name = TextField('Name', [validators.Required()])
@@ -37,14 +37,14 @@ class leden_edit_own_account_form(Form):
     show_telephone = BooleanField('Display phone number to other members')
     submit = SubmitField("edit my account information")
 
-class leden_edit_password_form(Form):
+class leden_edit_password(Form):
      password = PasswordField("Password", [
          validators.Length(message="Password must be at least 6 characters long", min=6)])
      password_confirm = PasswordField("Retype Password", [
          EqualTo('password', message="Passwords do not match")])
      submit = SubmitField("change my password")
 
-class leden_edit_account_form(leden_edit_own_account_form):
+class leden_edit_account(leden_edit_own_account):
     # some fields are added by the view
     actief_lid = BooleanField('Is an active member')
     membership_dues = IntegerField('Monthly dues (&euro;)', [
@@ -52,18 +52,18 @@ class leden_edit_account_form(leden_edit_own_account_form):
     submit = SubmitField("edit account information")
 
 # this is used by flask_security to generate the register form
-class NewFormFields(leden_edit_own_account_form):
+class NewFormFields(leden_edit_own_account):
     pass
 
 # this is not used, check views.py for more info
-class stock_tellen_form(Form):
+class stock_tellen(Form):
     # some fields are added by the view
     submit = SubmitField('ok!')
 
-class stock_log_form(Form):
+class stock_log(Form):
     revert = SubmitField('revert')
 
-class stock_toevoegen_form(Form):
+class stock_toevoegen(Form):
     naam = TextField('name', [validators.Required()])
     prijs = DecimalField('price (e.g. 1.52)', [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
     aanvullenTot = IntegerField('Maximum stock', [validators.NumberRange(min=0, message='please enter a positive number')])
@@ -71,11 +71,11 @@ class stock_toevoegen_form(Form):
     josto = BooleanField('josto')
     submit = SubmitField('add stock item')
 
-class stock_aanvullen_form(Form):
+class stock_aanvullen(Form):
     # some fields are added by the view
     submit = SubmitField('ok!')
 
-class stock_aanpassen_form_single(wtforms_Form):
+class stock_aanpassen_single(wtforms_Form):
     # some fields are added by the view
     naam = TextField('name', [validators.Required()])
     prijs = DecimalField('price (e.g. 1.52)', [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
@@ -83,5 +83,5 @@ class stock_aanpassen_form_single(wtforms_Form):
     categorieID = SelectField('category', coerce=int)
     josto = BooleanField('josto')
 
-class stock_aanpassen_form(Form):
+class stock_aanpassen(Form):
     submit = SubmitField('add stock item')

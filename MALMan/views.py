@@ -1,6 +1,6 @@
 import re
 from MALMan import app, User, Dranken, roles_users, Role, Drankcat, stock_oorsprong, Dranklog, db, user_datastore
-from forms import new_members_form, leden_edit_own_account_form, leden_edit_account_form, leden_edit_password_form, stock_log_form, stock_tellen_form, stock_toevoegen_form, stock_aanvullen_form,stock_aanpassen_form, stock_aanpassen_form_single, booleanfix
+import forms
 from flask import render_template, request, redirect, flash, abort
 from flask.ext.login import current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
@@ -80,8 +80,8 @@ def ledenlijst():
 def new_members():
     new_members = User.query.filter_by(actief_lid='0')
     for user in new_members:
-        setattr(new_members_form, 'activate_' + str(user.id), BooleanField('Activate User'))
-    form = new_members_form()
+        setattr(forms.new_members, 'activate_' + str(user.id), BooleanField('Activate User'))
+    form = forms.new_members()
 
     if form.validate_on_submit():
         confirmation = ''
@@ -102,13 +102,13 @@ def new_members():
                 confirmation += user.email + " was made an active member"
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('new_members.html', new_members=new_members, new_members_form=form)
+    return render_template('new_members.html', new_members=new_members, form=form)
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
 @login_required
 def leden_edit_own():
     userdata = User.query.get(current_user.id)
-    form = leden_edit_own_account_form(obj=userdata)
+    form = forms.leden_edit_own_account(obj=userdata)
     if form.validate_on_submit():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
@@ -132,7 +132,7 @@ def leden_edit_own():
 @app.route('/leden_edit_password', methods=['GET', 'POST'])
 @login_required
 def leden_edit_password():
-    form = leden_edit_password_form()
+    form = forms.leden_edit_password()
     _security = LocalProxy(lambda: current_app.extensions['security'])
     _datastore = LocalProxy(lambda: _security.datastore)
     if form.validate_on_submit():
@@ -152,10 +152,10 @@ def leden_edit(userid):
         if role != 'membership':
             # check the checkbox if the user has the role
             if role in userdata.roles:
-                setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name, default='y'))
+                setattr(forms.leden_edit_account, 'perm_' + str(role.name), BooleanField(role.name, default='y'))
             else:
-                setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name))
-    form = leden_edit_account_form(obj=userdata)
+                setattr(forms.leden_edit_account, 'perm_' + str(role.name), BooleanField(role.name))
+    form = forms.leden_edit_account(obj=userdata)
     del form.email
     if form.validate_on_submit():
         confirmation = aanpassing
@@ -220,9 +220,9 @@ def stock():
 def stock_tellen():
     dranken = Dranken.query.all()
     for drank in dranken:
-        setattr(stock_tellen_form, 'amount_' + str(drank.id), IntegerField(drank.naam, [
+        setattr(forms.stock_tellen, 'amount_' + str(drank.id), IntegerField(drank.naam, [
             validators.NumberRange(min=0, message='please enter a positive number')], default=drank.stock))
-    form = stock_tellen_form()
+    form = forms.stock_tellen()
     if form.validate_on_submit():
         confirmation = aanpassing
         for drankobject in dranken:
@@ -242,8 +242,8 @@ def stock_aanpassen():
     dranken = Dranken.query.all()
     drankcats = Drankcat.query.all()
     for drank in dranken:
-        setattr(stock_aanpassen_form, str(drank.id), FormField(stock_aanpassen_form_single, default=drank, separator='_'))
-    form = stock_aanpassen_form()
+        setattr(forms.stock_aanpassen, str(drank.id), FormField(forms.stock_aanpassen_single, default=drank, separator='_'))
+    form = forms.stock_aanpassen()
     for item in form:
         if item.name != 'csrf_token' and item.name != 'submit':
             item.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
@@ -256,7 +256,7 @@ def stock_aanpassen():
             for atribute in atributes:
                 if atribute == 'josto':
                     old_value = formatbool(getattr(drank, atribute))
-                    new_value = booleanfix(request.form, str(drank.id) + '_josto')
+                    new_value = forms.booleanfix(request.form, str(drank.id) + '_josto')
                 else: 
                     old_value = getattr(drank, atribute)
                     new_value = request.form[str(drank.id) + '_' + atribute]
@@ -292,7 +292,7 @@ def stock_aanvullen():
         confirmation = aanpassing
         for drank in jostodranken:
             drankopbject = Dranken.query.get(drank.id)
-            checked = booleanfix(request.form, 'check_' + str(drank.id))
+            checked = forms.booleanfix(request.form, 'check_' + str(drank.id))
             if checked: 
                 if int(request.form["amount_" + str(drank.id)]) != 0:
                     changes = Dranklog(drank.id, request.form["amount_" + str(drank.id)], 0, 0, "aanvulling") #userID moet nog worden ingevuld naar de user die dit toevoegt
@@ -307,7 +307,7 @@ def stock_aanvullen():
 @permission_required('membership', 'stock')
 def stock_log():
     log = Dranklog.query.all()
-    form = stock_log_form()
+    form = forms.stock_log()
     if form.validate_on_submit():
         changes = Dranklog.query.get(request.form["revert"])
         Dranklog.remove(changes)
@@ -319,10 +319,10 @@ def stock_log():
 @permission_required('membership', 'stock')
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
-    form = stock_toevoegen_form()
+    form = forms.stock_toevoegen()
     form.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
     if form.validate_on_submit():
-        josto = booleanfix(request.form, 'josto')
+        josto = forms.booleanfix(request.form, 'josto')
         changes = Dranken(request.form["naam"], request.form["aanvullenTot"], request.form["prijs"], request.form["categorieID"], josto)
         db.session.add(changes)
         db.session.commit()
