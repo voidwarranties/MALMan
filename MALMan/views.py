@@ -157,7 +157,7 @@ def leden_edit(userid):
                 setattr(leden_edit_account_form, 'perm_' + str(role.name), BooleanField(role.name))
     form = leden_edit_account_form(obj=userdata)
     del form.email
-    if request.method == 'POST':
+    if form.validate_on_submit():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
         for atribute in atributes:
@@ -282,7 +282,7 @@ def stock_aanvullen():
     jostodranken = Dranken.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
     class stock_aanvullen_form(BaseForm):
-        pass
+       submit = SubmitField('ok!')
     for drank in jostodranken:
         if drank.aanvullen > 0:
             setattr(stock_aanvullen_form, 'amount_' + str(drank.id), IntegerField(drank.naam, [validators.NumberRange(min=0, message='please enter a positive number')], default=drank.aanvullen))

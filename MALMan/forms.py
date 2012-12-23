@@ -10,8 +10,8 @@ def booleanfix(POST, var):
     else:
         return False
 
-# This form starts up empty, and is filled up with field by the view
 class new_members_form(Form):
+    # some fields are added by the view
     submit = SubmitField("activate account(s)")
 
 class leden_edit_own_account_form(Form):
@@ -45,6 +45,7 @@ class leden_edit_password_form(Form):
      submit = SubmitField("change my password")
 
 class leden_edit_account_form(leden_edit_own_account_form):
+    # some fields are added by the view
     actief_lid = BooleanField('Is an active member')
     membership_dues = IntegerField('Monthly dues (&euro;)', [
         validators.NumberRange(min=0, message='please enter a positive number'),]) 
@@ -54,8 +55,10 @@ class leden_edit_account_form(leden_edit_own_account_form):
 class NewFormFields(leden_edit_own_account_form):
     pass
 
+# this is not used, check views.py for more info
 class stock_tellen_form(Form):
-    pass
+    # some fields are added by the view
+    submit = SubmitField('ok!')
 
 class stock_log_form(Form):
     revert = SubmitField('revert')
@@ -69,9 +72,11 @@ class stock_toevoegen_form(Form):
     submit = SubmitField('add stock item')
 
 class stock_aanvullen_form(Form):
-    pass
+    # some fields are added by the view
+    submit = SubmitField('ok!')
 
 class stock_aanpassen_form_single(wtforms_Form):
+    # some fields are added by the view
     naam = TextField('name', [validators.Required()])
     prijs = DecimalField('price (e.g. 1.52)', [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
     aanvullenTot = IntegerField('Maximum stock', [validators.NumberRange(min=0, message='please enter a positive number')])
