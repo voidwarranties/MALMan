@@ -3,13 +3,13 @@
 {% block title %}stock tellen{% endblock %}
 {%- block content %}
 {% from "security/_macros.html" import render_field_with_errors %}
-			<form id="stock_tellen" method="POST" class="cf">
-			{{ form.hidden_tag() }}
-			{%- for entry in form -%}
-				{% if entry.name != 'csrf_token' %}
-					{{ render_field_with_errors(entry) }}
-				{% endif %}
-			{%- endfor -%}
-				<input type="submit" name="stock_tellen" value="ok!" />
-			</form>
+            <form id="stock_tellen" method="POST" class="cf">
+            {{ form.hidden_tag() }}
+            {%- for entry in form -%}
+                {% if entry.name != 'csrf_token' %}
+                    {{ render_field_with_errors(entry) }}
+                {% endif %}
+            {%- endfor -%}
+                <input type="submit" name="stock_tellen" value="ok!" />
+            </form>
 {% endblock %}

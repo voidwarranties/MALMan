@@ -4,12 +4,12 @@
 {% block content %}
 {% from "security/_macros.html" import render_field_with_errors %}
 <form id="stock_toevoegen" method="post" class="cf">
-	{{ form.hidden_tag() }}
-	{{ render_field_with_errors(form.naam) }}
-	{{ render_field_with_errors(form.prijs) }}
-	{{ render_field_with_errors(form.aanvullenTot) }}
-	{{ render_field_with_errors(form.categorieID) }}
-	{{ render_field_with_errors(form.josto) }}
-	{{ form.submit}}
+    {{ form.hidden_tag() }}
+    {{ render_field_with_errors(form.naam) }}
+    {{ render_field_with_errors(form.prijs) }}
+    {{ render_field_with_errors(form.aanvullenTot) }}
+    {{ render_field_with_errors(form.categorieID) }}
+    {{ render_field_with_errors(form.josto) }}
+    {{ form.submit}}
 </form>
 {% endblock %}

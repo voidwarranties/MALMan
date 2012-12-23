@@ -177,18 +177,18 @@ from MALMan.forms import NewFormFields
 class ConfirmRegisterForm(Form, RegisterFormMixin, UniqueEmailFormMixin, NewPasswordFormMixin, NewFormFields):
     def to_dict(self):
         return dict(
-           	email=self.email.data,
+               email=self.email.data,
             password=self.password.data,
-           	name=self.name.data,
-           	street=self.street.data,
-       	    number=self.number.data,
-           	bus=self.bus.data,
-           	postalcode=self.postalcode.data,
-       	    gemeente=self.gemeente.data,
-           	geboortedatum=self.geboortedatum.data,
-           	telephone=self.telephone.data,
-           	show_telephone=self.show_telephone.data,
-           	show_email=self.show_email.data)
+               name=self.name.data,
+               street=self.street.data,
+               number=self.number.data,
+               bus=self.bus.data,
+               postalcode=self.postalcode.data,
+               gemeente=self.gemeente.data,
+               geboortedatum=self.geboortedatum.data,
+               telephone=self.telephone.data,
+               show_telephone=self.show_telephone.data,
+               show_email=self.show_email.data)
 
 class RegisterForm(ConfirmRegisterForm, PasswordConfirmFormMixin):
     pass

@@ -3,10 +3,10 @@
 {% block content %}
 <h2>{{error}}</h2>
 {%- if error == "404 Not Found" -%}
-	<p>We can't find the page you were looking for.</p>
-	<p>Sorry about that.</p>
+    <p>We can't find the page you were looking for.</p>
+    <p>Sorry about that.</p>
 {%- else -%}
-	<p>You might want to go somewhere else.</p>
+    <p>You might want to go somewhere else.</p>
 {%- endif -%}
 <p><a href="{{ lastpage }}">Take me back where I came from</a></p>
 {% endblock %}

@@ -6,39 +6,39 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-		$(function() { $("#drankenlijst").tablesorter(); } ); 
+        $(function() { $("#drankenlijst").tablesorter(); } ); 
 </script>
 {% endblock %}
 {% block content %}
 <form id="stock_aanpassen" method="POST" class="cf">
-	{{ form.hidden_tag() }}
-	<table id="drankenlijst">
-		<thead>
-			<tr>
-				<th>Naam</th>
-				<th>Verkoopprijs</th>
-				<th>Maximale stock</th>
-				<th>Categorie</th>
-				<th>Josto</th>
-			</tr>
-		</thead>
-		<tbody>
-	{%- for item in form -%}
-		{%- if item.name != 'csrf_token' and item.name != 'submit' %}
-			<tr>
-				{%- for field in item %}
-				<td>
-					{{ field }}
-					{%- for error in field.errors -%}
-        				<span style="color: red; display: block;">{{ error }}</span>
-      				{%- endfor -%}
-      			</td>
-				{%- endfor %}
-			</tr>
-		{%- endif -%}
-	{%- endfor -%}
-		</tbody>
-	</table>
-	{{ form.submit }}
+    {{ form.hidden_tag() }}
+    <table id="drankenlijst">
+        <thead>
+            <tr>
+                <th>Naam</th>
+                <th>Verkoopprijs</th>
+                <th>Maximale stock</th>
+                <th>Categorie</th>
+                <th>Josto</th>
+            </tr>
+        </thead>
+        <tbody>
+    {%- for item in form -%}
+        {%- if item.name != 'csrf_token' and item.name != 'submit' %}
+            <tr>
+                {%- for field in item %}
+                <td>
+                    {{ field }}
+                    {%- for error in field.errors -%}
+                        <span style="color: red; display: block;">{{ error }}</span>
+                      {%- endfor -%}
+                  </td>
+                {%- endfor %}
+            </tr>
+        {%- endif -%}
+    {%- endfor -%}
+        </tbody>
+    </table>
+    {{ form.submit }}
 </form>
 {% endblock %}

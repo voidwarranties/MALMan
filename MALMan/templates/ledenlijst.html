@@ -6,53 +6,53 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-		$(function() { $("#userlist").tablesorter(); } ); 
+        $(function() { $("#userlist").tablesorter(); } ); 
 </script>
 {% endblock %}
 {% block content %}
 <table id="userlist">
-	<thead>
-		<tr>
-			<th>name</th>
-			<th>date of birth</th>
-			<th>email</th>
-			<th>telephone</th>
-			<th>address</th>
-			<th>member since</th>
-			<th>roles</th>
-			<th>dues</th>
-			{% if perm_members %}<th>modify</th>{% endif %}
-		</tr>
-	</thead>
-	<tbody>
+    <thead>
+        <tr>
+            <th>name</th>
+            <th>date of birth</th>
+            <th>email</th>
+            <th>telephone</th>
+            <th>address</th>
+            <th>member since</th>
+            <th>roles</th>
+            <th>dues</th>
+            {% if perm_members %}<th>modify</th>{% endif %}
+        </tr>
+    </thead>
+    <tbody>
 {%- for user in users %}
-		<tr>
-			<td>{{ user.name }}</td>
-			<td>{{ user.geboortedatum }}</td>
-			<td>
-				{%- if user.show_email or perm_members -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
-				{%- if not user.show_email and perm_members %} (hidden){%- endif -%}
-			</td>
-			<td>
-				{%- if user.show_telephone or perm_members -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
-				{%- if not user.show_telephone and perm_members %} (hidden){%- endif -%}
-			</td>
-			<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</td>
-			<td>{{ user.member_since }}</td>
-			<td>
-				{%- set i = user.roles|length -%}
-				{%- for perm in user.roles|sort -%}
-					{% if perm != 'membership' %}
-						{{perm}}
-						{%- if i > 1 -%},{%- endif -%}
-					{% endif %}
-					{%- set i = i - 1 -%}
-				{%- endfor -%}
-			</td>
-			<td>€{{ user.membership_dues }}</td>
-			{% if perm_members %}<td><a href="leden_edit_{{user.id}}"><img src="static/edit.gif" \></a></td>{% endif %}
-		</tr>
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.geboortedatum }}</td>
+            <td>
+                {%- if user.show_email or perm_members -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_email and perm_members %} (hidden){%- endif -%}
+            </td>
+            <td>
+                {%- if user.show_telephone or perm_members -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_telephone and perm_members %} (hidden){%- endif -%}
+            </td>
+            <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</td>
+            <td>{{ user.member_since }}</td>
+            <td>
+                {%- set i = user.roles|length -%}
+                {%- for perm in user.roles|sort -%}
+                    {% if perm != 'membership' %}
+                        {{perm}}
+                        {%- if i > 1 -%},{%- endif -%}
+                    {% endif %}
+                    {%- set i = i - 1 -%}
+                {%- endfor -%}
+            </td>
+            <td>€{{ user.membership_dues }}</td>
+            {% if perm_members %}<td><a href="leden_edit_{{user.id}}"><img src="static/edit.gif" \></a></td>{% endif %}
+        </tr>
 {% endfor %}
-	</tbody>
+    </tbody>
 </table>
 {% endblock %}

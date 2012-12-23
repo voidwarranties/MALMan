@@ -1,26 +1,25 @@
 Funtionality
-	delete stock items
-	add transactions DB
-	make accounting forms
-	filtering of tables
-	pagination of tables
+    delete stock items
+    add transactions DB
+    make accounting forms
+    filtering of tables
+    pagination of tables
 
 Refactoring
-	change oorsprongen table by a boolean josto
-	translate everything to english
-	clean up forms:
-		reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
-		use wtforms
-		add necessary validators
-		handle booleans more gracefully
-		check if setattrs are caried over
-		take 'form' out of form names, import the whole form module
-	remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
-	Minimize the number of times we read or write to the DB
-	improve python code quality (current pyint score:  2.95/10)
-		replace tabs with spaces
-	check validity of XHTML, CSS & JS
-	fix whitespace in produced XHTML
+    change oorsprongen table by a boolean josto
+    translate everything to english
+    clean up forms:
+        reddirect after a POST (to prevent data from being submitted twice if users refresh the page)
+        use wtforms
+        add necessary validators
+        handle booleans more gracefully
+        check if setattrs are caried over
+        take 'form' out of form names, import the whole form module
+    remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
+    Minimize the number of times we read or write to the DB
+    improve python code quality (current pylint score:  2.99/10)
+    check validity of XHTML, CSS & JS
+    fix whitespace in produced XHTML
 
 Usability
-	improve graphical design
+    improve graphical design

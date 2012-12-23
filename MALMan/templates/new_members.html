@@ -3,19 +3,19 @@
 {% block title %}leden{% endblock %}
 {% block content %}
 <form action="new_members" id="new_members" method="POST" class="cf">
-	{{ new_members_form.hidden_tag() }}
+    {{ new_members_form.hidden_tag() }}
 {%- for user in new_members %}
-	<dl>
-		<dt>name: </dt><dd>{{ user.name }}</dd>
-		<dt>date of birth: </dt><dd>{{ user.geboortedatum }}</dd>
-		<dt>email: </dt><dd>{{- user.email -}}</dd>
-		<dt>telephone: </dt><dd>{{- user.telephone -}}</dd>
-		<dt>address: </dt><dd>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</dd>
-		<dt>registration date: </dt><dd>{{ user.member_since }}</dd>
-    	<dt>{{ new_members_form['activate_' ~ user.id].label }}: </dt><dd>{{ new_members_form['activate_' ~ user.id] }}</dd>
-    	<p></p>
-	</dl>
+    <dl>
+        <dt>name: </dt><dd>{{ user.name }}</dd>
+        <dt>date of birth: </dt><dd>{{ user.geboortedatum }}</dd>
+        <dt>email: </dt><dd>{{- user.email -}}</dd>
+        <dt>telephone: </dt><dd>{{- user.telephone -}}</dd>
+        <dt>address: </dt><dd>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.gemeente }}</dd>
+        <dt>registration date: </dt><dd>{{ user.member_since }}</dd>
+        <dt>{{ new_members_form['activate_' ~ user.id].label }}: </dt><dd>{{ new_members_form['activate_' ~ user.id] }}</dd>
+        <p></p>
+    </dl>
 {% endfor %}
-	{{ new_members_form.submit }}
+    {{ new_members_form.submit }}
 </form>
 {% endblock %}
