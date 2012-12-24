@@ -82,24 +82,15 @@ def new_members():
     for user in new_members:
         setattr(forms.new_members, 'activate_' + str(user.id), BooleanField('Activate User'))
     form = forms.new_members()
-
     if form.validate_on_submit():
-        confirmation = ''
+        confirmation = aanpassing
         for user in new_members:
-            var = request.form.get('activate_' + str(user.id))
-            # Hack to interpret booleans correctly
-            if var == None:
-                var = False
-            else:
-                var = True
-            oldvar = str(user.actief_lid)
-            if var != user.actief_lid:
+            new_value = forms.booleanfix(request.form, 'activate_' + str(user.id))
+            if new_value != user.actief_lid:
                 setattr(user, 'actief_lid', True)
                 setattr(user, 'member_since', date.today())
                 db.session.commit()
-                if confirmation != '':
-                    confirmation += ", "
-                confirmation += user.email + " was made an active member"
+                confirmation = add_confirmation(confirmation, user.email + " was made an active member")
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('new_members.html', new_members=new_members, form=form)
@@ -113,18 +104,17 @@ def leden_edit_own():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email']
         for atribute in atributes:
-            var = request.form.get(atribute)
-            # Hack to interpret booleans correctly
-            if var == None:
-                var = False
-            elif var == "y":
-                var = True
-            oldvar = str(getattr(userdata, atribute))
-            if str(var) != oldvar:
-                obj = User.query.get(current_user.id)
-                setattr(obj, atribute, var)
+            if atribute == 'show_telephone' or atribute == 'show_email':
+                old_value = formatbool(getattr(userdata, atribute))
+                new_value = forms.booleanfix(request.form, atribute)
+            else:
+                old_value = getattr(userdata, atribute)
+                new_value = request.form.get(atribute)
+            if str(new_value) != str(old_value):
+                user = User.query.get(current_user.id)
+                setattr(user, atribute, new_value)
                 db.session.commit()
-                confirmation = add_confirmation(confirmation, atribute + " = " + str(var) + " (was " + oldvar + ")")
+                confirmation = add_confirmation(confirmation, atribute + " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('leden_edit_own_account.html', userdata=userdata, form=form)
@@ -160,51 +150,32 @@ def leden_edit(userid):
     if form.validate_on_submit():
         confirmation = aanpassing
         atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 'postalcode', 'bus', 'number', 'street', 'show_telephone', 'show_email', 'actief_lid', 'membership_dues']
+        permissions = [role for role in roles if role != 'membership']
+        atributes.extend(permissions)
         for atribute in atributes:
-            var = request.form.get(atribute)
-            # Hack to interpret booleans correctly
-            if var == None:
-                var = False
-            elif var == "y":
-                var = True
-            oldvar = str(getattr(userdata, atribute))
-            if str(var) != oldvar:
-                obj = User.query.get(userid)
-                setattr(obj, atribute, var)
-                db.session.commit()
-                if confirmation != aanpassing:
-                    confirmation += ", "
-                confirmation += atribute + " = " + str(var) + " (was " + oldvar + ")"
-        for permission_field in roles:
-            if permission_field != "membership":
-                var = request.form.get('perm_' + str(permission_field))
-                # Hack to interpret booleans correctly
-                if var == None:
-                    var = False
+            if atribute in roles:
+                new_value = forms.booleanfix(request.form, 'perm_' + str(atribute))
+                if atribute in userdata.roles:
+                    old_value = True
                 else:
-                    var = True
-                if permission_field in userdata.roles:
-                    oldvar = True
-                else:
-                    oldvar = False
-                # Only update changed values
-                if var != oldvar:
-                    #check if we are adding or removing permissions
-                    if var:
-                        # add permission
-                        role = Role.query.filter_by(name=permission_field).first()
-                        user_datastore.add_role_to_user(userdata, role)
-                        db.session.commit()
-                        # confirmation
-                        if confirmation != aanpassing:
-                            confirmation += ", "
-                        confirmation += "added permission for " + str(permission_field)
+                    old_value = False
+            elif atribute in ['show_telephone', 'show_email', 'actief_lid']:
+                old_value = formatbool(getattr(userdata, atribute))
+                new_value = forms.booleanfix(request.form, atribute)
+            else:
+                old_value = getattr(userdata, str(atribute))
+                new_value = request.form.get(atribute)
+            if str(new_value) != str(old_value):
+                if atribute in roles:
+                    if new_value:
+                        user_datastore.add_role_to_user(userdata, atribute)
                     else:
-                        # remove permission
-                        role = Role.query.filter_by(name=permission_field).first()
-                        user_datastore.remove_role_from_user(userdata, role)
-                        db.session.commit()
-                    confirmation = add_confirmation(confirmation, "removed permission for " + str(permission_field))
+                        user_datastore.remove_role_from_user(userdata, atribute)
+                else:
+                    user = User.query.get(userid)
+                    setattr(user, atribute, new_value)
+                confirmation = add_confirmation(confirmation, str(atribute) + " = " + str(new_value) + " (was " + str(old_value) + ")")
+                db.session.commit()
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('leden_edit_account.html', form=form)
@@ -226,7 +197,6 @@ def stock_tellen():
     if form.validate_on_submit():
         confirmation = aanpassing
         for drankobject in dranken:
-            # only write to DB and display a confirmation for ids for which the amount_id we received in the POST does not equal the value in the DB 
             if int(request.form["amount_" + str(drankobject.id)]) != int(drankobject.stock):
                 changes = Dranklog(drankobject.id, (int(request.form["amount_" + str(drankobject.id)]) - int(drankobject.stock)), 0, 0, "correctie") #userID moet nog worden ingevuld naar de user die dit toevoegt
                 db.session.add(changes)
@@ -278,7 +248,7 @@ def stock_aanpassen():
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_aanvullen():
-    # get all stock items from josto which are not at full capacity
+    # get all stock items from josto
     jostodranken = Dranken.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
     class stock_aanvullen_form(BaseForm):
