@@ -23,11 +23,13 @@
             {%- endif -%}
         {%- endif -%}
         {% if loop.last %}
-            {{ form.hidden_tag() }}
-            {{ form.submit }}
         {%- endif -%}
+    {% endfor %}
+    {% if form|list|count > 3 %}
+        {{ form.hidden_tag() }}
+        {{ form.submit }}
     {% else %}
         <p>Er valt niets aan te vullen!</p>
-    {%- endfor %}
+    {%- endif %}
 </form>
 {% endblock %}
