@@ -335,29 +335,32 @@ def stock_toevoegen():
     return render_template('stock_toevoegen.html', form=form)
 
 @app.route("/accounting")
+@permission_required('membership')
 def accounting():
     return render_template('accounting.html')
 
 @app.route("/accounting_log")
+@permission_required('membership')
 def accounting_log():
     return render_template('accounting_log.html')
 
 @app.route("/accounting_requestreimbursement")
+@permission_required('membership')
 def accounting_requestreimbursement():
     return render_template('accounting_requestreimbursement.html')
 
 @app.route("/accounting_approvereimbursements")
-@permission_required('finances')
+@permission_required('membership', 'finances')
 def accounting_approvereimbursements():
     return render_template('accounting_approvereimbursements.html')
 
 @app.route("/accounting_addtransaction")
-@permission_required('finances')
+@permission_required('membership', 'finances')
 def accounting_edittransation():
     return render_template('accounting_addtransaction.html')
 
 @app.route("/accounting_edittransaction")
-@permission_required('finances')
+@permission_required('membership', 'finances')
 def accounting_edittransation():
     return render_template('accounting_edittransaction.html')
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set category = "stock" %}
-{% block title %}stock aanpassen{% endblock %}
+{% block title %}Edit stock{% endblock %}
 {% block head %}
 {{ super() }}
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
@@ -15,10 +15,10 @@
     <table id="drankenlijst">
         <thead>
             <tr>
-                <th>Naam</th>
-                <th>Verkoopprijs</th>
-                <th>Maximale stock</th>
-                <th>Categorie</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock maximum</th>
+                <th>Category</th>
                 <th>Josto</th>
             </tr>
         </thead>

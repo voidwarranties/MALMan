@@ -73,16 +73,16 @@ class StockLog(Form):
     revert = SubmitField('revert')
 
 class StockToevoegen(Form):
-    naam = TextField('name', [validators.Required()])
-    prijs = DecimalField('price (e.g. 1.52)', 
+    naam = TextField('Name', [validators.Required()])
+    prijs = DecimalField('Price (e.g. 1.52)', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')],
         places=2)
-    aanvullenTot = IntegerField('Maximum stock', 
+    aanvullenTot = IntegerField('Stock maximum', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')])
-    categorieID = SelectField('category', coerce=int)
-    josto = BooleanField('josto')
+    categorieID = SelectField('Category', coerce=int)
+    josto = BooleanField('Josto')
     submit = SubmitField('add stock item')
 
 class StockAanvullen(Form):

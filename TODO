@@ -7,7 +7,6 @@ Funtionality
 
 Refactoring
     check the way users are activated: active, actief_lid, membership role
-    translate UI to english
     translate variable, function and class names to english
     translate DB tables and rows to english
     check if setattrs are caried over

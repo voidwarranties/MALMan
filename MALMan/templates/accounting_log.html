@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set category = "accounting" %}
-{% block title %}boekhouding{% endblock %}
+{% block title %}Accounting log{% endblock %}
 {% block head %}
 {{ super() }}
 <script type="text/javascript" src="static/jquery-latest.js"></script> 
@@ -13,12 +13,12 @@
 <table id="transacties">
     <thead>
         <tr>
-            <th>Factuurnummer</th>
-            <th>Datum</th>
-            <th>van/naar</th>
-            <th>Omschrijving</th>
-            <th>Categorie</th>
-            <th>Bedrag</th>
+            <th>Transaction number</th>
+            <th>Date</th>
+            <th>to/from</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
         </tr>
     </thead>
     <tbody>
