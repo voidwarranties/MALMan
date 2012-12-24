@@ -26,6 +26,7 @@ class Role(db.Model, RoleMixin):
 
 class User(db.Model, UserMixin):
     """Define the User database table"""
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     name = db.Column(db.String(255))
@@ -104,7 +105,8 @@ class Dranklog(db.Model):
     aantal = db.Column(db.Integer)
     totaalprijs = db.Column(db.Numeric(5, 2))
     datetime = db.Column(db.String(120))
-    gebruikerID = db.Column(db.Integer)
+    gebruikerID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User')
     beschrijving = db.Column(db.String(50))
 
     def __init__(self, drankID, aantal, totaalprijs, gebruikerID, beschrijving):
@@ -117,7 +119,7 @@ class Dranklog(db.Model):
     def __repr__(self):
         return '<id %r>' % self.id
 
-    def remove(self, entry):
+    def remove(entry):
         """remove entry from Dranklog table"""
         db.session.delete(entry)
         db.session.commit()

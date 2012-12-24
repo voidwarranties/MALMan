@@ -213,10 +213,9 @@ def stock_tellen():
         confirmation = AANPASSING
         for drankobject in dranken:
             if int(request.form["amount_" + str(drankobject.id)]) != int(drankobject.stock):
-                #userID moet nog worden ingevuld naar de user die dit toevoegt
                 changes = Dranklog(drankobject.id, 
                     (int(request.form["amount_" + str(drankobject.id)]) - int(drankobject.stock))
-                    , 0, 0, "correctie") 
+                    , 0, current_user.id, "correction") 
                 db.session.add(changes)
                 db.session.commit()
                 confirmation = add_confirmation(confirmation, "stock " + 
@@ -295,10 +294,9 @@ def stock_aanvullen():
             checked = forms.booleanfix(request.form, 'check_' + str(drank.id))
             if checked: 
                 if int(request.form["amount_" + str(drank.id)]) != 0:
-                    #userID moet nog worden ingevuld naar de user die dit toevoegt
                     changes = Dranklog(drank.id, 
                         request.form["amount_" + str(drank.id)], 
-                        0, 0, "aanvulling") 
+                        0, current_user.id, "stock up") 
                     db.session.add(changes)
                     db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " + 
