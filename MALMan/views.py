@@ -66,7 +66,7 @@ def index():
         # is not logged in
         return redirect('login')
 
-@app.route("/leden")
+@app.route("/members")
 @permission_required('membership', 'members')
 def ledenlijst():
     users = User.query.filter_by(active_member='1')
@@ -74,7 +74,7 @@ def ledenlijst():
     return render_template('members.html', perm_members=perm_members, 
         users=users)
 
-@app.route("/new_members", methods=['GET', 'POST'])
+@app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def new_members():
     new_members = User.query.filter_by(active_member='0')
@@ -98,7 +98,7 @@ def new_members():
     return render_template('members_approve_new_members.html', new_members=new_members, 
         form=form)
 
-@app.route('/leden_edit_own_account', methods=['GET', 'POST'])
+@app.route('/members/edit_own_account', methods=['GET', 'POST'])
 @login_required
 def leden_edit_own():
     userdata = User.query.get(current_user.id)
@@ -126,7 +126,7 @@ def leden_edit_own():
     return render_template('members_edit_own_account.html', userdata=userdata, 
         form=form)
 
-@app.route('/leden_edit_password', methods=['GET', 'POST'])
+@app.route('/members/edit_password', methods=['GET', 'POST'])
 @login_required
 def leden_edit_password():
     form = forms.LedenEditPassword()
@@ -139,7 +139,7 @@ def leden_edit_password():
         return redirect(request.path)
     return render_template('members_edit_password.html', form=form)
 
-@app.route('/leden_edit_<int:userid>', methods=['GET', 'POST'])
+@app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def leden_edit(userid):
     userdata = User.query.get(userid)
@@ -193,13 +193,13 @@ def leden_edit(userid):
         return redirect(request.path)
     return render_template('members_edit_account.html', form=form)
 
-@app.route("/stock")
+@app.route("/bar")
 @permission_required('membership')
 def stock():
     dranken = Dranken.query.all()
     return render_template('bar.html', lijst=dranken)
 
-@app.route("/stock_tellen", methods=['GET', 'POST'])
+@app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_tellen():
     dranken = Dranken.query.all()
@@ -225,7 +225,7 @@ def stock_tellen():
         return redirect(request.path)
     return render_template('bar_edit_item_amounts.html', lijst=dranken, form=form)
 
-@app.route("/stock_aanpassen", methods=['GET', 'POST'])
+@app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_aanpassen():
     dranken = Dranken.query.all()
@@ -270,7 +270,7 @@ def stock_aanpassen():
         return redirect(request.path)
     return render_template('bar_edit_items.html', form=form)
 
-@app.route("/stock_aanvullen", methods=['GET', 'POST'])
+@app.route("/bar/stockup", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_aanvullen():
     # get all stock items from josto
@@ -306,7 +306,7 @@ def stock_aanvullen():
         return redirect(request.path)
     return render_template('bar_stockup.html', form=form)
 
-@app.route("/stock_log", methods=['GET', 'POST'])
+@app.route("/bar/log", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_log():
     log = Dranklog.query.all()
@@ -318,7 +318,7 @@ def stock_log():
         return redirect(request.path)
     return render_template('bar_log.html', log=log, form=form)
 
-@app.route("/stock_toevoegen", methods=['GET', 'POST'])
+@app.route("/bar/add_item", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
@@ -339,27 +339,27 @@ def stock_toevoegen():
 def accounting():
     return render_template('accounting.html')
 
-@app.route("/accounting_log")
+@app.route("/accounting/log")
 @permission_required('membership')
 def accounting_log():
     return render_template('accounting_log.html')
 
-@app.route("/accounting_requestreimbursement")
+@app.route("/accounting/request_reimbursement")
 @permission_required('membership')
 def accounting_requestreimbursement():
     return render_template('accounting_request_reimbursement.html')
 
-@app.route("/accounting_approvereimbursements")
+@app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
 def accounting_approvereimbursements():
     return render_template('accounting_approve_reimbursements.html')
 
-@app.route("/accounting_addtransaction")
+@app.route("/accounting/add_transaction")
 @permission_required('membership', 'finances')
 def accounting_edittransation():
     return render_template('accounting_add_transaction.html')
 
-@app.route("/accounting_edittransaction")
+@app.route("/accounting/edit_transaction")
 @permission_required('membership', 'finances')
 def accounting_edittransation():
     return render_template('accounting_edit_transaction.html')

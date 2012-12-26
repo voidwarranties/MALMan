@@ -50,7 +50,7 @@
                 {%- endfor -%}
             </td>
             <td>€{{ user.membership_dues }}</td>
-            {% if perm_members %}<td><a href="leden_edit_{{user.id}}"><img src="static/edit.gif" \></a></td>{% endif %}
+            {% if perm_members %}<td><a href="/members/edit_{{user.id}}"><img src="static/edit.gif" \></a></td>{% endif %}
         </tr>
 {% endfor %}
     </tbody>

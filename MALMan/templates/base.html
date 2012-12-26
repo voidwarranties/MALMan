@@ -19,40 +19,40 @@
 {%-    if category != "login" -%}
             <ul id="menu" class="cf">
                 <li><a href="/">my account</a></li>
-                <li><a href="leden">members</a></li>
-                <li><a href="stock">stock bar</a></li>
-                <li><a href="accounting">accounting</a></li>
+                <li><a href="/members">members</a></li>
+                <li><a href="/bar">stock bar</a></li>
+                <li><a href="/accounting">accounting</a></li>
             </ul>
 {%- endif -%}
 {%- if category == "account" -%}
             <ul id="menu" class="cf">
                 <li><a href="/">overview</a></li>
-                <li><a href="leden_edit_own_account">edit my profile information</a></li>
+                <li><a href="/members/edit_own_account">edit my profile information</a></li>
                 <li><a href="#">my account</a></li>
-                <li><a href="leden_edit_password">edit my password</a></li>
+                <li><a href="/members/edit_password">edit my password</a></li>
             </ul>
 {%- elif category == "leden" -%}            
             <ul id="menu" class="cf">
-                <li><a href="leden">memberlist</a></li>
-                <li><a href="new_members">new members (A)</a></li>
+                <li><a href="/members">memberlist</a></li>
+                <li><a href="/members/approve_new_members">new members (A)</a></li>
             </ul>
 {%- elif category == "stock" -%}
             <ul id="menu" class="cf">
-                <li><a href="stock">list stock</a></li>
-                <li><a href="stock_tellen">edit stock amount (A)</a></li>
-                <li><a href="stock_aanpassen">edit stock (A)</a></li>
-                <li><a href="stock_aanvullen">stock up (Josto) (A)</a></li>
-                <li><a href="stock_log">stock log (A)</a></li>
-                <li><a href="stock_toevoegen">add stock item (A)</a></li>
+                <li><a href="/bar">list stock</a></li>
+                <li><a href="/bar/edit_item_amounts">edit stock amount (A)</a></li>
+                <li><a href="/bar/edit_items">edit stock (A)</a></li>
+                <li><a href="/bar/stockup">stock up (Josto) (A)</a></li>
+                <li><a href="/bar/log">stock log (A)</a></li>
+                <li><a href="/bar/add_item">add stock item (A)</a></li>
             </ul>
 {%- elif category == "accounting" -%}
             <ul id="menu" class="cf">
-                <li><a href="accounting">overview</a></li>
-                <li><a href="accounting_log">transaction log</a></li>
-                <li><a href="accounting_requestreimbursement">request reimbursement</a></li>
-                <li><a href="accounting_approvereimbursements">approve reimbursements (A)</a></li>
-                <li><a href="accounting_addtransaction">add transaction (A)</a></li>
-                <li><a href="accounting_edittransaction">edit transactions (A)</a></li>
+                <li><a href="/accounting">overview</a></li>
+                <li><a href="/accounting/log">transaction log</a></li>
+                <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
+                <li><a href="/accounting/approve_reimbursements">approve reimbursements (A)</a></li>
+                <li><a href="/accounting/add_transaction">add transaction (A)</a></li>
+                <li><a href="/accounting/edit_transaction">edit transactions (A)</a></li>
             </ul>
 {%-    elif category == "login" -%}
             <ul id="menu" class="cf">
