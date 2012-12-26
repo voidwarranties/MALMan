@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% set category = "stock" %}
+{% block title %}Edit stock{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+<script type="text/javascript">
+        $(function() { $("#drankenlijst").tablesorter(); } ); 
+</script>
+{% endblock %}
+{% block content %}
+<form id="stock_aanpassen" method="POST" class="cf">
+    {{ form.hidden_tag() }}
+    <table id="drankenlijst">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock maximum</th>
+                <th>Category</th>
+                <th>Josto</th>
+            </tr>
+        </thead>
+        <tbody>
+    {%- for item in form -%}
+        {%- if item.name != 'csrf_token' and item.name != 'submit' %}
+            <tr>
+                {%- for field in item %}
+                <td>
+                    {{ field }}
+                    {%- for error in field.errors -%}
+                        <span style="color: red; display: block;">{{ error }}</span>
+                      {%- endfor -%}
+                  </td>
+                {%- endfor %}
+            </tr>
+        {%- endif -%}
+    {%- endfor -%}
+        </tbody>
+    </table>
+    {{ form.submit }}
+</form>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% set category = "stock" %}
+{% block title %}Stock log{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+<script type="text/javascript">
+        $(function() { $("#drankenlijst").tablesorter(
+            {sortList: [[0,1]]}
+        ); } ); 
+</script>
+{% endblock %}
+{% block content %}
+<form class="empty" method="POST">
+    {{ form.hidden_tag() }}
+    <table id="drankenlijst">
+        <thead>
+            <tr>
+                <th>date</th>
+                <th>type</th>
+                <th>item</th>
+                <th>stock effect</th>
+                <th>finanial effect</th>
+                <th>user</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entry in log %}
+            <tr>
+                <td>{{ entry.datetime }}</td>
+                <td>{{ entry.transaction_type }}</td>
+                <td>{{ entry.stock_name.name }}</td>
+                <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
+                <td>{% if entry.total_price == 0 %}0{% else %}€{{ entry.total_price }}{% endif %}</td>
+                <td>{{ entry.user.name }}</td>
+                <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
+            </tr>
+        {%- endfor -%}
+        </tbody>
+    </table>
+</form>
+{% endblock %}

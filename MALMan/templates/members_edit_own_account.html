@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set category = "account" %}
+{% block title %}Edit my account{% endblock %}
+{% block content %}
+
+{% from "security/_macros.html" import render_field_with_errors %}
+<form id="leden_edit_own_account.html" method="POST" class="cf">
+    {{ form.hidden_tag() }}
+    <h2>Login info</h2>
+    {{ render_field_with_errors(form.email) }}
+    <p><a href="leden_edit_password">click here to edit your password</a></p>
+    <h2>Personal info</h2>
+    {{ render_field_with_errors(form.name) }}
+    {{ render_field_with_errors(form.date_of_birth) }}
+    {{ render_field_with_errors(form.telephone) }}
+    {{ render_field_with_errors(form.street) }}
+    {{ render_field_with_errors(form.number) }}
+    {{ render_field_with_errors(form.bus) }}
+    {{ render_field_with_errors(form.postalcode) }}
+    {{ render_field_with_errors(form.city) }}
+    <h2>Privacy settings</h2>
+    {{ render_field_with_errors(form.show_email) }}
+    {{ render_field_with_errors(form.show_telephone) }}
+    {{ form.submit }}
+</form>
+{% endblock %}

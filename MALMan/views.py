@@ -58,10 +58,10 @@ def permission_required(*roles):
 def index():
     if current_user and current_user.is_active() and User.query.get(current_user.id).active_member:
         # is an aproved member
-        return render_template('account.html')
+        return render_template('members_account.html')
     elif current_user and current_user.is_active():
         # is logged in but not aproved yet
-        return render_template('waiting_aproval.html')
+        return render_template('members_waiting_aproval.html')
     else:
         # is not logged in
         return redirect('login')
@@ -71,7 +71,7 @@ def index():
 def ledenlijst():
     users = User.query.filter_by(active_member='1')
     perm_members = Permission(Need('role', 'members')).can()
-    return render_template('ledenlijst.html', perm_members=perm_members, 
+    return render_template('members.html', perm_members=perm_members, 
         users=users)
 
 @app.route("/new_members", methods=['GET', 'POST'])
@@ -95,7 +95,7 @@ def new_members():
                     user.email + " was made an active member")
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('new_members.html', new_members=new_members, 
+    return render_template('members_approve_new_members.html', new_members=new_members, 
         form=form)
 
 @app.route('/leden_edit_own_account', methods=['GET', 'POST'])
@@ -123,7 +123,7 @@ def leden_edit_own():
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('leden_edit_own_account.html', userdata=userdata, 
+    return render_template('members_edit_own_account.html', userdata=userdata, 
         form=form)
 
 @app.route('/leden_edit_password', methods=['GET', 'POST'])
@@ -137,7 +137,7 @@ def leden_edit_password():
         _datastore.commit()
         flash("your password was updated", "confirmation")
         return redirect(request.path)
-    return render_template('leden_edit_password.html', form=form)
+    return render_template('members_edit_password.html', form=form)
 
 @app.route('/leden_edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
@@ -191,13 +191,13 @@ def leden_edit(userid):
                 db.session.commit()
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('leden_edit_account.html', form=form)
+    return render_template('members_edit_account.html', form=form)
 
 @app.route("/stock")
 @permission_required('membership')
 def stock():
     dranken = Dranken.query.all()
-    return render_template('stock.html', lijst=dranken)
+    return render_template('bar.html', lijst=dranken)
 
 @app.route("/stock_tellen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -223,7 +223,7 @@ def stock_tellen():
                     str(drankobject.id)])
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('stock_tellen.html', lijst=dranken, form=form)
+    return render_template('bar_edit_item_amounts.html', lijst=dranken, form=form)
 
 @app.route("/stock_aanpassen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -268,7 +268,7 @@ def stock_aanpassen():
                             str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('stock_aanpassen.html', form=form)
+    return render_template('bar_edit_items.html', form=form)
 
 @app.route("/stock_aanvullen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -304,7 +304,7 @@ def stock_aanvullen():
                         request.form["amount_" + str(drank.id)])
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('stock_aanvullen.html', form=form)
+    return render_template('bar_stockup.html', form=form)
 
 @app.route("/stock_log", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -316,7 +316,7 @@ def stock_log():
         Dranklog.remove(changes)
         flash('The change was reverted', 'confirmation')
         return redirect(request.path)
-    return render_template('stock_log.html', log=log, form=form)
+    return render_template('bar_log.html', log=log, form=form)
 
 @app.route("/stock_toevoegen", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
@@ -332,7 +332,7 @@ def stock_toevoegen():
         db.session.commit()
         flash("stockitem toegevoegd: " + request.form["name"], "confirmation")
         return redirect(request.path)
-    return render_template('stock_toevoegen.html', form=form)
+    return render_template('bar_add_item.html', form=form)
 
 @app.route("/accounting")
 @permission_required('membership')
@@ -347,22 +347,22 @@ def accounting_log():
 @app.route("/accounting_requestreimbursement")
 @permission_required('membership')
 def accounting_requestreimbursement():
-    return render_template('accounting_requestreimbursement.html')
+    return render_template('accounting_request_reimbursement.html')
 
 @app.route("/accounting_approvereimbursements")
 @permission_required('membership', 'finances')
 def accounting_approvereimbursements():
-    return render_template('accounting_approvereimbursements.html')
+    return render_template('accounting_approve_reimbursements.html')
 
 @app.route("/accounting_addtransaction")
 @permission_required('membership', 'finances')
 def accounting_edittransation():
-    return render_template('accounting_addtransaction.html')
+    return render_template('accounting_add_transaction.html')
 
 @app.route("/accounting_edittransaction")
 @permission_required('membership', 'finances')
 def accounting_edittransation():
-    return render_template('accounting_edittransaction.html')
+    return render_template('accounting_edit_transaction.html')
 
 @app.errorhandler(401)
 def error_401(error):
