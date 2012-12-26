@@ -24,11 +24,11 @@
     <tbody>
 {% for entry in lijst %}
         <tr>
-            <td>{{ entry.naam }}</td>
-            <td>€{{ entry.prijs }}</td>
+            <td>{{ entry.name }}</td>
+            <td>€{{ entry.price }}</td>
             <td>{{ entry.stock }}</td>
-            <td>{{ entry.aanvullenTot }}</td>
-            <td>{{ entry.categorie.beschrijving }}</td>
+            <td>{{ entry.stock_max }}</td>
+            <td>{{ entry.categorie.name }}</td>
             <td>{{ entry.josto }}</td>
         </tr>
 {% endfor %}

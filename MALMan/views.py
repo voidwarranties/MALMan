@@ -56,7 +56,7 @@ def permission_required(*roles):
 
 @app.route("/")
 def index():
-    if current_user and current_user.is_active() and User.query.get(current_user.id).actief_lid:
+    if current_user and current_user.is_active() and User.query.get(current_user.id).active_member:
         # is an aproved member
         return render_template('account.html')
     elif current_user and current_user.is_active():
@@ -69,7 +69,7 @@ def index():
 @app.route("/leden")
 @permission_required('membership', 'members')
 def ledenlijst():
-    users = User.query.filter_by(actief_lid='1')
+    users = User.query.filter_by(active_member='1')
     perm_members = Permission(Need('role', 'members')).can()
     return render_template('ledenlijst.html', perm_members=perm_members, 
         users=users)
@@ -77,18 +77,18 @@ def ledenlijst():
 @app.route("/new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def new_members():
-    new_members = User.query.filter_by(actief_lid='0')
+    new_members = User.query.filter_by(active_member='0')
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id), 
-            BooleanField('Activate User'))
+            BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
         confirmation = AANPASSING
         for user in new_members:
             new_value = forms.booleanfix(request.form, 
                 'activate_' + str(user.id))
-            if new_value != user.actief_lid:
-                setattr(user, 'actief_lid', True)
+            if new_value != user.active_member:
+                setattr(user, 'active_member', True)
                 setattr(user, 'member_since', date.today())
                 db.session.commit()
                 confirmation = add_confirmation(confirmation, 
@@ -105,7 +105,7 @@ def leden_edit_own():
     form = forms.LedenEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
         confirmation = AANPASSING
-        atributes = ['name', 'geboortedatum', 'email', 'telephone', 'gemeente', 
+        atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email']
         for atribute in atributes:
@@ -158,9 +158,9 @@ def leden_edit(userid):
     del form.email
     if form.validate_on_submit():
         confirmation = AANPASSING
-        atributes = ['name', 'geboortedatum', 'telephone', 'gemeente', 
+        atributes = ['name', 'date_of_birth', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
-            'show_email', 'actief_lid', 'membership_dues']
+            'show_email', 'active_member', 'membership_dues']
         permissions = [role for role in roles if role != 'membership']
         atributes.extend(permissions)
         for atribute in atributes:
@@ -171,7 +171,7 @@ def leden_edit(userid):
                     old_value = True
                 else:
                     old_value = False
-            elif atribute in ['show_telephone', 'show_email', 'actief_lid']:
+            elif atribute in ['show_telephone', 'show_email', 'active_member']:
                 old_value = formatbool(getattr(userdata, atribute))
                 new_value = forms.booleanfix(request.form, atribute)
             else:
@@ -205,7 +205,7 @@ def stock_tellen():
     dranken = Dranken.query.all()
     for drank in dranken:
         setattr(forms.StockTellen, 'amount_' + str(drank.id), 
-            IntegerField(drank.naam, [validators.NumberRange(min=0, 
+            IntegerField(drank.name, [validators.NumberRange(min=0, 
                 message='please enter a positive number')], 
             default=drank.stock))
     form = forms.StockTellen()
@@ -219,7 +219,7 @@ def stock_tellen():
                 db.session.add(changes)
                 db.session.commit()
                 confirmation = add_confirmation(confirmation, "stock " + 
-                    drankobject.naam + " = " + request.form["amount_" + 
+                    drankobject.name + " = " + request.form["amount_" + 
                     str(drankobject.id)])
         return_flash(confirmation)
         return redirect(request.path)
@@ -236,13 +236,13 @@ def stock_aanpassen():
     form = forms.StockAanpassen()
     for item in form:
         if item.name != 'csrf_token' and item.name != 'submit':
-            item.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
+            item.category_id.choices = [(categorie.id, categorie.name) for categorie in drankcats]
     if form.validate_on_submit():
         confirmation = AANPASSING
         for drank in dranken:
             drankobject = drank
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
-            atributes = ['naam' , 'prijs' , 'aanvullenTot', 'categorieID', 'josto']
+            atributes = ['name' , 'price' , 'stock_max', 'category_id', 'josto']
             for atribute in atributes:
                 if atribute == 'josto':
                     old_value = formatbool(getattr(drank, atribute))
@@ -253,18 +253,18 @@ def stock_aanpassen():
                 if str(old_value) != str(new_value):
                     setattr(drank, atribute, new_value)
                     db.session.commit()
-                    if atribute == "naam":
+                    if atribute == "name":
                         confirmation = add_confirmation(confirmation, 
                             old_value + " => " + new_value)
-                    elif atribute == "categorieID":
-                        newcat = Drankcat.query.get(new_value).beschrijving
-                        oldcat = Drankcat.query.get(old_value).beschrijving
+                    elif atribute == "category_id":
+                        newcat = Drankcat.query.get(new_value).name
+                        oldcat = Drankcat.query.get(old_value).name
                         confirmation = add_confirmation(confirmation, 
-                            "categorie" + " " + drank.naam + " = \"" + newcat + 
+                            "categorie" + " " + drank.name + " = \"" + newcat + 
                             "\" (was \"" + oldcat + "\")")
                     else:
                         confirmation = add_confirmation(confirmation, 
-                            atribute + " " + drank.naam + " = " +
+                            atribute + " " + drank.name + " = " +
                             str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
@@ -281,11 +281,11 @@ def stock_aanvullen():
     for drank in jostodranken:
         if drank.aanvullen > 0:
             setattr(stock_aanvullen_form, 'amount_' + str(drank.id), 
-                IntegerField(drank.naam, [validators.NumberRange(min=0, 
+                IntegerField(drank.name, [validators.NumberRange(min=0, 
                     message='please enter a positive number')], 
                 default=drank.aanvullen))
             setattr(stock_aanvullen_form, 'check_' + str(drank.id), 
-                BooleanField(drank.naam))
+                BooleanField(drank.name))
     form = stock_aanvullen_form()
     if form.validate_on_submit():
         confirmation = AANPASSING
@@ -300,7 +300,7 @@ def stock_aanvullen():
                     db.session.add(changes)
                     db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " + 
-                        drankopbject.naam + " = +" + 
+                        drankopbject.name + " = +" + 
                         request.form["amount_" + str(drank.id)])
         return_flash(confirmation)
         return redirect(request.path)
@@ -323,14 +323,14 @@ def stock_log():
 def stock_toevoegen():
     drankcats = Drankcat.query.all()
     form = forms.StockToevoegen()
-    form.categorieID.choices = [(categorie.id, categorie.beschrijving) for categorie in drankcats]
+    form.category_id.choices = [(categorie.id, categorie.name) for categorie in drankcats]
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
-        changes = Dranken(request.form["naam"], request.form["aanvullenTot"], 
-            request.form["prijs"], request.form["categorieID"], josto)
+        changes = Dranken(request.form["name"], request.form["stock_max"], 
+            request.form["price"], request.form["category_id"], josto)
         db.session.add(changes)
         db.session.commit()
-        flash("stockitem toegevoegd: " + request.form["naam"], "confirmation")
+        flash("stockitem toegevoegd: " + request.form["name"], "confirmation")
         return redirect(request.path)
     return render_template('stock_toevoegen.html', form=form)
 

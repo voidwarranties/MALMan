@@ -184,8 +184,8 @@ class ConfirmRegisterForm(Form, RegisterFormMixin, UniqueEmailFormMixin, NewPass
                number=self.number.data,
                bus=self.bus.data,
                postalcode=self.postalcode.data,
-               gemeente=self.gemeente.data,
-               geboortedatum=self.geboortedatum.data,
+               city=self.city.data,
+               date_of_birth=self.date_of_birth.data,
                telephone=self.telephone.data,
                show_telephone=self.show_telephone.data,
                show_email=self.show_email.data)

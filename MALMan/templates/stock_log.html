@@ -30,10 +30,10 @@
         {% for entry in log %}
             <tr>
                 <td>{{ entry.datetime }}</td>
-                <td>{{ entry.beschrijving }}</td>
-                <td>{{ entry.stock_naam.naam }}</td>
-                <td>{% if entry.aantal > 0 %}+{% endif%}{{ entry.aantal }}</td>
-                <td>{% if entry.totaalprijs == 0 %}0{% else %}€{{ entry.totaalprijs }}{% endif %}</td>
+                <td>{{ entry.transaction_type }}</td>
+                <td>{{ entry.stock_name.name }}</td>
+                <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
+                <td>{% if entry.total_price == 0 %}0{% else %}€{{ entry.total_price }}{% endif %}</td>
                 <td>{{ entry.user.name }}</td>
                 <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
             </tr>

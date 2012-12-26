@@ -8,7 +8,7 @@ Funtionality
 Refactoring
     check the way users are activated: active, actief_lid, membership role
     translate variable, function and class names to english
-    translate DB tables and rows to english
+    translate file names
     check if setattrs are caried over
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
     Minimize the number of times we read or write to the DB

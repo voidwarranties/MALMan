@@ -20,7 +20,7 @@ class LedenEditOwnAccount(Form):
     email = TextField('Email', [
         validators.Email(message='please enter a valid email address')])
     name = TextField('Name', [validators.Required()])
-    geboortedatum = DateField('Date of birth (yyyy-mm-dd)', 
+    date_of_birth = DateField('Date of birth (yyyy-mm-dd)', 
         [validators.Required(
             message='please enter a date using the specified formatting')])
     street = TextField('Street', [
@@ -34,7 +34,7 @@ class LedenEditOwnAccount(Form):
         [validators.NumberRange(min=0, 
             message='please enter a positive number'), 
         validators.Required()])
-    gemeente = TextField('City', [
+    city = TextField('City', [
         validators.Required()])
     telephone = TextField('Telephone (0xx.xxx.xxx)', 
         [validators.Length(min=8, 
@@ -54,7 +54,7 @@ class LedenEditPassword(Form):
 
 class LedenEditAccount(LedenEditOwnAccount):
     # some fields are added by the view
-    actief_lid = BooleanField('Is an active member')
+    active_member = BooleanField('Is an active member')
     membership_dues = IntegerField('Monthly dues (&euro;)', [
         validators.NumberRange(min=0, 
             message='please enter a positive number'),]) 
@@ -73,15 +73,15 @@ class StockLog(Form):
     revert = SubmitField('revert')
 
 class StockToevoegen(Form):
-    naam = TextField('Name', [validators.Required()])
-    prijs = DecimalField('Price (e.g. 1.52)', 
+    name = TextField('Name', [validators.Required()])
+    price = DecimalField('Price (e.g. 1.52)', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')],
         places=2)
-    aanvullenTot = IntegerField('Stock maximum', 
+    stock_max = IntegerField('Stock maximum', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')])
-    categorieID = SelectField('Category', coerce=int)
+    category_id = SelectField('Category', coerce=int)
     josto = BooleanField('Josto')
     submit = SubmitField('add stock item')
 
@@ -91,14 +91,14 @@ class StockAanvullen(Form):
 
 class StockAanpassenSingle(wtforms_Form):
     # some fields are added by the view
-    naam = TextField('name', [validators.Required()])
-    prijs = DecimalField('price (e.g. 1.52)', 
+    name = TextField('name', [validators.Required()])
+    price = DecimalField('price (e.g. 1.52)', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')], places=2)
-    aanvullenTot = IntegerField('Maximum stock', 
+    stock_max = IntegerField('Maximum stock', 
         [validators.NumberRange(min=0, 
             message='please enter a positive number')])
-    categorieID = SelectField('category', coerce=int)
+    category_id = SelectField('category', coerce=int)
     josto = BooleanField('josto')
 
 class StockAanpassen(Form):
