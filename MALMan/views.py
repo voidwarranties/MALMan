@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import User, Dranken, Role, Drankcat, Dranklog, db, user_datastore
+from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -13,21 +13,24 @@ from functools import wraps
 from datetime import date
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
-AANPASSING = "These values were updated: "
-def add_confirmation(var, string):
+CHANGE_MSG = "These values were updated: "
+def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
-    if var != AANPASSING:
+    if var != CHANGE_MSG:
         var += ", "
-    var += string
+    var += confirmation
     return var
+
+
 def return_flash (confirmation):
     """return a confirmation if something changed or an error if there are
     no changes
     """
-    if confirmation == AANPASSING:
+    if confirmation == CHANGE_MSG:
         flash("No changes were specified", "error")
     else:
         flash(confirmation, 'confirmation')
+
 
 def formatbool(var):
     """return a variable's boolean value in a onsistent way"""
@@ -35,6 +38,7 @@ def formatbool(var):
         return True
     else:
         return False
+
 
 def permission_required(*roles):
     def wrapper(fn):
@@ -54,6 +58,7 @@ def permission_required(*roles):
         return decorated_view
     return wrapper
 
+
 @app.route("/")
 def index():
     if current_user and current_user.is_active() and User.query.get(current_user.id).active_member:
@@ -66,24 +71,26 @@ def index():
         # is not logged in
         return redirect('login')
 
+
 @app.route("/members")
 @permission_required('membership', 'members')
-def ledenlijst():
+def members():
     users = User.query.filter_by(active_member='1')
     perm_members = Permission(Need('role', 'members')).can()
     return render_template('members.html', perm_members=perm_members, 
         users=users)
 
+
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
-def new_members():
+def approve_new_members():
     new_members = User.query.filter_by(active_member='0')
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id), 
             BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
-        confirmation = AANPASSING
+        confirmation = CHANGE_MSG
         for user in new_members:
             new_value = forms.booleanfix(request.form, 
                 'activate_' + str(user.id))
@@ -98,13 +105,14 @@ def new_members():
     return render_template('members_approve_new_members.html', new_members=new_members, 
         form=form)
 
+
 @app.route('/members/edit_own_account', methods=['GET', 'POST'])
 @login_required
-def leden_edit_own():
+def edit_own_account():
     userdata = User.query.get(current_user.id)
-    form = forms.LedenEditOwnAccount(obj=userdata)
+    form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
-        confirmation = AANPASSING
+        confirmation = CHANGE_MSG
         atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email']
@@ -126,22 +134,10 @@ def leden_edit_own():
     return render_template('members_edit_own_account.html', userdata=userdata, 
         form=form)
 
-@app.route('/members/edit_password', methods=['GET', 'POST'])
-@login_required
-def leden_edit_password():
-    form = forms.LedenEditPassword()
-    _security = LocalProxy(lambda: current_app.extensions['security'])
-    _datastore = LocalProxy(lambda: _security.datastore)
-    if form.validate_on_submit():
-        update_password(current_user, request.form['password'])
-        _datastore.commit()
-        flash("your password was updated", "confirmation")
-        return redirect(request.path)
-    return render_template('members_edit_password.html', form=form)
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
-def leden_edit(userid):
+def members_edit(userid):
     userdata = User.query.get(userid)
     roles = Role.query.all()
     # add roles to form
@@ -149,15 +145,15 @@ def leden_edit(userid):
         if role != 'membership':
             # check the checkbox if the user has the role
             if role in userdata.roles:
-                setattr(forms.LedenEditAccount, 'perm_' + str(role.name), 
+                setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
                     BooleanField(role.name, default='y'))
             else:
-                setattr(forms.LedenEditAccount, 'perm_' + str(role.name), 
+                setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
                     BooleanField(role.name))
-    form = forms.LedenEditAccount(obj=userdata)
+    form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():
-        confirmation = AANPASSING
+        confirmation = CHANGE_MSG
         atributes = ['name', 'date_of_birth', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email', 'active_member', 'membership_dues']
@@ -193,176 +189,201 @@ def leden_edit(userid):
         return redirect(request.path)
     return render_template('members_edit_account.html', form=form)
 
+
+@app.route('/members/edit_password', methods=['GET', 'POST'])
+@login_required
+def members_edit_password():
+    form = forms.MembersEditPassword()
+    _security = LocalProxy(lambda: current_app.extensions['security'])
+    _datastore = LocalProxy(lambda: _security.datastore)
+    if form.validate_on_submit():
+        update_password(current_user, request.form['password'])
+        _datastore.commit()
+        flash("your password was updated", "confirmation")
+        return redirect(request.path)
+    return render_template('members_edit_password.html', form=form)
+
+
 @app.route("/bar")
 @permission_required('membership')
-def stock():
-    dranken = Dranken.query.all()
-    return render_template('bar.html', lijst=dranken)
+def bar():
+    items = StockItems.query.all()
+    return render_template('bar.html', items=items)
+
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
-def stock_tellen():
-    dranken = Dranken.query.all()
-    for drank in dranken:
-        setattr(forms.StockTellen, 'amount_' + str(drank.id), 
-            IntegerField(drank.name, [validators.NumberRange(min=0, 
+def edit_item_amounts():
+    items = StockItems.query.all()
+    for item in items:
+        setattr(forms.BarEditAmounts, 'amount_' + str(item.id), 
+            IntegerField(item.name, [validators.NumberRange(min=0, 
                 message='please enter a positive number')], 
-            default=drank.stock))
-    form = forms.StockTellen()
+            default=item.stock))
+    form = forms.BarEditAmounts()
     if form.validate_on_submit():
-        confirmation = AANPASSING
-        for drankobject in dranken:
-            if int(request.form["amount_" + str(drankobject.id)]) != int(drankobject.stock):
-                changes = Dranklog(drankobject.id, 
-                    (int(request.form["amount_" + str(drankobject.id)]) - int(drankobject.stock))
+        confirmation = CHANGE_MSG
+        for item in items:
+            if int(request.form["amount_" + str(item.id)]) != int(item.stock):
+                changes = BarLog(item.id, 
+                    (int(request.form["amount_" + str(item.id)]) - int(item.stock))
                     , 0, current_user.id, "correction") 
                 db.session.add(changes)
                 db.session.commit()
                 confirmation = add_confirmation(confirmation, "stock " + 
-                    drankobject.name + " = " + request.form["amount_" + 
-                    str(drankobject.id)])
+                    item.name + " = " + request.form["amount_" + 
+                    str(item.id)])
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('bar_edit_item_amounts.html', lijst=dranken, form=form)
+    return render_template('bar_edit_item_amounts.html', form=form)
+
 
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
-def stock_aanpassen():
-    dranken = Dranken.query.all()
-    drankcats = Drankcat.query.all()
-    for drank in dranken:
-        setattr(forms.StockAanpassen, str(drank.id), 
-            FormField(forms.StockAanpassenSingle, default=drank, separator='_'))
-    form = forms.StockAanpassen()
+def edit_items():
+    items = StockItems.query.all()
+    categories = StockCategories.query.all()
+    for item in items:
+        setattr(forms.BarEdit, str(item.id), 
+            FormField(forms.BarEditItem, default=item, separator='_'))
+    form = forms.BarEdit()
     for item in form:
         if item.name != 'csrf_token' and item.name != 'submit':
-            item.category_id.choices = [(categorie.id, categorie.name) for categorie in drankcats]
+            item.category_id.choices = [(category.id, category.name) for category in categories]
     if form.validate_on_submit():
-        confirmation = AANPASSING
-        for drank in dranken:
-            drankobject = drank
+        confirmation = CHANGE_MSG
+        for item in items:
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
             atributes = ['name' , 'price' , 'stock_max', 'category_id', 'josto']
             for atribute in atributes:
                 if atribute == 'josto':
-                    old_value = formatbool(getattr(drank, atribute))
-                    new_value = forms.booleanfix(request.form, str(drank.id) + '_josto')
+                    old_value = formatbool(getattr(item, atribute))
+                    new_value = forms.booleanfix(request.form, str(item.id) + '_josto')
                 else: 
-                    old_value = getattr(drank, atribute)
-                    new_value = request.form[str(drank.id) + '_' + atribute]
+                    old_value = getattr(item, atribute)
+                    new_value = request.form[str(item.id) + '_' + atribute]
                 if str(old_value) != str(new_value):
-                    setattr(drank, atribute, new_value)
+                    setattr(item, atribute, new_value)
                     db.session.commit()
                     if atribute == "name":
                         confirmation = add_confirmation(confirmation, 
                             old_value + " => " + new_value)
                     elif atribute == "category_id":
-                        newcat = Drankcat.query.get(new_value).name
-                        oldcat = Drankcat.query.get(old_value).name
+                        newcat = StockCategories.query.get(new_value).name
+                        oldcat = StockCategories.query.get(old_value).name
                         confirmation = add_confirmation(confirmation, 
-                            "categorie" + " " + drank.name + " = \"" + newcat + 
+                            "category" + " " + item.name + " = \"" + newcat + 
                             "\" (was \"" + oldcat + "\")")
                     else:
                         confirmation = add_confirmation(confirmation, 
-                            atribute + " " + drank.name + " = " +
+                            atribute + " " + item.name + " = " +
                             str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('bar_edit_items.html', form=form)
 
+
 @app.route("/bar/stockup", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
-def stock_aanvullen():
+def stockup():
     # get all stock items from josto
-    jostodranken = Dranken.query.filter_by(josto=True).all()
+    items = StockItems.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
-    class stock_aanvullen_form(Form):
+    class StockupForm(Form):
         submit = SubmitField('ok!')
-    for drank in jostodranken:
-        if drank.aanvullen > 0:
-            setattr(stock_aanvullen_form, 'amount_' + str(drank.id), 
-                IntegerField(drank.name, [validators.NumberRange(min=0, 
+    for item in items:
+        if item.stockup > 0:
+            setattr(StockupForm, 'amount_' + str(item.id), 
+                IntegerField(item.name, [validators.NumberRange(min=0, 
                     message='please enter a positive number')], 
-                default=drank.aanvullen))
-            setattr(stock_aanvullen_form, 'check_' + str(drank.id), 
-                BooleanField(drank.name))
-    form = stock_aanvullen_form()
+                default=item.stockup))
+            setattr(StockupForm, 'check_' + str(item.id), 
+                BooleanField(item.name))
+    form = StockupForm()
     if form.validate_on_submit():
-        confirmation = AANPASSING
-        for drank in jostodranken:
-            drankopbject = Dranken.query.get(drank.id)
-            checked = forms.booleanfix(request.form, 'check_' + str(drank.id))
+        confirmation = CHANGE_MSG
+        for item in items:
+            checked = forms.booleanfix(request.form, 'check_' + str(item.id))
             if checked: 
-                if int(request.form["amount_" + str(drank.id)]) != 0:
-                    changes = Dranklog(drank.id, 
-                        request.form["amount_" + str(drank.id)], 
+                if int(request.form["amount_" + str(item.id)]) != 0:
+                    changes = BarLog(item.id, 
+                        request.form["amount_" + str(item.id)], 
                         0, current_user.id, "stock up") 
                     db.session.add(changes)
                     db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " + 
-                        drankopbject.name + " = +" + 
-                        request.form["amount_" + str(drank.id)])
+                        item.name + " = +" + 
+                        request.form["amount_" + str(item.id)])
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('bar_stockup.html', form=form)
 
+
 @app.route("/bar/log", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
-def stock_log():
-    log = Dranklog.query.all()
-    form = forms.StockLog()
+def bar_log():
+    log = BarLog.query.all()
+    form = forms.BarLog()
     if form.validate_on_submit():
-        changes = Dranklog.query.get(request.form["revert"])
-        Dranklog.remove(changes)
+        changes = BarLog.query.get(request.form["revert"])
+        BarLog.remove(changes)
         flash('The change was reverted', 'confirmation')
         return redirect(request.path)
     return render_template('bar_log.html', log=log, form=form)
 
+
 @app.route("/bar/add_item", methods=['GET', 'POST'])
 @permission_required('membership', 'stock')
-def stock_toevoegen():
-    drankcats = Drankcat.query.all()
-    form = forms.StockToevoegen()
-    form.category_id.choices = [(categorie.id, categorie.name) for categorie in drankcats]
+def add_item():
+    categories = StockCategories.query.all()
+    form = forms.BarAddItem()
+    form.category_id.choices = [(category.id, category.name) for category in categories]
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
-        changes = Dranken(request.form["name"], request.form["stock_max"], 
+        changes = StockItems(request.form["name"], request.form["stock_max"], 
             request.form["price"], request.form["category_id"], josto)
         db.session.add(changes)
         db.session.commit()
-        flash("stockitem toegevoegd: " + request.form["name"], "confirmation")
+        flash("added stock item: " + request.form["name"], "confirmation")
         return redirect(request.path)
     return render_template('bar_add_item.html', form=form)
+
 
 @app.route("/accounting")
 @permission_required('membership')
 def accounting():
     return render_template('accounting.html')
 
+
 @app.route("/accounting/log")
 @permission_required('membership')
 def accounting_log():
     return render_template('accounting_log.html')
 
+
 @app.route("/accounting/request_reimbursement")
 @permission_required('membership')
-def accounting_requestreimbursement():
+def accounting_request_reimbursement():
     return render_template('accounting_request_reimbursement.html')
+
 
 @app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
-def accounting_approvereimbursements():
+def accounting_approve_reimbursements():
     return render_template('accounting_approve_reimbursements.html')
+
 
 @app.route("/accounting/add_transaction")
 @permission_required('membership', 'finances')
-def accounting_edittransation():
+def accounting_edit_transation():
     return render_template('accounting_add_transaction.html')
+
 
 @app.route("/accounting/edit_transaction")
 @permission_required('membership', 'finances')
-def accounting_edittransation():
+def accounting_edit_transation():
     return render_template('accounting_edit_transaction.html')
+
 
 @app.errorhandler(401)
 def error_401(error):
@@ -370,11 +391,13 @@ def error_401(error):
     lastpage = request.referrer
     return render_template('error.html', error=error, lastpage=lastpage), 401
 
+
 @app.errorhandler(403)
 def error_403(error):
     error = "403 Forbidden"
     lastpage = request.referrer
     return render_template('error.html', error=error, lastpage=lastpage), 403
+
 
 @app.errorhandler(404)
 def error_404(error):

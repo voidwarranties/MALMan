@@ -6,11 +6,11 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-        $(function() { $("#drankenlijst").tablesorter(); } ); 
+        $(function() { $("#stockitems").tablesorter(); } ); 
 </script>
 {% endblock %}
 {% block content %}
-<table id="drankenlijst">
+<table id="stockitems">
     <thead>
         <tr>
             <th>Name</th>
@@ -22,14 +22,14 @@
         </tr>
     </thead>
     <tbody>
-{% for entry in lijst %}
+{% for item in items %}
         <tr>
-            <td>{{ entry.name }}</td>
-            <td>€{{ entry.price }}</td>
-            <td>{{ entry.stock }}</td>
-            <td>{{ entry.stock_max }}</td>
-            <td>{{ entry.categorie.name }}</td>
-            <td>{{ entry.josto }}</td>
+            <td>{{ item.name }}</td>
+            <td>€{{ item.price }}</td>
+            <td>{{ item.stock }}</td>
+            <td>{{ item.stock_max }}</td>
+            <td>{{ item.category.name }}</td>
+            <td>{{ item.josto }}</td>
         </tr>
 {% endfor %}
     </tbody>

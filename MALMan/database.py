@@ -55,25 +55,25 @@ class User(db.Model, UserMixin):
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
-class Dranken(db.Model):
-    """Define the Dranken database table"""
+class StockItems(db.Model):
+    """Define the StockItems database table"""
     __tablename__ = 'bar_items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     stock_max = db.Column(db.Integer)
     price = db.Column(db.Numeric(5, 2))
     category_id = db.Column(db.Integer, db.ForeignKey('bar_categories.id'))
-    categorie = db.relationship("Drankcat", backref="dranken", lazy="joined")
+    category = db.relationship("StockCategories", backref="dranken", lazy="joined")
     josto = db.Column(db.Boolean())
-    aankopen = db.relationship("Dranklog", backref="Drank")
+    purchases = db.relationship("BarLog", backref="Drank")
 
     @property
     def stock(self):
         # this might be improved
-        return sum(item.amount for item in self.aankopen) 
+        return sum(item.amount for item in self.purchases) 
 
     @property
-    def aanvullen(self):
+    def stockup(self):
         return (self.stock_max - self.stock)
 
     def __init__(self, name, stock_max, price, category_id, josto):
@@ -84,11 +84,11 @@ class Dranken(db.Model):
         self.josto = josto
 
     def __repr__(self):
-        return '<Drank %r>' % self.name
+        return '<Bar item %r>' % self.name
 
 
-class Drankcat(db.Model):
-    """Define the Drancat database table"""
+class StockCategories(db.Model):
+    """Define the StockCategories database table"""
     __tablename__ = 'bar_categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -97,12 +97,12 @@ class Drankcat(db.Model):
         return '<Category %r>' % self.name
 
 
-class Dranklog(db.Model):
-    """Define the Dranklog database table"""
+class BarLog(db.Model):
+    """Define the BarLog database table"""
     __tablename__ = 'bar_log'
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey('bar_items.id'))
-    stock_name = db.relationship("Dranken", backref="Dranklog", lazy="joined")
+    stock_name = db.relationship("StockItems", backref="BarLog", lazy="joined")
     amount = db.Column(db.Integer)
     total_price = db.Column(db.Numeric(5, 2))
     datetime = db.Column(db.String(120))
@@ -121,7 +121,7 @@ class Dranklog(db.Model):
         return '<id %r>' % self.id
 
     def remove(entry):
-        """remove entry from Dranklog table"""
+        """remove entry from BarLog table"""
         db.session.delete(entry)
         db.session.commit()
 

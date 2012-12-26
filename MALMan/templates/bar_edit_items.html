@@ -6,13 +6,13 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-        $(function() { $("#drankenlijst").tablesorter(); } ); 
+        $(function() { $("#stockitems").tablesorter(); } ); 
 </script>
 {% endblock %}
 {% block content %}
-<form id="stock_aanpassen" method="POST" class="cf">
+<form method="POST" class="cf">
     {{ form.hidden_tag() }}
-    <table id="drankenlijst">
+    <table id="stockitems">
         <thead>
             <tr>
                 <th>Name</th>

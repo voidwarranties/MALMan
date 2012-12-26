@@ -6,11 +6,11 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-        $(function() { $("#userlist").tablesorter(); } ); 
+        $(function() { $("#members").tablesorter(); } ); 
 </script>
 {% endblock %}
 {% block content %}
-<table id="userlist">
+<table id="members">
     <thead>
         <tr>
             <th>name</th>

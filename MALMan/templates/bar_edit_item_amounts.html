@@ -3,11 +3,11 @@
 {% block title %}Edit stock amount{% endblock %}
 {%- block content %}
 {% from "security/_macros.html" import render_field_with_errors %}
-            <form id="stock_tellen" method="POST" class="cf">
+            <form method="POST" class="cf">
             {{ form.hidden_tag() }}
-            {%- for entry in form -%}
-                {% if entry.name != 'csrf_token' and entry.name != 'submit'  %}
-                    {{ render_field_with_errors(entry) }}
+            {%- for item in form -%}
+                {% if item.name != 'csrf_token' and item.name != 'submit'  %}
+                    {{ render_field_with_errors(item) }}
                 {% endif %}
             {%- endfor -%}
                 {{ form.submit }}

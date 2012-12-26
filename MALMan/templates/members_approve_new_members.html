@@ -2,7 +2,7 @@
 {% set category = "leden" %}
 {% block title %}New members{% endblock %}
 {% block content %}
-<form action="new_members" id="new_members" method="POST" class="cf">
+<form method="POST" class="cf">
     {{ form.hidden_tag() }}
 {%- for user in new_members %}
     <dl>

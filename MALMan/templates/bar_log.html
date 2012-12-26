@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
 <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
 <script type="text/javascript">
-        $(function() { $("#drankenlijst").tablesorter(
+        $(function() { $("#transactions").tablesorter(
             {sortList: [[0,1]]}
         ); } ); 
 </script>
@@ -14,7 +14,7 @@
 {% block content %}
 <form class="empty" method="POST">
     {{ form.hidden_tag() }}
-    <table id="drankenlijst">
+    <table id="transactions">
         <thead>
             <tr>
                 <th>date</th>
