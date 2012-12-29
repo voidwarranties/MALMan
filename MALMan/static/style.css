@@ -72,11 +72,11 @@ tr:hover {
 
 
 /*menu*/
-#menu {
+.menu {
     list-style: none;
     background-color: #DDD;
 }
-#menu li {
+.menu li {
     float: left;
     margin: 5px;
 }

@@ -1,15 +1,17 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-{%- block head %}
+        {%- block head %}
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <title>MALMan -- {% block title -%}{%- endblock -%}</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-        <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-{%- endblock -%}
+        <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+        {%- endblock -%}
     </head>
-    <body onload="clickMenu('menu')">
+    <body>
         <div id="wrapper">
             <div id="header" class="cf">
-                <a href="/"><h1>MALMAN</h1></a>
+                <h1><a href="/">MALMAN</a></h1>
 {%- if session.email -%}
                 <span>logged in as {{ session.email }} (<a href="logout">log out</a>)</span>
 {%- else -%}
@@ -17,7 +19,7 @@
 {%- endif -%}
             </div>
 {%-    if category != "login" -%}
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="/">my account</a></li>
                 <li><a href="/members">members</a></li>
                 <li><a href="/bar">stock bar</a></li>
@@ -25,19 +27,19 @@
             </ul>
 {%- endif -%}
 {%- if category == "account" -%}
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="/">overview</a></li>
                 <li><a href="/members/edit_own_account">edit my profile information</a></li>
                 <li><a href="#">my account</a></li>
                 <li><a href="/members/edit_password">edit my password</a></li>
             </ul>
 {%- elif category == "leden" -%}            
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="/members">memberlist</a></li>
                 <li><a href="/members/approve_new_members">new members (A)</a></li>
             </ul>
 {%- elif category == "stock" -%}
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="/bar">list stock</a></li>
                 <li><a href="/bar/edit_item_amounts">edit stock amounts (A)</a></li>
                 <li><a href="/bar/edit_items">edit stock items (A)</a></li>
@@ -46,7 +48,7 @@
                 <li><a href="/bar/add_item">add stock item (A)</a></li>
             </ul>
 {%- elif category == "accounting" -%}
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="/accounting">overview</a></li>
                 <li><a href="/accounting/log">transaction log</a></li>
                 <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
@@ -55,7 +57,7 @@
                 <li><a href="/accounting/edit_transaction">edit transactions (A)</a></li>
             </ul>
 {%-    elif category == "login" -%}
-            <ul id="menu" class="cf">
+            <ul class="menu cf">
                 <li><a href="login">login</a></li>
                 <li><a href="register">register</a></li>
                 <li><a href="reset">forgot password</a></li>

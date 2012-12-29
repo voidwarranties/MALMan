@@ -7,6 +7,9 @@ Funtionality
     hide menu entries if user doesn't have the necessary permissions
     add validator to check if a new stock item name is unique
     display a message instead of a form if there are no new members to approve
+    add motivation to register form
+    rename 'stock' permission to 'bar'
+    add notifications
 
 Refactoring
     check the way users are activated: active, actief_lid, membership role
