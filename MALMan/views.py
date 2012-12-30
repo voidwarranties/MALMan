@@ -212,7 +212,7 @@ def bar():
 
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
-@permission_required('membership', 'stock')
+@permission_required('membership', 'bar')
 def edit_item_amounts():
     items = StockItems.query.all()
     for item in items:
@@ -239,7 +239,7 @@ def edit_item_amounts():
 
 
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
-@permission_required('membership', 'stock')
+@permission_required('membership', 'bar')
 def edit_items():
     items = StockItems.query.all()
     categories = StockCategories.query.all()
@@ -284,7 +284,7 @@ def edit_items():
 
 
 @app.route("/bar/stockup", methods=['GET', 'POST'])
-@permission_required('membership', 'stock')
+@permission_required('membership', 'bar')
 def stockup():
     # get all stock items from josto
     items = StockItems.query.filter_by(josto=True).all()
@@ -320,7 +320,7 @@ def stockup():
 
 
 @app.route("/bar/log", methods=['GET', 'POST'])
-@permission_required('membership', 'stock')
+@permission_required('membership', 'bar')
 def bar_log():
     log = BarLog.query.all()
     form = forms.BarLog()
@@ -333,7 +333,7 @@ def bar_log():
 
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])
-@permission_required('membership', 'stock')
+@permission_required('membership', 'bar')
 def add_item():
     categories = StockCategories.query.all()
     form = forms.BarAddItem()
