@@ -2,10 +2,11 @@
 {% set category = "leden" %}
 {% block title %}New members{% endblock %}
 {% block content %}
-<form method="POST" class="cf">
-    {{ form.hidden_tag() }}
-{%- for user in new_members %}
-    <dl>
+{% if new_members|list|count > 0 %}
+    <form method="POST" class="cf">
+        {{ form.hidden_tag() }}
+        {%- for user in new_members %}
+        <dl>
         <dt>name: </dt><dd>{{ user.name }}</dd>
         <dt>date of birth: </dt><dd>{{ user.date_of_birth }}</dd>
         <dt>email: </dt><dd>{{- user.email -}}</dd>
@@ -15,8 +16,11 @@
         <dt>motivation: </dt><dd>{{ user.motivation|striptags }}</dd>
         <dt>{{ form['activate_' ~ user.id].label }}: </dt><dd>{{ form['activate_' ~ user.id] }}</dd>
         <p></p>
-    </dl>
-{% endfor %}
-    {{ form.submit }}
-</form>
+        </dl>
+        {% endfor %}
+        {{ form.submit }}
+    </form>
+{% else %}
+    <p>There are no new members to approve!</p>
+{%- endif %}
 {% endblock %}

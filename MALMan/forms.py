@@ -15,8 +15,6 @@ def booleanfix(post, var):
 class NewMembers(Form):
     #some fields are added by the view
     submit = SubmitField("activate account(s)")
-    motivation = TextAreaField('My motivation to become a member:', 
-        [validators.Required()])
 
 
 class MembersEditOwnAccount(Form):

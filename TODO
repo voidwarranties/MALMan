@@ -5,7 +5,6 @@ Functionality
     filtering of tables
     pagination of tables
     add validator to check if a new stock item name is unique
-    display a message instead of a form if there are no new members to approve
     add notifications
 
 Refactoring
