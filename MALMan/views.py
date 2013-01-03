@@ -73,7 +73,7 @@ def index():
 
 
 @app.route("/members")
-@permission_required('membership', 'members')
+@permission_required('membership')
 def members():
     users = User.query.filter_by(active_member='1')
     perm_members = Permission(Need('role', 'members')).can()

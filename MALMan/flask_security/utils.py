@@ -55,11 +55,12 @@ def login_user(user, remember=True):
     _datastore.put(user)
     identity_changed.send(current_app._get_current_object(),
                           identity=Identity(user.id))
+#add variable to session don't forget to remove these in logout_user()
     session['email'] = user.email
-    
+    session['roles'] = [role.name for role in user.roles]
 
 def logout_user():
-    for key in ('identity.name', 'identity.auth_type', 'email'):
+    for key in ('identity.name', 'identity.auth_type', 'email', 'roles'):
         session.pop(key, None)
     identity_changed.send(current_app._get_current_object(),
                           identity=AnonymousIdentity())

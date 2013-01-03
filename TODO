@@ -4,11 +4,9 @@ Funtionality
     make accounting forms
     filtering of tables
     pagination of tables
-    hide menu entries if user doesn't have the necessary permissions
     add validator to check if a new stock item name is unique
     display a message instead of a form if there are no new members to approve
     add motivation to register form
-    rename 'stock' permission to 'bar'
     add notifications
 
 Refactoring
@@ -18,6 +16,7 @@ Refactoring
     Minimize the number of times we read or write to the DB
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
+    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log bak in tosee the change. 
 
 Usability
     improve graphical design

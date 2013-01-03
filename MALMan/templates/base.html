@@ -13,9 +13,9 @@
             <div id="header" class="cf">
                 <h1><a href="/">MALMAN</a></h1>
 {%- if session.email -%}
-                <span>logged in as {{ session.email }} (<a href="logout">log out</a>)</span>
+                <span>logged in as {{ session.email }} (<a href="/logout">log out</a>)</span>
 {%- else -%}
-                <span>you are not logged in (<a href="login">log in</a>)</span>
+                <span>you are not logged in (<a href="/login">log in</a>)</span>
 {%- endif -%}
             </div>
 {%-    if category != "login" -%}
@@ -36,25 +36,31 @@
 {%- elif category == "leden" -%}            
             <ul class="menu cf">
                 <li><a href="/members">memberlist</a></li>
+                {% if 'members' in session.roles %}
                 <li><a href="/members/approve_new_members">new members (A)</a></li>
+                {% endif %}
             </ul>
 {%- elif category == "stock" -%}
             <ul class="menu cf">
                 <li><a href="/bar">list stock</a></li>
+                {% if 'bar' in session.roles %}
                 <li><a href="/bar/edit_item_amounts">edit stock amounts (A)</a></li>
                 <li><a href="/bar/edit_items">edit stock items (A)</a></li>
                 <li><a href="/bar/stockup">stock up (Josto) (A)</a></li>
                 <li><a href="/bar/log">stock log (A)</a></li>
                 <li><a href="/bar/add_item">add stock item (A)</a></li>
+                {% endif %}
             </ul>
 {%- elif category == "accounting" -%}
             <ul class="menu cf">
                 <li><a href="/accounting">overview</a></li>
                 <li><a href="/accounting/log">transaction log</a></li>
                 <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
+                {% if 'finances' in session.roles %}
                 <li><a href="/accounting/approve_reimbursements">approve reimbursements (A)</a></li>
                 <li><a href="/accounting/add_transaction">add transaction (A)</a></li>
                 <li><a href="/accounting/edit_transaction">edit transactions (A)</a></li>
+                {% endif %}
             </ul>
 {%-    elif category == "login" -%}
             <ul class="menu cf">
