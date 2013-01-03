@@ -45,6 +45,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
     show_email = db.Column(db.Boolean())
+    motivation = db.Column(db.String())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users, 
         backref=db.backref('Roleusers', lazy='dynamic'))

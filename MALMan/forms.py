@@ -3,7 +3,7 @@
 from wtforms import Form as wtforms_Form
 from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField, 
     DateField, IntegerField, SubmitField, SelectField, DecimalField, 
-    validators, EqualTo)
+    TextAreaField, validators, EqualTo)
 
 def booleanfix(post, var):
     """returns a boolean indicating if a variable was in the received POST"""
@@ -15,6 +15,9 @@ def booleanfix(post, var):
 class NewMembers(Form):
     #some fields are added by the view
     submit = SubmitField("activate account(s)")
+    motivation = TextAreaField('My motivation to become a member:', 
+        [validators.Required()])
+
 
 class MembersEditOwnAccount(Form):
     email = TextField('Email', [
@@ -65,7 +68,8 @@ class MembersEditPassword(Form):
 
 # this is used by flask_security to generate the register form
 class NewFormFields(MembersEditOwnAccount):
-    pass
+    motivation = TextAreaField('My motivation to become a member:', 
+        [validators.Required()])
 
 
 # this is not used, check views.py for more info
