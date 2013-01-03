@@ -70,6 +70,12 @@ class NewFormFields(MembersEditOwnAccount):
         [validators.Required()])
 
 
+## check if a name is alreasy in use
+# from MALMan.database import StockItems
+# def _unique_item_name(form, field):
+#    if StockItems.query.filter_by(name=field.data) is not None:
+#        raise ValidationError(field.data + ' is already a stock item')
+
 # this is not used, check views.py for more info
 class BarEditAmounts(Form):
     # some fields are added by the view
@@ -90,6 +96,7 @@ class BarEditItem(wtforms_Form):
 
 
 class BarEdit(Form):
+    # the view adds a BarEditItem form for each stock item
     submit = SubmitField('add stock item')
 
 

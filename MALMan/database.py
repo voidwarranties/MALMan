@@ -1,11 +1,11 @@
 """Connect to the database and define the database table models"""
 
+from MALMan import app
 from MALMan.flask_security import SQLAlchemyUserDatastore, UserMixin, RoleMixin
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
 except ImportError:
     from flask_sqlalchemy import SQLAlchemy
-from MALMan import app
 
 db = SQLAlchemy(app)
 
@@ -60,7 +60,7 @@ class StockItems(db.Model):
     """Define the StockItems database table"""
     __tablename__ = 'bar_items'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String(50), unique=True)
     stock_max = db.Column(db.Integer)
     price = db.Column(db.Numeric(5, 2))
     category_id = db.Column(db.Integer, db.ForeignKey('bar_categories.id'))
