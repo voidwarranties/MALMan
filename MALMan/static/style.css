@@ -162,3 +162,11 @@ dt {
     float: left;
     font-weight: bold;
 }
+
+/*Acounting log*/
+.green{
+    color: green;
+}
+.red{
+    color:red;
+}

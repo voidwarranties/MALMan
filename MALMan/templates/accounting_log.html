@@ -3,8 +3,8 @@
 {% block title %}Accounting log{% endblock %}
 {% block head %}
 {{ super() }}
-<script type="text/javascript" src="static/jquery-latest.js"></script> 
-<script type="text/javascript" src="static/jquery.tablesorter.js"></script> 
+<script type="text/javascript" src="/static/jquery-latest.js"></script> 
+<script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
 <script type="text/javascript">
         $(function() { $("#transactions").tablesorter(); } ); 
 </script>
@@ -16,28 +16,22 @@
             <th>Transaction number</th>
             <th>Date</th>
             <th>to/from</th>
-            <th>Description</th>
-            <th>Category</th>
             <th>Amount</th>
+            <th>Description</th>
+            <th>Bank acount</th>
         </tr>
     </thead>
     <tbody>
+        {% for entry in log %}
         <tr>
-            <td>1</td>
-            <td>20/12/2011</td>
-            <td>freddy</td>
-            <td>lidgeld mei freddy</td>
-            <td>lidgeld</td>
-            <td>+15</td>
+            <td>{{ entry.id }}</td>
+            <td>{{ entry.date }}</td>
+            <td>{{ entry.description }}</td>
+            <td>{% if entry.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}{{ entry.amount }}</span></td>
+            <td>{{ entry.to_from }}</td>
+            <td>{{ entry.bank.name }}</td>
         </tr>
-        <tr>
-            <td>2</td>
-            <td>27/12/2011</td>
-            <td>Brico Borsbeek</td>
-            <td>rattenvergif halen</td>
-            <td>uitzonderlijke kosten</td>
-            <td>-5</td>
-        </tr>
+        {% endfor %}
     </tbody>
 </table>
 {% endblock %}

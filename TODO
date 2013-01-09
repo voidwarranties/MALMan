@@ -6,6 +6,7 @@ Functionality
     pagination of tables
     add validator to check if a new stock item name is unique
     add notifications
+    add date picker
 
 Refactoring
     check the way users are activated: active, actief_lid, membership role

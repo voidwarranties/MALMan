@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore
+from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -358,7 +358,8 @@ def accounting():
 @app.route("/accounting/log")
 @permission_required('membership')
 def accounting_log():
-    return render_template('accounting_log.html')
+    log = Transactions.query.all()
+    return render_template('accounting_log.html', log=log)
 
 
 @app.route("/accounting/request_reimbursement")
@@ -373,11 +374,20 @@ def accounting_approve_reimbursements():
     return render_template('accounting_approve_reimbursements.html')
 
 
-@app.route("/accounting/add_transaction")
+@app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
-def accounting_edit_transation():
-    return render_template('accounting_add_transaction.html')
-
+def accounting_add_transation():
+    banks = Banks.query.all()
+    form = forms.AddTransaction()
+    form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
+    if form.validate_on_submit():
+        transaction = Transactions(request.form["date"], request.form["amount"], 
+            request.form["description"], request.form["bank_id"], request.form["to_from"])
+        db.session.add(transaction)
+        db.session.commit()
+        flash("the transaction was booked", "confirmation")
+        return redirect(request.path)
+    return render_template('accounting_add_transaction.html', form=form)
 
 @app.route("/accounting/edit_transaction")
 @permission_required('membership', 'finances')

@@ -126,6 +126,31 @@ class BarLog(db.Model):
         db.session.delete(entry)
         db.session.commit()
 
+class Banks(db.Model):
+    """Define the acounting_banks database table"""
+    __tablename__ = 'accounting_banks'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String())
+
+class Transactions(db.Model):
+    """Define the transactions database table"""
+    __tablename__ = 'accounting_transactions'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime())
+    amount = db.Column(db.Integer)
+    description = db.Column(db.String)
+    bank_id = db.Column(db.Integer, db.ForeignKey('accounting_banks.id'))
+    bank = db.relationship("Banks")
+    to_from = db.Column(db.String)
+
+    def __init__(self, date, amount, description, bank_id, to_from):
+        self.id = id
+        self.date = date
+        self.amount = amount
+        self.description = description
+        self.bank_id = bank_id
+        self.to_from = to_from
+
 # create missing tables in db
 # should only be run once, remove this when db is stable
 #db.create_all()

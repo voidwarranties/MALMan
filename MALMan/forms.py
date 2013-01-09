@@ -122,3 +122,14 @@ class BarAddItem(Form):
     category_id = SelectField('Category', coerce=int)
     josto = BooleanField('Josto')
     submit = SubmitField('add stock item')
+
+class AddTransaction(Form):
+    date = DateField('Date (yyyy-mm-dd)', 
+        [validators.Required(
+            message='please enter a date using the specified formatting')])
+    amount = DecimalField('Amount (e.g. 1.52)', 
+        [validators.NumberRange(message='please enter a positive or negative number')], places=2)
+    description = TextField('description', [validators.Required()])
+    bank_id = SelectField('bank', coerce=int)
+    to_from = TextField('to/from', [validators.Required()])
+    submit = SubmitField('add transaction')
