@@ -21,7 +21,7 @@
             <th>member since</th>
             <th>roles</th>
             <th>dues</th>
-            {% if perm_members %}<th>modify</th>{% endif %}
+            {% if 'members' in session.roles %}<th>modify</th>{% endif %}
         </tr>
     </thead>
     <tbody>
@@ -50,7 +50,7 @@
                 {%- endfor -%}
             </td>
             <td>€{{ user.membership_dues }}</td>
-            {% if perm_members %}<td><a href="/members/edit_{{user.id}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
+            {% if 'members' in session.roles %}<td><a href="/members/edit_{{user.id}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
         </tr>
 {% endfor %}
     </tbody>

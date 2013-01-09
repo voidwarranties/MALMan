@@ -76,9 +76,7 @@ def index():
 @permission_required('membership')
 def members():
     users = User.query.filter_by(active_member='1')
-    perm_members = Permission(Need('role', 'members')).can()
-    return render_template('members.html', perm_members=perm_members, 
-        users=users)
+    return render_template('members.html', users=users)
 
 
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
@@ -376,7 +374,7 @@ def accounting_approve_reimbursements():
 
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
-def accounting_add_transation():
+def accounting_add_transaction():
     banks = Banks.query.all()
     form = forms.AddTransaction()
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
@@ -389,10 +387,26 @@ def accounting_add_transation():
         return redirect(request.path)
     return render_template('accounting_add_transaction.html', form=form)
 
-@app.route("/accounting/edit_transaction")
+@app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
-def accounting_edit_transation():
-    return render_template('accounting_edit_transaction.html')
+def accounting_edit_transaction(transaction_id):
+    banks = Banks.query.all()
+    transaction = Transactions.query.get(transaction_id)
+    form = forms.EditTransaction(obj=transaction)
+    form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
+    if form.validate_on_submit():
+        confirmation = CHANGE_MSG
+        for atribute in ['date', 'amount', 'description', 'bank_id', 'to_from']:
+            old_value = getattr(transaction, str(atribute))
+            new_value = request.form.get(atribute)
+            if str(new_value) != str(old_value):
+                setattr(transaction, atribute, new_value)
+                confirmation = add_confirmation(confirmation, str(atribute) + 
+                    " = " + str(new_value) + " (was " + str(old_value) + ")")
+                db.session.commit()
+        return_flash(confirmation)
+        return redirect(request.path)
+    return render_template('accounting_edit_transaction.html', form=form)
 
 
 @app.errorhandler(401)

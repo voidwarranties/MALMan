@@ -133,3 +133,6 @@ class AddTransaction(Form):
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
     submit = SubmitField('add transaction')
+
+class EditTransaction(AddTransaction):
+    submit = SubmitField('edit transaction')
