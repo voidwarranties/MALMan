@@ -41,15 +41,11 @@ def formatbool(var):
 
 
 def accounting_categories():
-    """build the choices for the accounting_category_id select element"""
-    choices = []
-    for category in AccountingCategories.query.all():
-        # add IN and OUT to labels for clarity
-        if category.is_revenue:
-            type = " (IN)"
-        else:
-            type = " (OUT)"
-        choices.append((category.id, category.name + type))
+    """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
+    categories = AccountingCategories.query.all()
+    choices = [(category.id, category.name + " (IN)") for category in categories if category.is_revenue]
+    OUT = [(category.id, category.name + " (OUT)") for category in categories if not category.is_revenue]
+    choices.extend(OUT) 
     return choices
    
 
