@@ -19,6 +19,7 @@
             <th>Amount</th>
             <th>Description</th>
             <th>Bank acount</th>
+            <th>Category</th>
             {% if 'finances' in session.roles %}<th>Modify</th>{% endif %}
         </tr>
     </thead>
@@ -31,6 +32,7 @@
             <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}{{ transaction.amount }}</span></td>
             <td>{{ transaction.to_from }}</td>
             <td>{{ transaction.bank.name }}</td>
+            <td>{{ transaction.category.name }}</td>
             {% if 'finances' in session.roles %}<td><a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a></td>{% endif %}
         </tr>
         {% endfor %}

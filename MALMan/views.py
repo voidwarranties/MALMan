@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks
+from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks, AccountingCategories
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -39,6 +39,19 @@ def formatbool(var):
     else:
         return False
 
+
+def accounting_categories():
+    """build the choices for the accounting_category_id select element"""
+    choices = []
+    for category in AccountingCategories.query.all():
+        # add IN and OUT to labels for clarity
+        if category.is_revenue:
+            type = " (IN)"
+        else:
+            type = " (OUT)"
+        choices.append((category.id, category.name + type))
+    return choices
+   
 
 def permission_required(*roles):
     def wrapper(fn):
@@ -378,6 +391,7 @@ def accounting_add_transaction():
     banks = Banks.query.all()
     form = forms.AddTransaction()
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
+    form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         transaction = Transactions(request.form["date"], request.form["amount"], 
             request.form["description"], request.form["bank_id"], request.form["to_from"])
@@ -394,9 +408,10 @@ def accounting_edit_transaction(transaction_id):
     transaction = Transactions.query.get(transaction_id)
     form = forms.EditTransaction(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
+    form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = CHANGE_MSG
-        for atribute in ['date', 'amount', 'description', 'bank_id', 'to_from']:
+        for atribute in ['date', 'amount', 'description', 'bank_id', 'to_from', 'category_id']:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):

@@ -166,7 +166,9 @@ dt {
 /*Acounting log*/
 .green{
     color: green;
+    text-align: right;
 }
 .red{
     color:red;
+    text-align: right;
 }

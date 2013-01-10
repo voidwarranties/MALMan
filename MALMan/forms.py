@@ -124,14 +124,15 @@ class BarAddItem(Form):
     submit = SubmitField('add stock item')
 
 class AddTransaction(Form):
-    date = DateField('Date (yyyy-mm-dd)', 
+    date = DateField('date (yyyy-mm-dd)', 
         [validators.Required(
             message='please enter a date using the specified formatting')])
-    amount = DecimalField('Amount (e.g. 1.52)', 
+    amount = DecimalField('amount (e.g. 1.52)', 
         [validators.NumberRange(message='please enter a positive or negative number')], places=2)
     description = TextField('description', [validators.Required()])
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
+    category_id = SelectField('category', coerce=int)
     submit = SubmitField('add transaction')
 
 class EditTransaction(AddTransaction):
