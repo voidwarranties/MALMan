@@ -175,3 +175,8 @@ dd {
     color:red;
     text-align: right;
 }
+
+/* Pagination */
+.pagination {
+    text-align: center;
+}

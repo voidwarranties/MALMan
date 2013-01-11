@@ -1,10 +1,8 @@
 Functionality
     delete stock items
     filtering of tables
-    pagination of tables
     add validator to check if a new stock item name is unique
     add notifications
-    add date picker
     (accept commas or periods on decimal fields)
 
 Refactoring

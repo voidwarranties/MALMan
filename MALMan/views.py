@@ -7,7 +7,7 @@ from flask.ext.login import current_user, login_required
 from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField, 
     IntegerField, validators)
 from flask.ext.principal import Permission, RoleNeed, Need
-from flask import current_app
+from flask import current_app, url_for
 from werkzeug.local import LocalProxy
 from functools import wraps
 from datetime import date
@@ -70,6 +70,48 @@ def permission_required(*roles):
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
+
+
+from math import ceil
+class Pagination(object):
+    def __init__(self, page, per_page, total_count):
+        self.page = page
+        self.per_page = per_page
+        self.total_count = total_count
+
+    @property
+    def pages(self):
+        return int(ceil(self.total_count / float(self.per_page)))
+
+    @property
+    def has_prev(self):
+        return self.page > 1
+
+    @property
+    def has_next(self):
+        return self.page < self.pages
+
+    def iter_pages(self, left_edge=2, left_current=2,
+                   right_current=5, right_edge=2):
+        last = 0
+        for num in xrange(1, self.pages + 1):
+            if num <= left_edge or \
+               (num > self.page - left_current - 1 and \
+                num < self.page + right_current) or \
+               num > self.pages - right_edge:
+                if last + 1 != num:
+                    yield None
+                yield num
+                last = num
+
+ITEMS_PER_PAGE = 10
+
+def url_for_other_page(page):
+    """this function is used by the pagination macro in jinja2 templates"""
+    args = request.view_args.copy()
+    args['page'] = page
+    return url_for(request.endpoint, **args)
+app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 
 @app.route("/")
@@ -330,17 +372,23 @@ def stockup():
     return render_template('bar_stockup.html', form=form)
 
 
-@app.route("/bar/log", methods=['GET', 'POST'])
+@app.route("/bar/log", defaults={'page': 1}, methods=['GET', 'POST'])
+@app.route("/bar/log/page/<int:page>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def bar_log():
-    log = BarLog.query.all()
+def bar_log(page):
+    log = BarLog.query
+    item_count = len(log.all())
+    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    if not log and page != 1:
+        abort(404)
+    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
     form = forms.BarLog()
     if form.validate_on_submit():
         changes = BarLog.query.get(request.form["revert"])
         BarLog.remove(changes)
         flash('The change was reverted', 'confirmation')
         return redirect(request.path)
-    return render_template('bar_log.html', log=log, form=form)
+    return render_template('bar_log.html', log=log, pagination=pagination, form=form)
 
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])
@@ -367,11 +415,17 @@ def accounting():
     return render_template('accounting.html', banks=banks)
 
 
-@app.route("/accounting/log")
+@app.route("/accounting/log", defaults={'page': 1})
+@app.route('/accounting/log/page/<int:page>')
 @permission_required('membership')
-def accounting_log():
+def accounting_log(page):
     log = Transactions.query.filter(Transactions.date_filed != None)
-    return render_template('accounting_log.html', log=log)
+    item_count = len(log.all())
+    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    if not log and page != 1:
+        abort(404)
+    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+    return render_template('accounting_log.html', log=log, pagination=pagination)
 
 
 @app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])
@@ -391,11 +445,13 @@ def accounting_request_reimbursement():
         return redirect(request.path)
     return render_template('accounting_request_reimbursement.html', form=form)
 
+
 @app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursements():
     requests = Transactions.query.filter_by(date_filed=None)
     return render_template('accounting_approve_reimbursements.html', requests=requests)
+
 
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
@@ -420,6 +476,7 @@ def accounting_approve_reimbursement(transaction_id):
         return redirect(request.path)
     return render_template('accounting_approve_reimbursement.html', form=form)
 
+
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_add_transaction():
@@ -443,6 +500,7 @@ def accounting_add_transaction():
         flash("the transaction was filed", "confirmation")
         return redirect(request.path)
     return render_template('accounting_add_transaction.html', form=form)
+
 
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')

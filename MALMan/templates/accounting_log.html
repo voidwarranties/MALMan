@@ -48,4 +48,6 @@
         {% endfor %}
     </tbody>
 </table>
+{% from "_macros.html" import render_pagination %}
+{{ render_pagination(pagination) }}
 {% endblock %}
