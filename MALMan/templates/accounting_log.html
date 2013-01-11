@@ -13,27 +13,37 @@
 <table id="transactions">
     <thead>
         <tr>
-            <th>Transaction number</th>
+            <th>#</th>
             <th>Date</th>
-            <th>to/from</th>
             <th>Amount</th>
+            <th>to/from</th>
             <th>Description</th>
-            <th>Bank acount</th>
             <th>Category</th>
-            {% if 'finances' in session.roles %}<th>Modify</th>{% endif %}
+            <th>Bank account</th>
+            {% if 'finances' in session.roles %}
+            <th>Bank statement</th>
+            <th>Date filed</th>
+            <th>Filed by</th>
+            <th>Modify</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
         {% for transaction in log %}
         <tr>
             <td>{{ transaction.id }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.description }}</td>
-            <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}{{ transaction.amount }}</span></td>
+            <td>{% if transaction.date %}{{ transaction.date }}{% else %}<span class="red">not payed yet!</span>{% endif %}</td>
+            <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
             <td>{{ transaction.to_from }}</td>
-            <td>{{ transaction.bank.name }}</td>
+            <td>{{ transaction.description }}</td>
             <td>{{ transaction.category.name }}</td>
-            {% if 'finances' in session.roles %}<td><a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a></td>{% endif %}
+            <td>{{ transaction.bank.name }}</td>
+            {% if 'finances' in session.roles %}
+            <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
+            <td>{{ transaction.date_filed }}</td>
+            <td>{{ transaction.filed_by.name }}</td>
+            <td><a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a></td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>

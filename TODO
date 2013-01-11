@@ -1,6 +1,5 @@
 Functionality
     delete stock items
-    make accounting forms
     filtering of tables
     pagination of tables
     add validator to check if a new stock item name is unique
@@ -9,6 +8,7 @@ Functionality
     (accept commas or periods on decimal fields)
 
 Refactoring
+    make database object model names singular
     check the way users are activated: active, actief_lid, membership role
     check if setattrs are caried over
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
@@ -32,4 +32,3 @@ Before deployment
         use functions to process booleans
         take 'form' out of form names, import the whole form module
         use add_confirmation()
-

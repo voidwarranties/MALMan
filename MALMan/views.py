@@ -40,12 +40,16 @@ def formatbool(var):
         return False
 
 
-def accounting_categories():
+def accounting_categories(IN=True, OUT=True):
     """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
     categories = AccountingCategories.query.all()
-    choices = [(category.id, category.name + " (IN)") for category in categories if category.is_revenue]
-    OUT = [(category.id, category.name + " (OUT)") for category in categories if not category.is_revenue]
-    choices.extend(OUT) 
+    choices = []
+    if IN:
+        IN = [(category.id, category.name + " (IN)") for category in categories if category.is_revenue]
+        choices.extend(IN) 
+    if OUT:
+        OUT = [(category.id, category.name + " (OUT)") for category in categories if not category.is_revenue]
+        choices.extend(OUT) 
     return choices
    
 
@@ -359,27 +363,62 @@ def add_item():
 @app.route("/accounting")
 @permission_required('membership')
 def accounting():
-    return render_template('accounting.html')
+    banks = Banks.query.all()
+    return render_template('accounting.html', banks=banks)
 
 
 @app.route("/accounting/log")
 @permission_required('membership')
 def accounting_log():
-    log = Transactions.query.all()
+    log = Transactions.query.filter(Transactions.date_filed != None)
     return render_template('accounting_log.html', log=log)
 
 
-@app.route("/accounting/request_reimbursement")
+@app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])
 @permission_required('membership')
 def accounting_request_reimbursement():
-    return render_template('accounting_request_reimbursement.html')
-
+    form = forms.RequestReimbursement()
+    del form.bank_id, form.to_from, form.category_id
+    if form.validate_on_submit():
+        transaction = Transactions(
+            advance_date = request.form["date"], 
+            amount = "-" + request.form["amount"],
+            description = request.form["description"],
+            to_from = current_user.name)
+        db.session.add(transaction)
+        db.session.commit()
+        flash("the request for reimbursement was filed", "confirmation")
+        return redirect(request.path)
+    return render_template('accounting_request_reimbursement.html', form=form)
 
 @app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursements():
-    return render_template('accounting_approve_reimbursements.html')
+    requests = Transactions.query.filter_by(date_filed=None)
+    return render_template('accounting_approve_reimbursements.html', requests=requests)
 
+@app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
+@permission_required('membership', 'finances')
+def accounting_approve_reimbursement(transaction_id):
+    banks = Banks.query.all()
+    transaction = Transactions.query.get(transaction_id)
+    form = forms.ApproveReimbursement(obj=transaction)
+    form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
+    form.category_id.choices = accounting_categories(IN=False)
+    if form.validate_on_submit():
+        transaction.date = request.form["date"]
+        transaction.amount = request.form["amount"]
+        transaction.to_from = request.form["to_from"]
+        transaction.description = request.form["description"]
+        transaction.category_id = request.form["category_id"]
+        transaction.bank_id = request.form["bank_id"]
+        transaction.bank_statement_number = request.form["bank_statement_number"]
+        transaction.date_filed = date.today()
+        transaction.filed_by_id = current_user.id
+        db.session.commit()
+        flash("the transaction was filed", "confirmation")
+        return redirect(request.path)
+    return render_template('accounting_approve_reimbursement.html', form=form)
 
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
@@ -389,11 +428,19 @@ def accounting_add_transaction():
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
-        transaction = Transactions(request.form["date"], request.form["amount"], 
-            request.form["description"], request.form["bank_id"], request.form["to_from"])
+        transaction = Transactions(
+            date = request.form["date"],
+            amount = request.form["amount"],
+            to_from = request.form["to_from"], 
+            description = request.form["description"],
+            category_id = request.form["category_id"],
+            bank_id = request.form["bank_id"],
+            date_filed = date.today(),
+            filed_by_id = current_user.id
+            )
         db.session.add(transaction)
         db.session.commit()
-        flash("the transaction was booked", "confirmation")
+        flash("the transaction was filed", "confirmation")
         return redirect(request.path)
     return render_template('accounting_add_transaction.html', form=form)
 
@@ -407,7 +454,7 @@ def accounting_edit_transaction(transaction_id):
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = CHANGE_MSG
-        for atribute in ['date', 'amount', 'description', 'bank_id', 'to_from', 'category_id']:
+        for atribute in ['date', 'amount', 'to_from', 'description', 'category_id', 'bank_id', 'bank_statement_number']:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):

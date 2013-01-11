@@ -162,6 +162,9 @@ dt {
     float: left;
     font-weight: bold;
 }
+dd {
+    margin-left: 5px;
+}
 
 /*Acounting log*/
 .green{

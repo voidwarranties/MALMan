@@ -123,6 +123,7 @@ class BarAddItem(Form):
     josto = BooleanField('Josto')
     submit = SubmitField('add stock item')
 
+
 class AddTransaction(Form):
     date = DateField('date (yyyy-mm-dd)', 
         [validators.Required(
@@ -133,7 +134,24 @@ class AddTransaction(Form):
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
     category_id = SelectField('category', coerce=int)
-    submit = SubmitField('add transaction')
+    bank_statement_number = IntegerField('bank statement number (optional)', 
+        [validators.Optional(), validators.NumberRange(min=0, 
+            message='please enter a positive number')])
+    submit = SubmitField('file transaction')
+
 
 class EditTransaction(AddTransaction):
     submit = SubmitField('edit transaction')
+
+
+class RequestReimbursement(AddTransaction):
+    date = DateField('date of advance (yyyy-mm-dd)', 
+        [validators.Required(
+            message='please enter a date using the specified formatting')])
+    amount = DecimalField('amount advanced (e.g. 1.52)', 
+        [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
+    submit = SubmitField('request reimbursement')
+
+
+class ApproveReimbursement(AddTransaction):
+    date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 

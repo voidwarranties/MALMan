@@ -1,6 +1,39 @@
 {% extends "base.html" %}
 {% set category = "accounting" %}
 {% block title %}Approve reimbursements{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="/static/jquery-latest.js"></script> 
+<script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
+<script type="text/javascript">
+        $(function() { $("#transactions").tablesorter(); } ); 
+</script>
+{% endblock %}
 {% block content %}
-approve
+{% if requests|list|count > 0 %}
+    <table id="transactions">
+        <thead>
+            <tr>
+                <th>Advance date</th>
+                <th>Amount</th>
+                <th>Member</th>
+                <th>Description</th>
+                <th>Approve</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td>{{ request.advance_date }}</td>
+                <td>€{{ request.amount|replace('-','') }}</td>
+                <td>{{ request.to_from }}</td>
+                <td>{{ request.description }}</td>
+                <td><a href="/accounting/approve_{{request.id}}">approve!</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>All stock items are already at maximum capacity!</p>
+{%- endif %}
 {% endblock %}
