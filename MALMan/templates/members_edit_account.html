@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% set category = "leden" %}
 {% block title %}Edit account{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="/static/Pikaday/pikaday.css" />
+{% endblock %}
 {% block content %}
 
 {% from "security/_macros.html" import render_field_with_errors %}
@@ -30,4 +34,15 @@
     {{ render_field_with_errors(form.membership_dues) }}
     {{ form.submit }}
 </form>
+<script src="/static/Pikaday/moment.js"></script>
+<script src="/static/Pikaday/pikaday.js"></script>
+<script>
+    var picker = new Pikaday({
+        field: document.getElementById('date_of_birth'),
+        format: 'YYYY-MM-DD',
+        onSelect: function() {
+            console.log(this.getMoment().format('YYYY-MM-DD'));
+        }
+    });
+</script>
 {% endblock %}

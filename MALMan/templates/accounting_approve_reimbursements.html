@@ -8,6 +8,7 @@
 <script type="text/javascript">
         $(function() { $("#transactions").tablesorter(); } ); 
 </script>
+    <link rel="stylesheet" type="text/css" href="/static/Pikaday/pikaday.css" />
 {% endblock %}
 {% block content %}
 {% if requests|list|count > 0 %}
@@ -36,4 +37,15 @@
 {% else %}
     <p>All stock items are already at maximum capacity!</p>
 {%- endif %}
+<script src="/static/Pikaday/moment.js"></script>
+<script src="/static/Pikaday/pikaday.js"></script>
+<script>
+    var picker = new Pikaday({
+        field: document.getElementById('date'),
+        format: 'YYYY-MM-DD',
+        onSelect: function() {
+            console.log(this.getMoment().format('YYYY-MM-DD'));
+        }
+    });
+</script>
 {% endblock %}

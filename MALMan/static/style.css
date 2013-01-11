@@ -118,7 +118,7 @@ input {
     border: 1px solid #CCC;
     }
 input[type="text"] {
-    /*width:40px;*/
+    width:200px;
 }
 table input[type="text"] {
     width:100%;
