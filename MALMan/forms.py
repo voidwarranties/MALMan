@@ -76,6 +76,10 @@ class NewFormFields(MembersEditOwnAccount):
 #    if StockItems.query.filter_by(name=field.data) is not None:
 #        raise ValidationError(field.data + ' is already a stock item')
 
+class BarRemoveItem(Form):
+    submit = SubmitField('remove stock item')
+
+
 # this is not used, check views.py for more info
 class BarEditAmounts(Form):
     # some fields are added by the view
@@ -155,3 +159,10 @@ class RequestReimbursement(AddTransaction):
 
 class ApproveReimbursement(AddTransaction):
     date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 
+
+
+class FilterTransaction(Form):
+    amount = SelectField('type', [validators.Optional()])
+    category_id = SelectField('category_id', [validators.Optional()])
+    bank_id = SelectField('bank', [validators.Optional()])
+    submit = SubmitField('filter')

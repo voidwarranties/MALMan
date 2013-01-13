@@ -87,6 +87,11 @@ class StockItems(db.Model):
     def __repr__(self):
         return '<Bar item %r>' % self.name
 
+    def remove(entry):
+        """remove entry from StockItems table"""
+        db.session.delete(entry)
+        db.session.commit()
+
 
 class StockCategories(db.Model):
     """Define the StockCategories database table"""

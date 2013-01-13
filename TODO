@@ -1,6 +1,9 @@
 Functionality
-    delete stock items
-    filtering of tables
+    add filtering to bar log
+    put filter button on same line as select elements
+    add pages 'dagboek' and 'kasboek'
+    remove legal categories from bar log
+    remember filters
     add validator to check if a new stock item name is unique
     add notifications
     (accept commas or periods on decimal fields)
@@ -30,3 +33,4 @@ Before deployment
         use functions to process booleans
         take 'form' out of form names, import the whole form module
         use add_confirmation()
+

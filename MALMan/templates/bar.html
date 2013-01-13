@@ -19,6 +19,9 @@
             <th>Stock maximum</th>
             <th>Category</th>
             <th>Josto</th>
+            {% if 'bar' in session.roles %}
+            <th>remove item</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -30,6 +33,9 @@
             <td>{{ item.stock_max }}</td>
             <td>{{ item.category.name }}</td>
             <td>{{ item.josto }}</td>
+            {% if 'bar' in session.roles %}
+            <td><a href="bar_remove_{{item.id}}">remove item</a></td>
+            {% endif %}
         </tr>
 {% endfor %}
     </tbody>

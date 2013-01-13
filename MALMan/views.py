@@ -11,6 +11,8 @@ from flask import current_app, url_for
 from werkzeug.local import LocalProxy
 from functools import wraps
 from datetime import date
+from urlparse import urlparse
+
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
 CHANGE_MSG = "These values were updated: "
@@ -110,7 +112,9 @@ def url_for_other_page(page):
     """this function is used by the pagination macro in jinja2 templates"""
     args = request.view_args.copy()
     args['page'] = page
-    return url_for(request.endpoint, **args)
+    url = url_for(request.endpoint, **args)
+    query = '?' + urlparse(request.url).query
+    return url + query
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 
@@ -264,6 +268,18 @@ def bar():
     return render_template('bar.html', items=items)
 
 
+@app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
+@permission_required('membership', 'bar')
+def bar_remove(item_id):
+    item = StockItems.query.get(item_id)
+    form = forms.BarRemoveItem()
+    if form.validate_on_submit():
+        StockItems.remove(item)
+        flash('The item was removed', 'confirmation')
+        return redirect(url_for('bar'))
+    return render_template('bar_remove.html', item=item, form=form)
+
+
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def edit_item_amounts():
@@ -415,17 +431,45 @@ def accounting():
     return render_template('accounting.html', banks=banks)
 
 
-@app.route("/accounting/log", defaults={'page': 1})
-@app.route('/accounting/log/page/<int:page>')
+@app.route("/accounting/log", defaults={'page': 1}, methods=['GET', 'POST'])
+@app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @permission_required('membership')
 def accounting_log(page):
     log = Transactions.query.filter(Transactions.date_filed != None)
+    banks = Banks.query.all()
+    filters = request.args.get('filters', '').split(",")
+    for filter in filters:
+        filter = filter.split(":")
+        if len(filter) > 1: #split() seems to return empty lists, don't run on those
+            if filter[0] == "amount":
+                if filter[1] == '1':
+                    log = log.filter(Transactions.amount > 0)
+                else:
+                    log = log.filter(Transactions.amount < 0)
+            else:
+                args = {filter[0]: filter[1]}
+                log = log.filter_by(**args)
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
-    return render_template('accounting_log.html', log=log, pagination=pagination)
+    form=forms.FilterTransaction()
+    form.amount.choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")]
+    form.bank_id.choices = [("0","filter by bank")]
+    form.category_id.choices = [("0","filter by category")]
+    form.category_id.choices.extend(accounting_categories())
+    form.bank_id.choices.extend([(bank.id, bank.name) for bank in banks])
+    if request.method == 'POST':
+    ## why doesn't this work?   
+    # if form.validate_on_submit():
+        url = '/accounting/log?filters='
+        fields = ["bank_id", "category_id", "amount"]
+        for field in fields:
+            if request.form[field] != '0':
+                url += field + ':' + request.form[field] + ","
+        return redirect(url)
+    return render_template('accounting_log.html', log=log, form=form, pagination=pagination)
 
 
 @app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])
