@@ -1,11 +1,16 @@
 Functionality
     add filtering to bar log
-    put filter button on same line as select elements
     add pages 'dagboek' and 'kasboek'
-    remove legal categories from bar log
     remember filters
+    uploading of attachments
     add validator to check if a new stock item name is unique
     add notifications
+    add a way to track membership fees
+    add a bar acount for each member
+    add an api vwcr can hook into
+    make commands to replicate external behaviour using flask-script
+    automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
+    automatically show a view to augment a user's bar account when filing a transation with the category 'bar account'
     (accept commas or periods on decimal fields)
 
 Refactoring

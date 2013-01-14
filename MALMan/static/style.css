@@ -2,7 +2,7 @@
 * {
     margin: 0;
     padding: 0;
-    border: 0;
+    /*border: 0;*/
     color: #000;
     list-style: none;
     }
@@ -103,8 +103,8 @@ form {
 }
 form p {
     border-bottom: 1px solid #CCC;
-    padding-bottom: 1px;
-    margin-bottom: 4px;
+    padding-bottom: 5px;
+    margin-bottom: 3px;
     clear:both;
 }
 label {
@@ -115,10 +115,11 @@ input {
     float: right;
     text-align: right;
     margin-left: 5px;
-    border: 1px solid #CCC;
+    /*border: 1px solid #CCC;*/
     }
 input[type="text"] {
     width:200px;
+    padding: 1px 0px;
 }
 table input[type="text"] {
     width:100%;
@@ -126,6 +127,7 @@ table input[type="text"] {
 select {
     float: right;
     margin-left: 5px;
+    padding: 1px 5px;
 }
 input[type="checkbox"] {
     width: 18px;
@@ -134,6 +136,7 @@ input[type="checkbox"] {
 input[type="submit"] {
     width: 100%;
     text-align: center;
+    padding: 1px 5px;
 }
 .empty {
     border: none;
@@ -179,4 +182,16 @@ dd {
 /* Pagination */
 .pagination {
     text-align: center;
+}
+
+#filter select {
+    margin-left: 0;
+    margin-right: 5px;
+    float: left;
+
+}
+#filter input {
+    float: right;
+    width: auto;
+    border: auto;
 }
