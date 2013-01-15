@@ -575,7 +575,7 @@ def topup_bar_account(transaction_id):
         db.session.add(item)
         db.session.commit()
         user = users.get(request.form["user_id"])
-        flash("€"str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
+        flash(u"\u20AC" + str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
         return redirect('/accounting/log')
     return render_template('accounting_topup_bar_account.html', form=form, transaction=transaction)
 
