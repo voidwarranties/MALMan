@@ -1,7 +1,6 @@
 Functionality
     add filtering to bar log
     add pages 'dagboek' and 'kasboek'
-    remember filters
     uploading of attachments
     add validator to check if a new stock item name is unique
     add notifications

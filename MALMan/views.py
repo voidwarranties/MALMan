@@ -437,6 +437,14 @@ def accounting():
 def accounting_log(page):
     log = Transactions.query.filter(Transactions.date_filed != None)
     banks = Banks.query.all()
+
+    form=forms.FilterTransaction()
+    form.amount.choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")]
+    form.bank_id.choices = [("0","filter by bank")]
+    form.bank_id.choices.extend([(bank.id, bank.name) for bank in banks])
+    form.category_id.choices = [("0","filter by category")]
+    form.category_id.choices.extend(accounting_categories())
+
     filters = request.args.get('filters', '').split(",")
     for filter in filters:
         filter = filter.split(":")
@@ -449,20 +457,16 @@ def accounting_log(page):
             else:
                 args = {filter[0]: filter[1]}
                 log = log.filter_by(**args)
+            setattr(form[filter[0]], 'data', filter[1])
+    
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
-    form=forms.FilterTransaction()
-    form.amount.choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")]
-    form.bank_id.choices = [("0","filter by bank")]
-    form.category_id.choices = [("0","filter by category")]
-    form.category_id.choices.extend(accounting_categories())
-    form.bank_id.choices.extend([(bank.id, bank.name) for bank in banks])
+   
     if request.method == 'POST':
-    ## why doesn't this work?   
-    # if form.validate_on_submit():
+    # why doesn't 'if form.validate_on_submit():' work?   
         url = '/accounting/log?filters='
         fields = ["bank_id", "category_id", "amount"]
         for field in fields:
