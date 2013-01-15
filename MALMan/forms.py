@@ -144,6 +144,11 @@ class AddTransaction(Form):
     submit = SubmitField('file transaction')
 
 
+class TopUpBarAccount(Form):
+    user_id = SelectField('user')
+    submit = SubmitField('top up')
+
+
 class EditTransaction(AddTransaction):
     submit = SubmitField('edit transaction')
 

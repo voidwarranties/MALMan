@@ -10,7 +10,7 @@ from flask.ext.principal import Permission, RoleNeed, Need
 from flask import current_app, url_for
 from werkzeug.local import LocalProxy
 from functools import wraps
-from datetime import date
+from datetime import datetime, date
 from urlparse import urlparse
 
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
@@ -196,7 +196,7 @@ def edit_own_account():
 @app.route("/bar_account")
 @permission_required('membership')
 def bar_account():
-    log = BarAccountLog.query.filter_by(user_id=current_user.id)
+    log = BarAccountLog.query.filter_by(user_id=current_user.id).order_by(BarAccountLog.time.desc())
     return render_template('bar_account_log.html', log=log)
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
@@ -442,7 +442,7 @@ def accounting():
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @permission_required('membership')
 def accounting_log(page):
-    log = Transactions.query.filter(Transactions.date_filed != None)
+    log = Transactions.query.filter(Transactions.date_filed != None).order_by(Transactions.id.desc())
     banks = Banks.query.all()
 
     form=forms.FilterTransaction()
@@ -553,8 +553,31 @@ def accounting_add_transaction():
         db.session.add(transaction)
         db.session.commit()
         flash("the transaction was filed", "confirmation")
-        return redirect(request.path)
+        if request.form["category_id"] == '6':
+            id = Transactions.query.order_by(Transactions.id.desc()).first()
+            return redirect(url_for('topup_bar_account', transaction_id=id.id))    
+        return redirect('/accounting/log')
     return render_template('accounting_add_transaction.html', form=form)
+
+@app.route("/accounting/topup_bar_account_<int:transaction_id>", methods=['GET', 'POST'])
+@permission_required('membership', 'finances')
+def topup_bar_account(transaction_id):
+    users = User.query
+    form = forms.TopUpBarAccount()
+    form.user_id.choices = [(user.id, user.name) for user in users.all()]
+    transaction = Transactions.query.get(transaction_id)
+    # why doesn't "if form.validate_on_submit():" work here?
+    if request.method == "POST":
+        item = BarAccountLog(
+            user_id = request.form["user_id"],
+            transaction_id = transaction_id,
+            time = datetime.now())
+        db.session.add(item)
+        db.session.commit()
+        user = users.get(request.form["user_id"])
+        flash("€"str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
+        return redirect('/accounting/log')
+    return render_template('accounting_topup_bar_account.html', form=form, transaction=transaction)
 
 
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
