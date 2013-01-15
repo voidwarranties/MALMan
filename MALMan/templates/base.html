@@ -30,7 +30,9 @@
             <ul class="menu cf">
                 <li><a href="/">overview</a></li>
                 <li><a href="/members/edit_own_account">edit my profile information</a></li>
-                <li><a href="#">my account</a></li>
+                {% if 'membership' in session.roles %}
+                    <li><a href="/bar_account">my bar account</a></li>
+                {% endif %}
                 <li><a href="/members/edit_password">edit my password</a></li>
             </ul>
 {%- elif category == "leden" -%}            

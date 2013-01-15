@@ -5,7 +5,6 @@ Functionality
     add validator to check if a new stock item name is unique
     add notifications
     add a way to track membership fees
-    add a bar acount for each member
     add an api vwcr can hook into
     make commands to replicate external behaviour using flask-script
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
@@ -27,6 +26,7 @@ Bugs
 
 Usability
     improve graphical design
+        use symbolic icons
 
 Before deployment
     forms checklist:

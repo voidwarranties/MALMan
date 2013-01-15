@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set category = "account" %}
+{% block title %}My bar account{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
+<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+<script type="text/javascript">
+        $(function() { $("#stockitems").tablesorter(); } ); 
+</script>
+{% endblock %}
+{% block content %}
+<table id="bar_account_log">
+    <thead>
+        <tr>
+            <th>time</th>
+            <th>description</th>
+            <th>amount</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for item in log %}
+        <tr>
+            <td>{{ item.time }}</td>
+            {% if item.transaction %}
+                <td>Topped up account, transaction # {{ item.transaction.id }}
+                <td><span class="green">+ €{{ item.transaction.amount }}</td>
+            {% else %}
+                <td>bought a {{ item.purchase.stock_name.name }}</td>
+                <td><span class="red">- €{{ item.purchase.total_price }}</td>
+            {% endif %}
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+{% endblock %}

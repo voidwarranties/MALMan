@@ -53,6 +53,16 @@ class User(db.Model, UserMixin):
     def __str__(self):
         return '<User id=%s email=%s>' % (self.id, self.email)
 
+    @property
+    def bar_account_balance(self):
+        total = 0
+        for item in self.bar_account_log:
+            if item.purchase_id:
+                total -= item.purchase.total_price
+            else:
+                total += item.transaction.amount
+        return total
+
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
@@ -180,6 +190,18 @@ class Transactions(db.Model):
     filed_by_id = db.Column(db.Integer, db.ForeignKey('users.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
+
+class BarAccountLog(db.Model):
+    """Define the bar_accounts database table"""
+    __tablename__ = 'bar_accounts_log'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', backref="bar_account_log", lazy="joined")
+    purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
+    purchase = db.relationship('BarLog')
+    transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
+    transaction = db.relationship('Transactions')
+    time = db.Column(db.DateTime())
 
 # create missing tables in db
 # should only be run once, remove this when db is stable

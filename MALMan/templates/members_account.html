@@ -2,5 +2,6 @@
 {% set category = "account" %}
 {% block title %}My account{% endblock %}
 {% block content %}
-<p>Welcome to MALMan!</p>
+<p>Welcome to MALMan {{ user.name }}!</p>
+<p>Your current bar account balance is €{{ user.bar_account_balance }}</p>
 {% endblock %}

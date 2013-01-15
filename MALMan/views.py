@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks, AccountingCategories
+from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -122,7 +122,8 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 def index():
     if current_user and current_user.is_active() and User.query.get(current_user.id).active_member:
         # is an aproved member
-        return render_template('members_account.html')
+        user = User.query.get(current_user.id)
+        return render_template('members_account.html', user=user)
     elif current_user and current_user.is_active():
         # is logged in but not aproved yet
         return render_template('members_waiting_aproval.html')
@@ -191,6 +192,12 @@ def edit_own_account():
     return render_template('members_edit_own_account.html', userdata=userdata, 
         form=form)
 
+
+@app.route("/bar_account")
+@permission_required('membership')
+def bar_account():
+    log = BarAccountLog.query.filter_by(user_id=current_user.id)
+    return render_template('bar_account_log.html', log=log)
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
