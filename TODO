@@ -10,6 +10,7 @@ Functionality
     move as much as possible form views.py into forms.py
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
     (accept commas or periods on decimal fields)
+    add active field for stock items instead of removing them
 
 Refactoring
     make database object model names singular
@@ -18,11 +19,13 @@ Refactoring
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
     Minimize the number of times we read or write to the DB
     check validity of XHTML, CSS & JS
-    fix whitespace in produced XHTML 
+    fix whitespace in produced XHTML
+    remove timestamp from bar_account_log
 
 Bugs
-    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log bak in tosee the change.
+    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in tosee the change.
     somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stipped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
+
 
 Usability
     improve graphical design

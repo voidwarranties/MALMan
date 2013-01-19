@@ -34,8 +34,8 @@
                 {%- if not user.show_email and perm_members %} (hidden){%- endif -%}
             </td>
             <td>
-                {%- if user.show_telephone or perm_members -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_telephone and perm_members %} (hidden){%- endif -%}
+                {%- if user.show_telephone or 'members' in session.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_telephone and 'members' in session.roles %} (hidden){%- endif -%}
             </td>
             <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>
             <td>{{ user.member_since }}</td>
