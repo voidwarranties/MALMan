@@ -121,7 +121,7 @@ class BarLog(db.Model):
     stock_name = db.relationship("StockItems", backref="BarLog", lazy="joined")
     amount = db.Column(db.Integer)
     total_price = db.Column(db.Numeric(5, 2))
-    datetime = db.Column(db.String(120))
+    datetime = db.Column(db.DateTime())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User')
     transaction_type = db.Column(db.String(50))
@@ -201,7 +201,14 @@ class BarAccountLog(db.Model):
     purchase = db.relationship('BarLog')
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
     transaction = db.relationship('Transactions')
-    time = db.Column(db.DateTime())
+
+    @property
+    def datetime(self):
+        if self.purchase_id:
+            return self.purchase.datetime
+        else:
+            return self.transaction.date
+        
 
 # create missing tables in db
 # should only be run once, remove this when db is stable

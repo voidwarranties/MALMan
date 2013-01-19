@@ -21,7 +21,7 @@
     <tbody>
 {% for item in log %}
         <tr>
-            <td>{{ item.time }}</td>
+            <td>{{ item.datetime|replace(' 00:00:00', '') }}</td>
             {% if item.transaction %}
                 <td>Topped up account, transaction # {{ item.transaction.id }}
                 <td><span class="green">+ €{{ item.transaction.amount }}</td>

@@ -20,7 +20,6 @@ Refactoring
     Minimize the number of times we read or write to the DB
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
-    remove timestamp from bar_account_log
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in tosee the change.

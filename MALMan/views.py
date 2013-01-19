@@ -196,7 +196,8 @@ def edit_own_account():
 @app.route("/bar_account")
 @permission_required('membership')
 def bar_account():
-    log = BarAccountLog.query.filter_by(user_id=current_user.id).order_by(BarAccountLog.time.desc())
+    log = BarAccountLog.query.filter_by(user_id=current_user.id)
+    log = sorted(log, key=lambda i: i.datetime, reverse=True) #sort descending
     return render_template('bar_account_log.html', log=log)
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
@@ -570,8 +571,7 @@ def topup_bar_account(transaction_id):
     if request.method == "POST":
         item = BarAccountLog(
             user_id = request.form["user_id"],
-            transaction_id = transaction_id,
-            time = datetime.now())
+            transaction_id = transaction_id)
         db.session.add(item)
         db.session.commit()
         user = users.get(request.form["user_id"])
