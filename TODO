@@ -6,8 +6,7 @@ Functionality
     add notifications
     add a way to track membership fees
     add an api vwcr can hook into
-    make commands to replicate external behaviour using flask-script
-    move as much as possible form views.py into forms.py
+    add donation command
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them

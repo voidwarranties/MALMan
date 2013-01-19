@@ -126,13 +126,6 @@ class BarLog(db.Model):
     user = db.relationship('User')
     transaction_type = db.Column(db.String(50))
 
-    def __init__(self, item_id, amount, total_price, user_id, transaction_type):
-        self.item_id = item_id
-        self.amount = amount
-        self.total_price = total_price
-        self.user_id = user_id
-        self.transaction_type = transaction_type
-
     def __repr__(self):
         return '<id %r>' % self.id
 

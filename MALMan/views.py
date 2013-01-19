@@ -302,9 +302,12 @@ def edit_item_amounts():
         confirmation = CHANGE_MSG
         for item in items:
             if int(request.form["amount_" + str(item.id)]) != int(item.stock):
-                changes = BarLog(item.id, 
-                    (int(request.form["amount_" + str(item.id)]) - int(item.stock))
-                    , 0, current_user.id, "correction") 
+                changes = BarLog(
+                    item_id = item.id,
+                    amount = int(request.form["amount_" + str(item.id)]) - int(item.stock),
+                    total_price = 0,
+                    user_id = current_user.id,
+                    transaction_type = "correction")
                 db.session.add(changes)
                 db.session.commit()
                 confirmation = add_confirmation(confirmation, "stock " + 
@@ -383,9 +386,12 @@ def stockup():
             checked = forms.booleanfix(request.form, 'check_' + str(item.id))
             if checked: 
                 if int(request.form["amount_" + str(item.id)]) != 0:
-                    changes = BarLog(item.id, 
-                        request.form["amount_" + str(item.id)], 
-                        0, current_user.id, "stock up") 
+                    changes = BarLog(
+                        item_id = item.id,
+                        amount = request.form["amount_" + str(item.id)],
+                        total_price = 0,
+                        user_id = current_user.id,
+                        transaction_type = "stock up")
                     db.session.add(changes)
                     db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " + 
