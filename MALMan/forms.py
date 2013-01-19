@@ -167,7 +167,10 @@ class ApproveReimbursement(AddTransaction):
 
 
 class FilterTransaction(Form):
-    amount = SelectField('type', [validators.Optional()])
-    category_id = SelectField('category_id', [validators.Optional()])
-    bank_id = SelectField('bank', [validators.Optional()])
+    amount = SelectField('type', [validators.Optional()], 
+        choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")])
+    category_id = SelectField('category_id', [validators.Optional()],
+        choices = [("0","filter by category")])
+    bank_id = SelectField('bank', [validators.Optional()], 
+        choices = [("0","filter by bank")])
     submit = SubmitField('filter')

@@ -447,10 +447,7 @@ def accounting_log(page):
     banks = Banks.query.all()
 
     form=forms.FilterTransaction()
-    form.amount.choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")]
-    form.bank_id.choices = [("0","filter by bank")]
     form.bank_id.choices.extend([(bank.id, bank.name) for bank in banks])
-    form.category_id.choices = [("0","filter by category")]
     form.category_id.choices.extend(accounting_categories())
 
     filters = request.args.get('filters', '').split(",")
