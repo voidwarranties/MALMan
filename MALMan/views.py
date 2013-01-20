@@ -492,7 +492,7 @@ def accounting_log(page):
 @app.route("/accounting/cashlog", defaults={'page': 1})
 @app.route('/accounting/cashlog/page/<int:page>')
 @permission_required('membership', 'finances')
-def accounting_log(page):
+def accounting_cashlog(page):
     log = CashTransaction.query.order_by(CashTransaction.id.desc())
     
     item_count = len(log.all())

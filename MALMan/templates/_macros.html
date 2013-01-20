@@ -1,4 +1,5 @@
 {% macro render_pagination(pagination) %}
+  {% if pagination.iter_pages()|list|count > 1 %}
   <div class=pagination>
   {%- for page in pagination.iter_pages() %}
     {% if page %}
@@ -15,4 +16,5 @@
     <a href="{{ url_for_other_page(pagination.page + 1) }}">Next &raquo;</a>
   {% endif %}
   </div>
+  {% endif %}
 {% endmacro %}
