@@ -26,7 +26,7 @@
                 <td>Topped up account, transaction # {{ item.transaction.id }}
                 <td><span class="green">+ €{{ item.transaction.amount }}</td>
             {% else %}
-                <td>bought a {{ item.purchase.stock_name.name }}</td>
+                <td>bought a {{ item.purchase.item.name }}</td>
                 <td><span class="red">- €{{ item.purchase.total_price }}</td>
             {% endif %}
         </tr>

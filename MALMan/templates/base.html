@@ -57,8 +57,11 @@
             <ul class="menu cf">
                 <li><a href="/accounting">overview</a></li>
                 <li><a href="/accounting/log">transaction log</a></li>
-                <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
                 {% if 'finances' in session.roles %}
+                <li><a href="/accounting/cashlog">running account log</a></li>
+                {% endif %}
+                {% if 'finances' in session.roles %}
+                <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
                 <li><a href="/accounting/approve_reimbursements">approve reimbursements (A)</a></li>
                 <li><a href="/accounting/add_transaction">add transaction (A)</a></li>
                 {% endif %}

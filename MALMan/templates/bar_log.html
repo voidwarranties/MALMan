@@ -31,7 +31,7 @@
             <tr>
                 <td>{{ entry.datetime }}</td>
                 <td>{{ entry.transaction_type }}</td>
-                <td>{{ entry.stock_name.name }}</td>
+                <td>{{ entry.item.name }}</td>
                 <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
                 {% if entry.total_price == 0 %}
                 <td>0</td>

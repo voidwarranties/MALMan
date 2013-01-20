@@ -20,9 +20,10 @@ def _record_purchase(item_id, amount, total_price, user_id):
     db.session.commit()
     return BarLog.query.order_by(BarLog.id.desc()).first().id
 
-def _record_cash_transaction(purchase_id, amount, description):
+def _record_cash_transaction(amount, description, purchase_id=None):
     """add a cash transaction to the database"""
     changes = CashTransaction(
+        purchase_id = purchase_id,
         amount = amount,
         description = description,
         datetime = datetime.now())
@@ -45,7 +46,7 @@ def purchase(item_id, amount, total_price, user_id=None):
     """
     purchase_id = _record_purchase(item_id, amount, total_price, user_id)
     if user_id == None:
-        _record_cash_transaction(purchase_id, total_price, "purchase #" + str(purchase_id))
+        _record_cash_transaction(total_price, "purchase", purchase_id)
     else:
         change = BarAccountLog(
             user_id = user_id,

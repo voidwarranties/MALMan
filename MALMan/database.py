@@ -118,7 +118,7 @@ class BarLog(db.Model):
     __tablename__ = 'bar_log'
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey('bar_items.id'))
-    stock_name = db.relationship("StockItems", backref="BarLog", lazy="joined")
+    item = db.relationship("StockItems", backref="BarLog", lazy="joined")
     amount = db.Column(db.Integer)
     total_price = db.Column(db.Numeric(5, 2))
     datetime = db.Column(db.DateTime())

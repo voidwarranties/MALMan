@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import User, StockItems, Role, StockCategories, BarLog, db, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
+from MALMan.database import db, User, StockItems, Role, StockCategories, BarLog, CashTransaction, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -485,6 +485,21 @@ def accounting_log(page):
                 url += field + ':' + request.form[field] + ","
         return redirect(url)
     return render_template('accounting_log.html', log=log, form=form, pagination=pagination)
+
+
+@app.route("/accounting/cashlog", defaults={'page': 1})
+@app.route('/accounting/cashlog/page/<int:page>')
+@permission_required('membership', 'finances')
+def accounting_log(page):
+    log = CashTransaction.query.order_by(CashTransaction.id.desc())
+    
+    item_count = len(log.all())
+    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    if not log and page != 1:
+        abort(404)
+    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+   
+    return render_template('accounting_cashlog.html', log=log, pagination=pagination)
 
 
 @app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])

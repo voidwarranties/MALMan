@@ -1,5 +1,7 @@
 Functionality
-    add filtering to bar log
+    add filtering to tables that need it
+        bar log
+        cash log
     add pages 'dagboek' and 'kasboek'
     uploading of attachments
     add validator to check if a new stock item name is unique
@@ -10,6 +12,7 @@ Functionality
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
+    hide pagination when there is only one page
 
 Refactoring
     make database object model names singular
@@ -24,7 +27,6 @@ Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in tosee the change.
     somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stipped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
 
-
 Usability
     improve graphical design
         use symbolic icons
@@ -36,7 +38,6 @@ Before deployment
         use if form.validate_on_submit():
         templates don't define their own input elements
         use functions to process booleans
-        take 'form' out of form names, import the whole form module
         use add_confirmation()
 
 Questions
