@@ -406,7 +406,7 @@ def stockup():
 @app.route("/bar/log/page/<int:page>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def bar_log(page):
-    log = BarLog.query
+    log = BarLog.query.order_by(BarLog.datetime.desc())
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
     if not log and page != 1:

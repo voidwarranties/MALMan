@@ -144,7 +144,18 @@ class Banks(db.Model):
 
     @property
     def balance(self):
-        return sum(item.amount for item in self.transactions) 
+        return sum(item.amount for item in self.transactions)
+
+
+class CashTransaction(db.Model):
+    """Define the acounting_cashregister database table"""
+    __tablename__ = 'accounting_cashregister'
+    id = db.Column(db.Integer, primary_key=True)
+    purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
+    purchase = db.relationship("BarLog")
+    amount = db.Column(db.Integer)
+    description = db.Column(db.String())
+    datetime = db.Column(db.DateTime())
 
 
 class AccountingCategories(db.Model):

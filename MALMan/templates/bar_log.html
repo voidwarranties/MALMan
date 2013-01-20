@@ -38,7 +38,7 @@
                 {% else %}
                 <td>{% if entry.total_price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.total_price }}<span></td>
                 {% endif %}
-                <td>{{ entry.user.name }}</td>
+                <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
                 <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
             </tr>
         {%- endfor -%}

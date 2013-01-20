@@ -6,7 +6,7 @@ Functionality
     add notifications
     add a way to track membership fees
     add an api vwcr can hook into
-    add donation command
+    show an log of accounting_cashregister
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
@@ -39,3 +39,17 @@ Before deployment
         take 'form' out of form names, import the whole form module
         use add_confirmation()
 
+Questions
+    How do we implement the purchase of multiple items simultaneously?
+        At the moment we record the following attributes for each purchase: 
+            item_id: which item is bought
+            amount: how many of this item is bought
+            total_price: the total price for this purchase
+            datetime: the time ate which the purchase happened
+            user_id: which user made the purchase (or cash)
+            transaction_type: indicates if we are correcting or stocking up instead of purchasing
+        Thus it is possible to purhase multiple drink at the same time, but only if it's the same drink.
+        Wouldn't it be easier to have VWCR record the sale of multiple items as multiple purchases in the database?
+            amount would always be 1 and could thus be dropped
+            total_price would become price
+            other fields would stay the same
