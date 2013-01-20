@@ -2,9 +2,18 @@
 {% set category = "accounting" %}
 {% block title %}Accounting{% endblock %}
 {% block content %}
+<h2>On the books</h2>
 <dl class="cf">
 {% for bank in banks %}
 	<dt>{{ bank.name }}: </dt><dd> €{{ bank.balance }}</dd>
 {% endfor %}
 </dl>
+<h2>Off the books</h2>
+<dl class="cf">
+	<dt>running account: </dt><dd> € {{ running_acount_balance }}</dd>
+	{% set cash = banks|last() %}
+	{% set balance = [cash.balance, running_acount_balance] %}
+</dl>
+<p>(amount in cash register: €{{ balance|sum() }})</p>
+
 {% endblock %}

@@ -442,7 +442,9 @@ def add_item():
 @permission_required('membership')
 def accounting():
     banks = Banks.query.all()
-    return render_template('accounting.html', banks=banks)
+    running_account = CashTransaction.query.all()
+    running_acount_balance = sum(transaction.amount for transaction in running_account)
+    return render_template('accounting.html', banks=banks, running_acount_balance=running_acount_balance)
 
 
 @app.route("/accounting/log", defaults={'page': 1}, methods=['GET', 'POST'])

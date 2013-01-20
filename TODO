@@ -8,7 +8,6 @@ Functionality
     add notifications
     add a way to track membership fees
     add an api vwcr can hook into
-    show an log of accounting_cashregister
     automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
@@ -22,6 +21,7 @@ Refactoring
     Minimize the number of times we read or write to the DB
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
+    use jinja2 macros to minimize copied code in templates
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in tosee the change.
