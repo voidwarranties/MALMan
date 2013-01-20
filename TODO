@@ -8,7 +8,7 @@ Functionality
     add notifications
     add a way to track membership fees
     add an api vwcr can hook into
-    automatically show a view to check a user's payment of his membership fees when filing a transation with the category 'membership fee'
+    automatically show a view to check a user's payment of his membership fees when filing a transaction with the category 'membership fee'
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
 
@@ -23,8 +23,8 @@ Refactoring
     use jinja2 macros to minimize copied code in templates
 
 Bugs
-    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in tosee the change.
-    somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stipped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
+    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
+    somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
 
 Usability
     improve graphical design
@@ -48,7 +48,7 @@ Questions
             datetime: the time ate which the purchase happened
             user_id: which user made the purchase (or cash)
             transaction_type: indicates if we are correcting or stocking up instead of purchasing
-        Thus it is possible to purhase multiple drink at the same time, but only if it's the same drink.
+        Thus it is possible to purchase multiple drink at the same time, but only if it's the same drink.
         Wouldn't it be easier to have VWCR record the sale of multiple items as multiple purchases in the database?
             amount would always be 1 and could thus be dropped
             total_price would become price
