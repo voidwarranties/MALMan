@@ -2,12 +2,9 @@
 {% set category = "leden" %}
 {% block title %}Members{% endblock %}
 {% block head %}
-{{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
-<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
-<script type="text/javascript">
-        $(function() { $("#members").tablesorter(); } ); 
-</script>
+    {{ super() }}
+    {% from "_macros.html" import tablesorter %}
+    {{ tablesorter('#members') }}
 {% endblock %}
 {% block content %}
 <table id="members">

@@ -19,7 +19,6 @@
     {% endif %}
 {% endmacro %}
 
-
 {% macro pikaday(element) %}
     <script src="/static/Pikaday/moment.js"></script>
     <script src="/static/Pikaday/pikaday.js"></script>
@@ -31,5 +30,13 @@
                 console.log(this.getMoment().format('YYYY-MM-DD'));
             }
         });
+    </script>
+{% endmacro %}
+
+{% macro tablesorter(element)%}
+    <script type="text/javascript" src="/static/jquery-latest.js"></script> 
+    <script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
+    <script type="text/javascript">
+        $(function() { $("{{element}}").tablesorter(); } ); 
     </script>
 {% endmacro %}

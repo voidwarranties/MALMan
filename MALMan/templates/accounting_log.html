@@ -2,12 +2,9 @@
 {% set category = "accounting" %}
 {% block title %}Accounting log{% endblock %}
 {% block head %}
-{{ super() }}
-<script type="text/javascript" src="/static/jquery-latest.js"></script> 
-<script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
-<script type="text/javascript">
-        $(function() { $("#transactions").tablesorter(); } ); 
-</script>
+    {{ super() }}
+    {% from "_macros.html" import tablesorter %}
+    {{ tablesorter('#transactions') }}
 {% endblock %}
 {% block content %}
 <form method="post" class="cf" id="filter">

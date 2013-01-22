@@ -3,18 +3,14 @@
 {% block title %}Stock log{% endblock %}
 {% block head %}
 {{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
-<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
-<script type="text/javascript">
-        $(function() { $("#transactions").tablesorter(
-            {sortList: [[0,1]]}
-        ); } ); 
-</script>
+    {{ super() }}
+    {% from "_macros.html" import tablesorter %}
+    {{ tablesorter('#stock_log') }}
 {% endblock %}
 {% block content %}
 <form class="empty" method="POST">
     {{ form.hidden_tag() }}
-    <table id="transactions">
+    <table id="stock_log">
         <thead>
             <tr>
                 <th>date</th>

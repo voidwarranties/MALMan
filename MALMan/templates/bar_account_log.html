@@ -2,12 +2,9 @@
 {% set category = "account" %}
 {% block title %}My bar account{% endblock %}
 {% block head %}
-{{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
-<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
-<script type="text/javascript">
-        $(function() { $("#bar_account_log").tablesorter(); } ); 
-</script>
+    {{ super() }}
+    {% from "_macros.html" import tablesorter %}
+    {{ tablesorter('#bar_account_log') }}
 {% endblock %}
 {% block content %}
 <table id="bar_account_log">

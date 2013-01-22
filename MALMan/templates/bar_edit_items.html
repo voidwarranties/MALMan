@@ -2,12 +2,9 @@
 {% set category = "stock" %}
 {% block title %}Edit stock{% endblock %}
 {% block head %}
-{{ super() }}
-<script type="text/javascript" src="{{ url_for('static', filename='jquery-latest.js') }}"></script> 
-<script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
-<script type="text/javascript">
-        $(function() { $("#stockitems").tablesorter(); } ); 
-</script>
+    {{ super() }}
+    {% from "_macros.html" import tablesorter %}
+    {{ tablesorter('#stockitems') }}
 {% endblock %}
 {% block content %}
 <form method="POST" class="cf">
