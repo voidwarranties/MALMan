@@ -145,8 +145,16 @@ class AddTransaction(Form):
 
 
 class TopUpBarAccount(Form):
-    user_id = SelectField('user')
+    user_id = SelectField('user', coerce=int)
     submit = SubmitField('top up')
+
+
+class FileMembershipFee(Form):
+    user_id = SelectField('Member', coerce=int)
+    until = DateField("This settles this member's membership dues until (yyyy-mm-dd)", 
+        [validators.Required(
+            message='please enter a date using the specified formatting')])
+    submit = SubmitField('file payment of membership fee')
 
 
 class EditTransaction(AddTransaction):

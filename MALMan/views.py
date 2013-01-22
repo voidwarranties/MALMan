@@ -574,9 +574,13 @@ def accounting_add_transaction():
         db.session.add(transaction)
         db.session.commit()
         flash("the transaction was filed", "confirmation")
+
         if request.form["category_id"] == '6':
             id = Transactions.query.order_by(Transactions.id.desc()).first()
-            return redirect(url_for('topup_bar_account', transaction_id=id.id))    
+            return redirect(url_for('topup_bar_account', transaction_id=id.id))
+        elif request.form["category_id"] == '8':
+            id = Transactions.query.order_by(Transactions.id.desc()).first()
+            return redirect(url_for('file_membershipfee', transaction_id=id.id))
         return redirect('/accounting/log')
     return render_template('accounting_add_transaction.html', form=form)
 
@@ -587,8 +591,7 @@ def topup_bar_account(transaction_id):
     form = forms.TopUpBarAccount()
     form.user_id.choices = [(user.id, user.name) for user in users.all()]
     transaction = Transactions.query.get(transaction_id)
-    # why doesn't "if form.validate_on_submit():" work here?
-    if request.method == "POST":
+    if form.validate_on_submit():
         item = BarAccountLog(
             user_id = request.form["user_id"],
             transaction_id = transaction_id)
@@ -635,6 +638,31 @@ def accounting_membershipfees(page):
     pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
    
     return render_template('accounting_membershipfees.html', log=log, pagination=pagination)
+
+
+@app.route("/accounting/file_membershipfee_<int:transaction_id>", methods=['GET', 'POST'])
+@permission_required('membership', 'finances')
+def file_membershipfee(transaction_id):
+    users = User.query
+    form = forms.FileMembershipFee()
+    form.user_id.choices = [(user.id, user.name) for user in users.all()]
+    transaction = Transactions.query.get(transaction_id)
+
+    if form.validate_on_submit():
+        item = MembershipFee(
+            user_id = request.form["user_id"],
+            transaction_id = transaction_id,
+            until = request.form["until"])
+        db.session.add(item)
+        db.session.commit()
+        user = users.get(request.form["user_id"])
+        flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
+        return redirect('/accounting/log')
+    
+    return render_template('accounting_file_membershipfee.html', form=form, transaction=transaction)
+
+
+
 
 @app.errorhandler(401)
 def error_401(error):

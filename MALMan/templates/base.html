@@ -39,18 +39,18 @@
             <ul class="menu cf">
                 <li><a href="/members">memberlist</a></li>
                 {% if 'members' in session.roles %}
-                <li><a href="/members/approve_new_members">new members (A)</a></li>
+                <li><a href="/members/approve_new_members">new members</a></li>
                 {% endif %}
             </ul>
 {%- elif category == "stock" -%}
             <ul class="menu cf">
                 <li><a href="/bar">list stock</a></li>
                 {% if 'bar' in session.roles %}
-                <li><a href="/bar/edit_item_amounts">edit stock amounts (A)</a></li>
-                <li><a href="/bar/edit_items">edit stock items (A)</a></li>
-                <li><a href="/bar/stockup">stock up (Josto) (A)</a></li>
-                <li><a href="/bar/log">stock log (A)</a></li>
-                <li><a href="/bar/add_item">add stock item (A)</a></li>
+                <li><a href="/bar/edit_item_amounts">edit stock amounts</a></li>
+                <li><a href="/bar/edit_items">edit stock items</a></li>
+                <li><a href="/bar/stockup">stock up (Josto)</a></li>
+                <li><a href="/bar/log">stock log</a></li>
+                <li><a href="/bar/add_item">add stock item</a></li>
                 {% endif %}
             </ul>
 {%- elif category == "accounting" -%}
@@ -62,8 +62,8 @@
                 {% endif %}
                 {% if 'finances' in session.roles %}
                 <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
-                <li><a href="/accounting/approve_reimbursements">approve reimbursements (A)</a></li>
-                <li><a href="/accounting/add_transaction">add transaction (A)</a></li>
+                <li><a href="/accounting/approve_reimbursements">approve reimbursements</a></li>
+                <li><a href="/accounting/add_transaction">add transaction</a></li>
                 <li><a href="/accounting/membershipfees">membership fees</a></li>
                 {% endif %}
             </ul>
