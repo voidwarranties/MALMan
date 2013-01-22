@@ -47,10 +47,10 @@ def accounting_categories(IN=True, OUT=True):
     categories = AccountingCategories.query.all()
     choices = []
     if IN:
-        IN = [(category.id, category.name + " (IN)") for category in categories if category.is_revenue]
+        IN = [(str(category.id), category.name + " (IN)") for category in categories if category.is_revenue]
         choices.extend(IN) 
     if OUT:
-        OUT = [(category.id, category.name + " (OUT)") for category in categories if not category.is_revenue]
+        OUT = [(str(category.id), category.name + " (OUT)") for category in categories if not category.is_revenue]
         choices.extend(OUT) 
     return choices
    
@@ -454,8 +454,10 @@ def accounting_log(page):
     log = Transactions.query.filter(Transactions.date_filed != None).order_by(Transactions.id.desc())
     banks = Banks.query.all()
 
-    form=forms.FilterTransaction()
-    form.bank_id.choices.extend([(bank.id, bank.name) for bank in banks])
+    form = forms.FilterTransaction()
+    form.bank_id.choices = [("0","filter by bank")]
+    form.bank_id.choices.extend([(str(bank.id), bank.name) for bank in banks])
+    form.category_id.choices = [("0","filter by category")]
     form.category_id.choices.extend(accounting_categories())
 
     filters = request.args.get('filters', '').split(",")
@@ -477,9 +479,8 @@ def accounting_log(page):
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
-   
-    if request.method == 'POST':
-    # why doesn't 'if form.validate_on_submit():' work?   
+
+    if form.validate_on_submit():   
         url = '/accounting/log?filters='
         fields = ["bank_id", "category_id", "amount"]
         for field in fields:
