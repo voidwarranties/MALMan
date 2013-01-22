@@ -18,7 +18,6 @@ def _date_to_datetime(date):
     return datetime.combine(date, midnight)
 
 
-
 db = SQLAlchemy(app)
 
 roles_users = db.Table('members_roles_users',

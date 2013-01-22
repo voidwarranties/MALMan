@@ -9,12 +9,11 @@ Functionality
     add an api vwcr can hook into
     (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
+    add a way to show a members' membership fees payment history
 
 Refactoring
     split views.py into multiple files based on categories
     put templates in folders based on categories
-    import all db object models as DB.model instead of declaring each model to be imported
-        rename all internal funtions in database.py to keep them from being imported in views.py
     make database object model names singular
     check the way users are activated: active, actief_lid, membership role
     check if setattrs are caried over

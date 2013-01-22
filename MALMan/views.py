@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import db, User, StockItems, Role, MembershipFee, StockCategories, BarLog, CashTransaction, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
+import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -44,7 +44,7 @@ def formatbool(var):
 
 def accounting_categories(IN=True, OUT=True):
     """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
-    categories = AccountingCategories.query.all()
+    categories = DB.AccountingCategories.query.all()
     choices = []
     if IN:
         IN = [(str(category.id), category.name + " (IN)") for category in categories if category.is_revenue]
@@ -120,9 +120,9 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 @app.route("/")
 def index():
-    if current_user and current_user.is_active() and User.query.get(current_user.id).active_member:
+    if current_user and current_user.is_active() and DB.User.query.get(current_user.id).active_member:
         # is an aproved member
-        user = User.query.get(current_user.id)
+        user = DB.User.query.get(current_user.id)
         return render_template('members_account.html', user=user)
     elif current_user and current_user.is_active():
         # is logged in but not aproved yet
@@ -135,14 +135,14 @@ def index():
 @app.route("/members")
 @permission_required('membership')
 def members():
-    users = User.query.filter_by(active_member='1')
+    users = DB.User.query.filter_by(active_member='1')
     return render_template('members.html', users=users)
 
 
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def approve_new_members():
-    new_members = User.query.filter_by(active_member='0')
+    new_members = DB.User.query.filter_by(active_member='0')
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id), 
             BooleanField('activate user'))
@@ -155,7 +155,7 @@ def approve_new_members():
             if new_value != user.active_member:
                 setattr(user, 'active_member', True)
                 setattr(user, 'member_since', date.today())
-                db.session.commit()
+                DB.db.session.commit()
                 confirmation = add_confirmation(confirmation, 
                     user.email + " was made an active member")
         return_flash(confirmation)
@@ -167,7 +167,7 @@ def approve_new_members():
 @app.route('/members/edit_own_account', methods=['GET', 'POST'])
 @login_required
 def edit_own_account():
-    userdata = User.query.get(current_user.id)
+    userdata = DB.User.query.get(current_user.id)
     form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
         confirmation = CHANGE_MSG
@@ -182,9 +182,9 @@ def edit_own_account():
                 old_value = getattr(userdata, atribute)
                 new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):
-                user = User.query.get(current_user.id)
+                user = DB.User.query.get(current_user.id)
                 setattr(user, atribute, new_value)
-                db.session.commit()
+                DB.db.session.commit()
                 confirmation = add_confirmation(confirmation, atribute + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
@@ -196,15 +196,15 @@ def edit_own_account():
 @app.route("/bar_account")
 @permission_required('membership')
 def bar_account():
-    log = BarAccountLog.query.filter_by(user_id=current_user.id)
+    log = DB.BarAccountLog.query.filter_by(user_id=current_user.id)
     log = sorted(log, key=lambda i: i.datetime, reverse=True) #sort descending
     return render_template('bar_account_log.html', log=log)
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
 def members_edit(userid):
-    userdata = User.query.get(userid)
-    roles = Role.query.all()
+    userdata = DB.User.query.get(userid)
+    roles = DB.Role.query.all()
     # add roles to form
     for role in roles:
         if role != 'membership':
@@ -241,15 +241,15 @@ def members_edit(userid):
             if str(new_value) != str(old_value):
                 if atribute in roles:
                     if new_value:
-                        user_datastore.add_role_to_user(userdata, atribute)
+                        DB.user_datastore.add_role_to_user(userdata, atribute)
                     else:
-                        user_datastore.remove_role_from_user(userdata, atribute)
+                        DB.user_datastore.remove_role_from_user(userdata, atribute)
                 else:
-                    user = User.query.get(userid)
+                    user = DB.User.query.get(userid)
                     setattr(user, atribute, new_value)
                 confirmation = add_confirmation(confirmation, str(atribute) + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
-                db.session.commit()
+                DB.db.session.commit()
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('members_edit_account.html', form=form)
@@ -272,17 +272,17 @@ def members_edit_password():
 @app.route("/bar")
 @permission_required('membership')
 def bar():
-    items = StockItems.query.all()
+    items = DB.StockItems.query.all()
     return render_template('bar.html', items=items)
 
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def bar_remove(item_id):
-    item = StockItems.query.get(item_id)
+    item = DB.StockItems.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
-        StockItems.remove(item)
+        DB.StockItems.remove(item)
         flash('The item was removed', 'confirmation')
         return redirect(url_for('bar'))
     return render_template('bar_remove.html', item=item, form=form)
@@ -291,7 +291,7 @@ def bar_remove(item_id):
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def edit_item_amounts():
-    items = StockItems.query.all()
+    items = DB.StockItems.query.all()
     for item in items:
         setattr(forms.BarEditAmounts, 'amount_' + str(item.id), 
             IntegerField(item.name, [validators.NumberRange(min=0, 
@@ -302,14 +302,14 @@ def edit_item_amounts():
         confirmation = CHANGE_MSG
         for item in items:
             if int(request.form["amount_" + str(item.id)]) != int(item.stock):
-                changes = BarLog(
+                changes = DB.BarLog(
                     item_id = item.id,
                     amount = int(request.form["amount_" + str(item.id)]) - int(item.stock),
                     total_price = 0,
                     user_id = current_user.id,
                     transaction_type = "correction")
-                db.session.add(changes)
-                db.session.commit()
+                DB.db.session.add(changes)
+                DB.db.session.commit()
                 confirmation = add_confirmation(confirmation, "stock " + 
                     item.name + " = " + request.form["amount_" + 
                     str(item.id)])
@@ -321,8 +321,8 @@ def edit_item_amounts():
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def edit_items():
-    items = StockItems.query.all()
-    categories = StockCategories.query.all()
+    items = DB.StockItems.query.all()
+    categories = DB.StockCategories.query.all()
     for item in items:
         setattr(forms.BarEdit, str(item.id), 
             FormField(forms.BarEditItem, default=item, separator='_'))
@@ -344,13 +344,13 @@ def edit_items():
                     new_value = request.form[str(item.id) + '_' + atribute]
                 if str(old_value) != str(new_value):
                     setattr(item, atribute, new_value)
-                    db.session.commit()
+                    DB.db.session.commit()
                     if atribute == "name":
                         confirmation = add_confirmation(confirmation, 
                             old_value + " => " + new_value)
                     elif atribute == "category_id":
-                        newcat = StockCategories.query.get(new_value).name
-                        oldcat = StockCategories.query.get(old_value).name
+                        newcat = DB.StockCategories.query.get(new_value).name
+                        oldcat = DB.StockCategories.query.get(old_value).name
                         confirmation = add_confirmation(confirmation, 
                             "category" + " " + item.name + " = \"" + newcat + 
                             "\" (was \"" + oldcat + "\")")
@@ -367,7 +367,7 @@ def edit_items():
 @permission_required('membership', 'bar')
 def stockup():
     # get all stock items from josto
-    items = StockItems.query.filter_by(josto=True).all()
+    items = DB.StockItems.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
     class StockupForm(Form):
         submit = SubmitField('ok!')
@@ -386,14 +386,14 @@ def stockup():
             checked = forms.booleanfix(request.form, 'check_' + str(item.id))
             if checked: 
                 if int(request.form["amount_" + str(item.id)]) != 0:
-                    changes = BarLog(
+                    changes = DB.BarLog(
                         item_id = item.id,
                         amount = request.form["amount_" + str(item.id)],
                         total_price = 0,
                         user_id = current_user.id,
                         transaction_type = "stock up")
-                    db.session.add(changes)
-                    db.session.commit()
+                    DB.db.session.add(changes)
+                    DB.db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " + 
                         item.name + " = +" + 
                         request.form["amount_" + str(item.id)])
@@ -406,7 +406,7 @@ def stockup():
 @app.route("/bar/log/page/<int:page>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def bar_log(page):
-    log = BarLog.query.order_by(BarLog.datetime.desc())
+    log = DB.BarLog.query.order_by(DB.BarLog.datetime.desc())
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
     if not log and page != 1:
@@ -414,8 +414,8 @@ def bar_log(page):
     pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
     form = forms.BarLog()
     if form.validate_on_submit():
-        changes = BarLog.query.get(request.form["revert"])
-        BarLog.remove(changes)
+        changes = DB.BarLog.query.get(request.form["revert"])
+        DB.BarLog.remove(changes)
         flash('The change was reverted', 'confirmation')
         return redirect(request.path)
     return render_template('bar_log.html', log=log, pagination=pagination, form=form)
@@ -424,15 +424,15 @@ def bar_log(page):
 @app.route("/bar/add_item", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def add_item():
-    categories = StockCategories.query.all()
+    categories = DB.StockCategories.query.all()
     form = forms.BarAddItem()
     form.category_id.choices = [(category.id, category.name) for category in categories]
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
-        changes = StockItems(request.form["name"], request.form["stock_max"], 
+        changes = DB.StockItems(request.form["name"], request.form["stock_max"], 
             request.form["price"], request.form["category_id"], josto)
-        db.session.add(changes)
-        db.session.commit()
+        DB.db.session.add(changes)
+        DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")
         return redirect(request.path)
     return render_template('bar_add_item.html', form=form)
@@ -441,8 +441,8 @@ def add_item():
 @app.route("/accounting")
 @permission_required('membership')
 def accounting():
-    banks = Banks.query.all()
-    running_account = CashTransaction.query.all()
+    banks = DB.Banks.query.all()
+    running_account = DB.CashTransaction.query.all()
     running_acount_balance = sum(transaction.amount for transaction in running_account)
     return render_template('accounting.html', banks=banks, running_acount_balance=running_acount_balance)
 
@@ -451,8 +451,8 @@ def accounting():
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @permission_required('membership')
 def accounting_log(page):
-    log = Transactions.query.filter(Transactions.date_filed != None).order_by(Transactions.id.desc())
-    banks = Banks.query.all()
+    log = DB.Transactions.query.filter(DB.Transactions.date_filed != None).order_by(DB.Transactions.id.desc())
+    banks = DB.Banks.query.all()
 
     form = forms.FilterTransaction()
     form.bank_id.choices = [("0","filter by bank")]
@@ -466,9 +466,9 @@ def accounting_log(page):
         if len(filter) > 1: #split() seems to return empty lists, don't run on those
             if filter[0] == "amount":
                 if filter[1] == '1':
-                    log = log.filter(Transactions.amount > 0)
+                    log = log.filter(DB.Transactions.amount > 0)
                 else:
-                    log = log.filter(Transactions.amount < 0)
+                    log = log.filter(DB.Transactions.amount < 0)
             else:
                 args = {filter[0]: filter[1]}
                 log = log.filter_by(**args)
@@ -494,7 +494,7 @@ def accounting_log(page):
 @app.route('/accounting/cashlog/page/<int:page>')
 @permission_required('membership', 'finances')
 def accounting_cashlog(page):
-    log = CashTransaction.query.order_by(CashTransaction.id.desc())
+    log = DB.CashTransaction.query.order_by(DB.CashTransaction.id.desc())
     
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
@@ -511,13 +511,13 @@ def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
     del form.bank_id, form.to_from, form.category_id
     if form.validate_on_submit():
-        transaction = Transactions(
+        transaction = DB.Transactions(
             advance_date = request.form["date"], 
             amount = "-" + request.form["amount"],
             description = request.form["description"],
             to_from = current_user.name)
-        db.session.add(transaction)
-        db.session.commit()
+        DB.db.session.add(transaction)
+        DB.db.session.commit()
         flash("the request for reimbursement was filed", "confirmation")
         return redirect(request.path)
     return render_template('accounting_request_reimbursement.html', form=form)
@@ -526,15 +526,15 @@ def accounting_request_reimbursement():
 @app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursements():
-    requests = Transactions.query.filter_by(date_filed=None)
+    requests = DB.Transactions.query.filter_by(date_filed=None)
     return render_template('accounting_approve_reimbursements.html', requests=requests)
 
 
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursement(transaction_id):
-    banks = Banks.query.all()
-    transaction = Transactions.query.get(transaction_id)
+    banks = DB.Banks.query.all()
+    transaction = DB.Transactions.query.get(transaction_id)
     form = forms.ApproveReimbursement(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories(IN=False)
@@ -548,7 +548,7 @@ def accounting_approve_reimbursement(transaction_id):
         transaction.bank_statement_number = request.form["bank_statement_number"]
         transaction.date_filed = date.today()
         transaction.filed_by_id = current_user.id
-        db.session.commit()
+        DB.db.session.commit()
         flash("the transaction was filed", "confirmation")
         return redirect(request.path)
     return render_template('accounting_approve_reimbursement.html', form=form)
@@ -557,12 +557,12 @@ def accounting_approve_reimbursement(transaction_id):
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_add_transaction():
-    banks = Banks.query.all()
+    banks = DB.Banks.query.all()
     form = forms.AddTransaction()
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
-        transaction = Transactions(
+        transaction = DB.Transactions(
             date = request.form["date"],
             amount = request.form["amount"],
             to_from = request.form["to_from"], 
@@ -572,15 +572,15 @@ def accounting_add_transaction():
             date_filed = date.today(),
             filed_by_id = current_user.id
             )
-        db.session.add(transaction)
-        db.session.commit()
+        DB.db.session.add(transaction)
+        DB.db.session.commit()
         flash("the transaction was filed", "confirmation")
 
         if request.form["category_id"] == '6':
-            id = Transactions.query.order_by(Transactions.id.desc()).first()
+            id = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first()
             return redirect(url_for('topup_bar_account', transaction_id=id.id))
         elif request.form["category_id"] == '8':
-            id = Transactions.query.order_by(Transactions.id.desc()).first()
+            id = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first()
             return redirect(url_for('file_membershipfee', transaction_id=id.id))
         return redirect('/accounting/log')
     return render_template('accounting_add_transaction.html', form=form)
@@ -588,16 +588,16 @@ def accounting_add_transaction():
 @app.route("/accounting/topup_bar_account_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def topup_bar_account(transaction_id):
-    users = User.query
+    users = DB.User.query
     form = forms.TopUpBarAccount()
     form.user_id.choices = [(user.id, user.name) for user in users.all()]
-    transaction = Transactions.query.get(transaction_id)
+    transaction = DB.Transactions.query.get(transaction_id)
     if form.validate_on_submit():
-        item = BarAccountLog(
+        item = DB.BarAccountLog(
             user_id = request.form["user_id"],
             transaction_id = transaction_id)
-        db.session.add(item)
-        db.session.commit()
+        DB.db.session.add(item)
+        DB.db.session.commit()
         user = users.get(request.form["user_id"])
         flash(u"\u20AC" + str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
         return redirect('/accounting/log')
@@ -607,8 +607,8 @@ def topup_bar_account(transaction_id):
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_edit_transaction(transaction_id):
-    banks = Banks.query.all()
-    transaction = Transactions.query.get(transaction_id)
+    banks = DB.Banks.query.all()
+    transaction = DB.Transactions.query.get(transaction_id)
     form = forms.EditTransaction(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
@@ -621,7 +621,7 @@ def accounting_edit_transaction(transaction_id):
                 setattr(transaction, atribute, new_value)
                 confirmation = add_confirmation(confirmation, str(atribute) + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
-                db.session.commit()
+                DB.db.session.commit()
         return_flash(confirmation)
         return redirect(request.path)
     return render_template('accounting_edit_transaction.html', form=form)
@@ -630,7 +630,7 @@ def accounting_edit_transaction(transaction_id):
 @app.route('/accounting/membershipfees/page/<int:page>')
 @permission_required('membership', 'finances')
 def accounting_membershipfees(page):
-    log = MembershipFee.query
+    log = DB.MembershipFee.query
     
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
@@ -644,18 +644,18 @@ def accounting_membershipfees(page):
 @app.route("/accounting/file_membershipfee_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def file_membershipfee(transaction_id):
-    users = User.query
+    users = DB.User.query
     form = forms.FileMembershipFee()
     form.user_id.choices = [(user.id, user.name) for user in users.all()]
-    transaction = Transactions.query.get(transaction_id)
+    transaction = DB.Transactions.query.get(transaction_id)
 
     if form.validate_on_submit():
-        item = MembershipFee(
+        item = DB.MembershipFee(
             user_id = request.form["user_id"],
             transaction_id = transaction_id,
             until = request.form["until"])
-        db.session.add(item)
-        db.session.commit()
+        DB.db.session.add(item)
+        DB.db.session.commit()
         user = users.get(request.form["user_id"])
         flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
         return redirect('/accounting/log')
