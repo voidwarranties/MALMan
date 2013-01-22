@@ -6,7 +6,6 @@ Functionality
     uploading of attachments
     add validator to check if a new stock item name is unique
     add notifications
-    add a way to track membership fees
     add an api vwcr can hook into
     automatically show a view to check a user's payment of his membership fees when filing a transaction with the category 'membership fee'
     (accept commas or periods on decimal fields)

@@ -6,6 +6,18 @@ try:
     from flask.ext.sqlalchemy import SQLAlchemy
 except ImportError:
     from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, time
+
+
+def _date_to_datetime(date):
+    '''Convert a date object to a datetime object
+
+    The time is set to 00:00:00
+    '''
+    midnight = time(0, 0, 0) 
+    return datetime.combine(date, midnight)
+
+
 
 db = SQLAlchemy(app)
 
@@ -65,6 +77,18 @@ class User(db.Model, UserMixin):
 
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+
+
+class MembershipFee(db.Model):
+    """Define the members_fees database table"""
+    __tablename__ = 'members_fees'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User')
+    transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
+    transaction = db.relationship('Transactions')
+    until = db.Column(db.DateTime())
+
 
 class StockItems(db.Model):
     """Define the StockItems database table"""
@@ -195,6 +219,7 @@ class Transactions(db.Model):
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
 
+
 class BarAccountLog(db.Model):
     """Define the bar_accounts database table"""
     __tablename__ = 'bar_accounts_log'
@@ -208,10 +233,11 @@ class BarAccountLog(db.Model):
 
     @property
     def datetime(self):
+        '''Return the datetime of either the transaction or the purchase'''
         if self.purchase_id:
             return self.purchase.datetime
         else:
-            return self.transaction.date
+            return _date_to_datetime(self.transaction.date)
         
 
 # create missing tables in db

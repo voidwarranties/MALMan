@@ -1,5 +1,5 @@
 from MALMan import app
-from MALMan.database import db, User, StockItems, Role, StockCategories, BarLog, CashTransaction, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
+from MALMan.database import db, User, StockItems, Role, MembershipFee, StockCategories, BarLog, CashTransaction, user_datastore, Transactions, Banks, AccountingCategories, BarAccountLog
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
 from flask import render_template, request, redirect, flash, abort
@@ -622,6 +622,19 @@ def accounting_edit_transaction(transaction_id):
         return redirect(request.path)
     return render_template('accounting_edit_transaction.html', form=form)
 
+@app.route("/accounting/membershipfees", defaults={'page': 1})
+@app.route('/accounting/membershipfees/page/<int:page>')
+@permission_required('membership', 'finances')
+def accounting_membershipfees(page):
+    log = MembershipFee.query
+    
+    item_count = len(log.all())
+    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    if not log and page != 1:
+        abort(404)
+    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+   
+    return render_template('accounting_membershipfees.html', log=log, pagination=pagination)
 
 @app.errorhandler(401)
 def error_401(error):

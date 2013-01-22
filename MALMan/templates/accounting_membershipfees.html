@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set category = "accounting" %}
+{% block title %}membership fees{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="/static/jquery-latest.js"></script> 
+<script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
+<script type="text/javascript">
+        $(function() { $("#membershipfees").tablesorter(); } ); 
+</script>
+{% endblock %}
+{% block content %}
+
+<table id="membershipfees">
+    <thead>
+        <tr>
+            <th>date</th>
+            <th>user</th>
+            <th>amount</th>
+            <th>until</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in log %}
+        <tr>
+            <td>{{ transaction.transaction.date }}</td>
+            <td>{{ transaction.user.name }}</td>
+            <td>€{{ transaction.transaction.amount }}</td>
+            <td>{{ transaction.until }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% from "_macros.html" import render_pagination %}
+{{ render_pagination(pagination) }}
+{% endblock %}
