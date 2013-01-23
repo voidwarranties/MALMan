@@ -51,7 +51,7 @@ class User(db.Model, UserMixin):
     telephone = db.Column(db.String(255))
     active_member = db.Column(db.Boolean(), default=False)
     member_since = db.Column(db.DateTime(), default="0000-00-00")
-    membership_dues = db.Column(db.Integer, default="0")
+    membership_dues = db.Column(db.Integer, default=0)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
@@ -69,7 +69,7 @@ class User(db.Model, UserMixin):
         total = 0
         for item in self.bar_account_log:
             if item.purchase_id:
-                total -= item.purchase.total_price
+                total -= item.purchase.price
             else:
                 total += item.transaction.amount
         return total
@@ -143,7 +143,7 @@ class BarLog(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey('bar_items.id'))
     item = db.relationship("StockItems", backref="BarLog", lazy="joined")
     amount = db.Column(db.Integer)
-    total_price = db.Column(db.Numeric(5, 2))
+    price = db.Column(db.Numeric(5, 2), default=0)
     datetime = db.Column(db.DateTime())
     user_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
     user = db.relationship('User')

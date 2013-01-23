@@ -305,7 +305,6 @@ def edit_item_amounts():
                 changes = DB.BarLog(
                     item_id = item.id,
                     amount = int(request.form["amount_" + str(item.id)]) - int(item.stock),
-                    total_price = 0,
                     user_id = current_user.id,
                     transaction_type = "correction")
                 DB.db.session.add(changes)
@@ -389,7 +388,6 @@ def stockup():
                     changes = DB.BarLog(
                         item_id = item.id,
                         amount = request.form["amount_" + str(item.id)],
-                        total_price = 0,
                         user_id = current_user.id,
                         transaction_type = "stock up")
                     DB.db.session.add(changes)

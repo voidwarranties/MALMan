@@ -24,7 +24,7 @@
                 <td><span class="green">+ €{{ item.transaction.amount }}</td>
             {% else %}
                 <td>bought a {{ item.purchase.item.name }}</td>
-                <td><span class="red">- €{{ item.purchase.total_price }}</td>
+                <td><span class="red">- €{{ item.purchase.price }}</td>
             {% endif %}
         </tr>
 {% endfor %}

@@ -4,16 +4,14 @@ Functionality
         cash log
     add pages 'dagboek' and 'kasboek'
     uploading of attachments
-    add validator to check if a new stock item name is unique
     add notifications
     add an api vwcr can hook into
-    (accept commas or periods on decimal fields)
     add active field for stock items instead of removing them
     add a way to show a members' membership fees payment history
 
 Refactoring
     split views.py into multiple files based on categories
-    put templates in folders based on categories
+    put templates in directories based on categories
     make database object model names singular
     check the way users are activated: active, actief_lid, membership role
     check if setattrs are caried over
@@ -40,17 +38,6 @@ Before deployment
         use functions to process booleans
         use add_confirmation()
 
-Questions
-    How do we implement the purchase of multiple items simultaneously?
-        At the moment we record the following attributes for each purchase: 
-            item_id: which item is bought
-            amount: how many of this item is bought
-            total_price: the total price for this purchase
-            datetime: the time ate which the purchase happened
-            user_id: which user made the purchase (or cash)
-            transaction_type: indicates if we are correcting or stocking up instead of purchasing
-        Thus it is possible to purchase multiple drink at the same time, but only if it's the same drink.
-        Wouldn't it be easier to have VWCR record the sale of multiple items as multiple purchases in the database?
-            amount would always be 1 and could thus be dropped
-            total_price would become price
-            other fields would stay the same
+Might be cool:
+    add validator to check if a new stock item name is unique
+    (accept both commas or periods on decimal fields)

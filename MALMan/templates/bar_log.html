@@ -29,10 +29,10 @@
                 <td>{{ entry.transaction_type }}</td>
                 <td>{{ entry.item.name }}</td>
                 <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
-                {% if entry.total_price == 0 %}
+                {% if entry.price == 0 %}
                 <td>0</td>
                 {% else %}
-                <td>{% if entry.total_price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.total_price }}<span></td>
+                <td>{% if entry.price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.price }}<span></td>
                 {% endif %}
                 <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
                 <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
