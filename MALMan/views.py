@@ -673,7 +673,7 @@ def accounting_membershipfees(page):
     filter = request.args.get('filters', '').split(":")
     if len(filter) > 1: #split() seems to return empty lists, don't run on those
         log = log.filter_by(user_id=filter[1])
-    setattr(form[filter[0]], 'data', filter[1])
+        setattr(form[filter[0]], 'data', filter[1])
     
     item_count = len(log.all())
     log = log.paginate(page, ITEMS_PER_PAGE, False).items
