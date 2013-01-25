@@ -137,7 +137,7 @@ class AddTransaction(Form):
     description = TextField('description', [validators.Required()])
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
-    category_id = SelectField('category', coerce=int)
+    category_id = SelectField('category')
     bank_statement_number = IntegerField('bank statement number (optional)', 
         [validators.Optional(), validators.NumberRange(min=0, 
             message='please enter a positive number')])
@@ -180,4 +180,10 @@ class FilterTransaction(Form):
         choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")])
     category_id = SelectField('category_id')
     bank_id = SelectField('bank')
+    submit = SubmitField('filter')
+
+
+class FilterMembershipFees(Form):
+    user = SelectField('user')
+    user.choices = [("0","filter by user")]
     submit = SubmitField('filter')

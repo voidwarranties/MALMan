@@ -2,9 +2,7 @@ Functionality
     add filtering to tables that need it
         bar log
         cash log
-        membership fees payment history: filter by user
     add pages 'dagboek' and 'kasboek'
-    uploading of attachments
     add notifications
     add an api vwcr can hook into
     add active field for stock items instead of removing them

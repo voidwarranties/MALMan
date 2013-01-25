@@ -7,7 +7,11 @@
     {{ tablesorter('#membershipfees') }}
 {% endblock %}
 {% block content %}
-
+<form method="post" class="cf" id="filter">
+    {{ form.hidden_tag() }}
+    {{ form.user }}
+    {{ form.submit }}
+</form>
 <table id="membershipfees">
     <thead>
         <tr>
