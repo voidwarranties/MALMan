@@ -190,6 +190,19 @@ class AccountingCategories(db.Model):
     is_revenue = db.Column(db.Boolean())
 
 
+class AccountingAttachment(db.Model):
+    """Define the accounting_attachments database table"""
+    __tablename__ = 'accounting_attachments'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String) 
+    transaction_id = db.Column(db.Integer)
+
+
+attachments_transactions = db.Table('accounting_attachments_transactions',
+        db.Column('attachment_id', db.Integer(), db.ForeignKey('accounting_attachments.id')),
+        db.Column('transaction_id', db.Integer(), db.ForeignKey('accounting_transactions.id')))
+
+
 class Transactions(db.Model):
     """Define the transactions database table"""
     __tablename__ = 'accounting_transactions'
@@ -217,7 +230,8 @@ class Transactions(db.Model):
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
-
+    attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions, 
+        backref=db.backref('transactions', lazy='dynamic'))
 
 class BarAccountLog(db.Model):
     """Define the bar_accounts database table"""

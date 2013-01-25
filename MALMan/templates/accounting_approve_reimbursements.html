@@ -15,6 +15,7 @@
                 <th>Amount</th>
                 <th>Member</th>
                 <th>Description</th>
+                <th>Attachments</th>
                 <th>Approve</th>
             </tr>
         </thead>
@@ -25,6 +26,11 @@
                 <td>€{{ request.amount|replace('-','') }}</td>
                 <td>{{ request.to_from }}</td>
                 <td>{{ request.description }}</td>
+                <td>
+                {% for attachment in request.attachments %}
+                    <a href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}" target="_blank">attachment</a>
+                {% endfor %}
+                </td>
                 <td><a href="/accounting/approve_{{request.id}}">approve!</a></td>
             </tr>
             {% endfor %}

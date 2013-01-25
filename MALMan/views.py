@@ -2,16 +2,23 @@ from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.flask_security.recoverable import update_password
-from flask import render_template, request, redirect, flash, abort
+
+from flask import render_template, request, redirect, flash, abort, current_app, url_for, send_from_directory
 from flask.ext.login import current_user, login_required
 from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField, 
     IntegerField, validators)
 from flask.ext.principal import Permission, RoleNeed, Need
-from flask import current_app, url_for
+from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
+
 from werkzeug.local import LocalProxy
+from werkzeug import secure_filename
 from functools import wraps
 from datetime import datetime, date
 from urlparse import urlparse
+
+attachments = UploadSet(name='attachments')
+configure_uploads(app, attachments)
+patch_request_class(app, 32 * 1024 * 1024) # limit max upload size to 32 megabytes
 
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
@@ -516,9 +523,37 @@ def accounting_request_reimbursement():
             to_from = current_user.name)
         DB.db.session.add(transaction)
         DB.db.session.commit()
+
+        attachment = request.files['attachment']
+        if attachment:
+            # upload the attachment
+            transaction = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first() #we can do better than this
+            filename = secure_filename(attachment.filename)
+            url = attachments.save(attachment, 
+                folder = str(transaction.id), #minimizes the chance of a file existing with the same name
+                name = filename)
+        
+            # add the attachment to the accounting_attachments DB table
+            attachment = DB.AccountingAttachment(
+                filename = filename,
+                transaction_id = transaction.id)
+            DB.db.session.add(attachment)
+
+            # link the attachment to the transaction
+            setattr(transaction, 'attachments', [attachment])
+
+            # write changes to DB
+            DB.db.session.commit()
+
         flash("the request for reimbursement was filed", "confirmation")
         return redirect(request.path)
     return render_template('accounting_request_reimbursement.html', form=form)
+
+
+@app.route('/accounting/attachments/<transaction>/<filename>')
+def uploaded_file(transaction, filename):
+    directory = app.config['UPLOADED_ATTACHMENTS_DEST'] + '/' + transaction + '/'
+    return send_from_directory(directory, filename)
 
 
 @app.route("/accounting/approve_reimbursements")
@@ -661,8 +696,6 @@ def file_membershipfee(transaction_id):
     return render_template('accounting_file_membershipfee.html', form=form, transaction=transaction)
 
 
-
-
 @app.errorhandler(401)
 def error_401(error):
     error = "401 Unauthorized"
@@ -682,3 +715,4 @@ def error_404(error):
     error = "404 Not Found"
     lastpage = request.referrer
     return render_template('error.html', error=error, lastpage=lastpage), 404
+

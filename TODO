@@ -2,12 +2,19 @@ Functionality
     add filtering to tables that need it
         bar log
         cash log
+        membership fees payment history: filter by user
     add pages 'dagboek' and 'kasboek'
     uploading of attachments
     add notifications
     add an api vwcr can hook into
     add active field for stock items instead of removing them
-    add a way to show a members' membership fees payment history
+    do some validation on uploaded files
+    add uploading of attachments to add_transactions and edit transaction
+    make script to translate an SQL dump from MALMan1 into a format understood by MALMan2
+    have a fancy lightbox to show attachments
+    have a decent error page for RequestEntityTooLarge
+        use flask built in limiter:
+            app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 Refactoring
     split views.py into multiple files based on categories
@@ -16,9 +23,16 @@ Refactoring
     check the way users are activated: active, actief_lid, membership role
     check if setattrs are caried over
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
-    Minimize the number of times we read or write to the DB
+    Minimize the number of times we read from the DB
+    Minimize the number of times we write to the DB (db.session.commit())
+        sometimes we do this multiple times in a view, because we need an the id of a row we are writting
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
+    don't have flask-uploads serve attachments, do it ourselves
+        from flask import send_from_directory
+        @app.route('/uploads/<filename>')
+        def uploaded_file(filename):
+            return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
@@ -29,7 +43,7 @@ Usability
         use symbolic icons
     add a red border around an input element that doesn't validate
 
-Before deployment
+Deployment
     forms checklist:
         redirect after a POST (to prevent data from being submitted twice if users refresh the page)
         use all necessary validators
@@ -37,6 +51,8 @@ Before deployment
         templates don't define their own input elements
         use functions to process booleans
         use add_confirmation()
+    serve it as a wsgi appliation
+    serve static files from without MALMan
 
 Might be cool:
     add validator to check if a new stock item name is unique

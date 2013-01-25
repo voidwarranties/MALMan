@@ -3,7 +3,7 @@
 from wtforms import Form as wtforms_Form
 from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField, 
     DateField, IntegerField, SubmitField, SelectField, DecimalField, 
-    TextAreaField, validators, EqualTo)
+    TextAreaField, FileField, validators, EqualTo)
 
 def booleanfix(post, var):
     """returns a boolean indicating if a variable was in the received POST"""
@@ -167,6 +167,7 @@ class RequestReimbursement(AddTransaction):
             message='please enter a date using the specified formatting')])
     amount = DecimalField('amount advanced (e.g. 1.52)', 
         [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
+    attachment = FileField("attachment")
     submit = SubmitField('request reimbursement')
 
 
