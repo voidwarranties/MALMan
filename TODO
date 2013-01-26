@@ -41,6 +41,7 @@ Usability
     improve graphical design
         use symbolic icons
     add a red border around an input element that doesn't validate
+    print the active category in bold, this is easy to see where you are
 
 Deployment
     forms checklist:
