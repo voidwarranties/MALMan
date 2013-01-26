@@ -21,10 +21,10 @@
             </div>
 {%-    if category != "login" -%}
             <ul class="menu cf">
-                <li><a href="/">my account</a></li>
-                <li><a href="/members">members</a></li>
-                <li><a href="/bar">stock bar</a></li>
-                <li><a href="/accounting">accounting</a></li>
+                <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="/">my account</a></li>
+                <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="/members">members</a></li>
+                <li class="{%- if category == "stock" -%}bold{%- endif -%}"><a href="/bar">stock bar</a></li>
+                <li class="{%- if category == "accounting" -%}bold{%- endif -%}"><a href="/accounting">accounting</a></li>
             </ul>
 {%- endif -%}
 {%- if category == "account" -%}
