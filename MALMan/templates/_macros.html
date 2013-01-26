@@ -26,6 +26,7 @@
         var picker = new Pikaday({
             field: document.getElementById("{{element}}"),
             format: 'YYYY-MM-DD',
+            yearRange: [1900,2020],
             onSelect: function() {
                 console.log(this.getMoment().format('YYYY-MM-DD'));
             }
