@@ -28,7 +28,6 @@ Refactoring
     josto should be a boolean in the DB
     bar_log user id in teh DB should not default to 0
     clean up database.py
-        don't use __init__
         do we need __repr__ and __str__?
 
 

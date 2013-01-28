@@ -110,13 +110,6 @@ class StockItem(db.Model):
     def stockup(self):
         return (self.stock_max - self.stock)
 
-    def __init__(self, name, stock_max, price, category_id, josto):
-        self.name = name
-        self.stock_max = stock_max
-        self.price = price
-        self.category_id = category_id
-        self.josto = josto
-
     def __repr__(self):
         return '<Bar item %r>' % self.name
 

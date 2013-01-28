@@ -167,9 +167,13 @@ def add_item():
     
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
-        changes = DB.StockItem(request.form["name"], request.form["stock_max"], 
-            request.form["price"], request.form["category_id"], josto)
-        DB.db.session.add(changes)
+        item = DB.StockItem(
+            name = request.form["name"],
+            stock_max = request.form["stock_max"], 
+            price = request.form["price"], 
+            category_id = request.form["category_id"], 
+            josto = josto)
+        DB.db.session.add(item)
         DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")
         return redirect(request.path)
