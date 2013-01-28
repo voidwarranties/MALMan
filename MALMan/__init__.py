@@ -16,7 +16,7 @@ CSRF_ENABLED = True
 
 from MALMan import security
 
-from MALMan import views_members, views_bar, views_accounting, views_errors
+from MALMan import views_my_account, views_members, views_bar, views_accounting, views_errors
 
 #enable logging if we are not running in debug mode
 if not app.debug:
