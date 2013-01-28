@@ -11,10 +11,6 @@ from flask.ext.wtf import BooleanField
 from werkzeug.local import LocalProxy
 from datetime import date
 
-CHANGE_MSG = "These values were updated: "
-
-ITEMS_PER_PAGE = 10
-
 @app.route("/")
 def index():
     if current_user and current_user.is_active() and DB.User.query.get(current_user.id).active_member:
@@ -45,7 +41,7 @@ def approve_new_members():
             BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         for user in new_members:
             new_value = forms.booleanfix(request.form, 
                 'activate_' + str(user.id))
@@ -67,7 +63,7 @@ def edit_own_account():
     userdata = DB.User.query.get(current_user.id)
     form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email']
@@ -115,7 +111,7 @@ def members_edit(userid):
     form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         atributes = ['name', 'date_of_birth', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email', 'active_member', 'membership_dues']

@@ -8,11 +8,9 @@ from functools import wraps
 from urlparse import urlparse
 from math import ceil
 
-CHANGE_MSG = "These values were updated: "
-
 def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
-    if var != CHANGE_MSG:
+    if var != app.CHANGE_MSG:
         var += ", "
     var += confirmation
     return var
@@ -22,7 +20,7 @@ def return_flash (confirmation):
     """return a confirmation if something changed or an error if there are
     no changes
     """
-    if confirmation == CHANGE_MSG:
+    if confirmation == app.CHANGE_MSG:
         flash("No changes were specified", "error")
     else:
         flash(confirmation, 'confirmation')

@@ -10,15 +10,9 @@ from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
 from werkzeug import secure_filename
 from datetime import date
 
-
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
 patch_request_class(app, 5 * 1024 * 1024) # limit max upload size to 5 megabytes
-
-CHANGE_MSG = "These values were updated: "
-
-ITEMS_PER_PAGE = 10
-
 
 @app.route("/accounting")
 @permission_required('membership')
@@ -57,10 +51,10 @@ def accounting_log(page):
             setattr(form[filter[0]], 'data', filter[1])
     
     item_count = len(log.all())
-    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
 
     if form.validate_on_submit():   
         url = '/accounting/log?filters='
@@ -79,10 +73,10 @@ def accounting_cashlog(page):
     log = DB.CashTransaction.query.order_by(DB.CashTransaction.id.desc())
     
     item_count = len(log.all())
-    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
    
     return render_template('accounting_cashlog.html', log=log, pagination=pagination)
 
@@ -223,7 +217,7 @@ def accounting_edit_transaction(transaction_id):
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         for atribute in ['date', 'amount', 'to_from', 'description', 'category_id', 'bank_id', 'bank_statement_number']:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
@@ -253,10 +247,10 @@ def accounting_membershipfees(page):
         setattr(form[filter[0]], 'data', filter[1])
     
     item_count = len(log.all())
-    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
 
     if form.validate_on_submit():   
         url = '/accounting/membershipfees?filters='

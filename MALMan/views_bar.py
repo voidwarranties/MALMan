@@ -8,10 +8,6 @@ from flask.ext.login import current_user
 from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField, 
     IntegerField, validators)
 
-CHANGE_MSG = "These values were updated: "
-
-ITEMS_PER_PAGE = 10
-
 @app.route("/bar")
 @permission_required('membership')
 def bar():
@@ -42,7 +38,7 @@ def edit_item_amounts():
             default=item.stock))
     form = forms.BarEditAmounts()
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         for item in items:
             if int(request.form["amount_" + str(item.id)]) != int(item.stock):
                 changes = DB.BarLog(
@@ -73,7 +69,7 @@ def edit_items():
         if item.name != 'csrf_token' and item.name != 'submit':
             item.category_id.choices = [(category.id, category.name) for category in categories]
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         for item in items:
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
             atributes = ['name' , 'price' , 'stock_max', 'category_id', 'josto']
@@ -123,7 +119,7 @@ def stockup():
                 BooleanField(item.name))
     form = StockupForm()
     if form.validate_on_submit():
-        confirmation = CHANGE_MSG
+        confirmation = app.CHANGE_MSG
         for item in items:
             checked = forms.booleanfix(request.form, 'check_' + str(item.id))
             if checked: 
@@ -149,10 +145,10 @@ def stockup():
 def bar_log(page):
     log = DB.BarLog.query.order_by(DB.BarLog.datetime.desc())
     item_count = len(log.all())
-    log = log.paginate(page, ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
     form = forms.BarLog()
     if form.validate_on_submit():
         changes = DB.BarLog.query.get(request.form["revert"])

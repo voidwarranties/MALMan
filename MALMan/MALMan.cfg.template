@@ -16,3 +16,6 @@ UPLOAD_FOLDER = '/uploads'
 UPLOADED_ATTACHMENTS_DEST = '/path/to/malman/MALMan/attachments' # uploaded files will be saved here
 UPLOADED_ATTACHMENTS_URL = 'accounting/attachments/'
 UPLOADED_ATTACHMENTS_ALLOW = ['txt', 'rtf', 'odf', 'ods', 'gnumeric', 'abw', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp']
+
+CHANGE_MSG = "These values were updated: "
+ITEMS_PER_PAGE = 10
