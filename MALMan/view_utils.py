@@ -36,7 +36,7 @@ def formatbool(var):
 
 def accounting_categories(IN=True, OUT=True):
     """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
-    categories = DB.AccountingCategories.query.all()
+    categories = DB.AccountingCategory.query.all()
     choices = []
     if IN:
         IN = [(str(category.id), category.name + " (IN)") for category in categories if category.is_revenue]

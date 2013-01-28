@@ -11,17 +11,17 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
 @app.route("/bar")
 @permission_required('membership')
 def bar():
-    items = DB.StockItems.query.all()
+    items = DB.StockItem.query.all()
     return render_template('bar.html', items=items)
 
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def bar_remove(item_id):
-    item = DB.StockItems.query.get(item_id)
+    item = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
-        DB.StockItems.remove(item)
+        DB.StockItem.remove(item)
         flash('The item was removed', 'confirmation')
         return redirect(url_for('bar'))
     return render_template('bar_remove.html', item=item, form=form)
@@ -30,7 +30,7 @@ def bar_remove(item_id):
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def edit_item_amounts():
-    items = DB.StockItems.query.all()
+    items = DB.StockItem.query.all()
     for item in items:
         setattr(forms.BarEditAmounts, 'amount_' + str(item.id), 
             IntegerField(item.name, [validators.NumberRange(min=0, 
@@ -59,8 +59,8 @@ def edit_item_amounts():
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def edit_items():
-    items = DB.StockItems.query.all()
-    categories = DB.StockCategories.query.all()
+    items = DB.StockItem.query.all()
+    categories = DB.StockCategory.query.all()
     for item in items:
         setattr(forms.BarEdit, str(item.id), 
             FormField(forms.BarEditItem, default=item, separator='_'))
@@ -87,8 +87,8 @@ def edit_items():
                         confirmation = add_confirmation(confirmation, 
                             old_value + " => " + new_value)
                     elif atribute == "category_id":
-                        newcat = DB.StockCategories.query.get(new_value).name
-                        oldcat = DB.StockCategories.query.get(old_value).name
+                        newcat = DB.StockCategory.query.get(new_value).name
+                        oldcat = DB.StockCategory.query.get(old_value).name
                         confirmation = add_confirmation(confirmation, 
                             "category" + " " + item.name + " = \"" + newcat + 
                             "\" (was \"" + oldcat + "\")")
@@ -105,7 +105,7 @@ def edit_items():
 @permission_required('membership', 'bar')
 def stockup():
     # get all stock items from josto
-    items = DB.StockItems.query.filter_by(josto=True).all()
+    items = DB.StockItem.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
     class StockupForm(Form):
         submit = SubmitField('ok!')
@@ -161,13 +161,13 @@ def bar_log(page):
 @app.route("/bar/add_item", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def add_item():
-    categories = DB.StockCategories.query.all()
+    categories = DB.StockCategory.query.all()
     form = forms.BarAddItem()
     form.category_id.choices = [(category.id, category.name) for category in categories]
     
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
-        changes = DB.StockItems(request.form["name"], request.form["stock_max"], 
+        changes = DB.StockItem(request.form["name"], request.form["stock_max"], 
             request.form["price"], request.form["category_id"], josto)
         DB.db.session.add(changes)
         DB.db.session.commit()

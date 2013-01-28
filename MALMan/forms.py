@@ -71,9 +71,9 @@ class NewFormFields(MembersEditOwnAccount):
 
 
 ## check if a name is alreasy in use
-# from MALMan.database import StockItems
+# from MALMan.database import StockItem
 # def _unique_item_name(form, field):
-#    if StockItems.query.filter_by(name=field.data) is not None:
+#    if StockItem.query.filter_by(name=field.data) is not None:
 #        raise ValidationError(field.data + ' is already a stock item')
 
 class BarRemoveItem(Form):

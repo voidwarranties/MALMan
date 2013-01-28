@@ -85,19 +85,19 @@ class MembershipFee(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
     user = db.relationship('User')
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
-    transaction = db.relationship('Transactions')
+    transaction = db.relationship('Transaction')
     until = db.Column(db.DateTime())
 
 
-class StockItems(db.Model):
-    """Define the StockItems database table"""
+class StockItem(db.Model):
+    """Define the StockItem database table"""
     __tablename__ = 'bar_items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
     stock_max = db.Column(db.Integer)
     price = db.Column(db.Numeric(5, 2))
     category_id = db.Column(db.Integer, db.ForeignKey('bar_categories.id'))
-    category = db.relationship("StockCategories", backref="dranken", lazy="joined")
+    category = db.relationship("StockCategory", backref="dranken", lazy="joined")
     josto = db.Column(db.Boolean())
     purchases = db.relationship("BarLog", backref="Drank")
 
@@ -121,13 +121,13 @@ class StockItems(db.Model):
         return '<Bar item %r>' % self.name
 
     def remove(entry):
-        """remove entry from StockItems table"""
+        """remove entry from StockItem table"""
         db.session.delete(entry)
         db.session.commit()
 
 
-class StockCategories(db.Model):
-    """Define the StockCategories database table"""
+class StockCategory(db.Model):
+    """Define the StockCategory database table"""
     __tablename__ = 'bar_categories'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
@@ -141,7 +141,7 @@ class BarLog(db.Model):
     __tablename__ = 'bar_log'
     id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey('bar_items.id'))
-    item = db.relationship("StockItems", backref="BarLog", lazy="joined")
+    item = db.relationship("StockItem", backref="BarLog", lazy="joined")
     amount = db.Column(db.Integer)
     price = db.Column(db.Numeric(5, 2), default=0)
     datetime = db.Column(db.DateTime())
@@ -158,12 +158,12 @@ class BarLog(db.Model):
         db.session.commit()
 
 
-class Banks(db.Model):
+class Bank(db.Model):
     """Define the acounting_banks database table"""
     __tablename__ = 'accounting_banks'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
-    transactions = db.relationship("Transactions")
+    transactions = db.relationship("Transaction")
 
     @property
     def balance(self):
@@ -181,7 +181,7 @@ class CashTransaction(db.Model):
     datetime = db.Column(db.DateTime())
 
 
-class AccountingCategories(db.Model):
+class AccountingCategory(db.Model):
     """Define the accounting_categories database table"""
     __tablename__ = 'accounting_categories'
     id = db.Column(db.Integer, primary_key=True)
@@ -203,7 +203,7 @@ attachments_transactions = db.Table('accounting_attachments_transactions',
         db.Column('transaction_id', db.Integer(), db.ForeignKey('accounting_transactions.id')))
 
 
-class Transactions(db.Model):
+class Transaction(db.Model):
     """Define the transactions database table"""
     __tablename__ = 'accounting_transactions'
     id = db.Column(db.Integer, primary_key=True)
@@ -220,7 +220,7 @@ class Transactions(db.Model):
     description = db.Column(db.String)
     bank_id = db.Column(db.Integer, db.ForeignKey('accounting_banks.id'))
         # the bankaccount involved. cash transactions are considered an account too (id=99)
-    bank = db.relationship("Banks", backref="Transactions", lazy="joined")
+    bank = db.relationship("Bank", backref="Transaction", lazy="joined")
     bank_statement_number = db.Column(db.Integer)
         # number in the bank's account statements 
     advance_date = db.Column(db.DateTime())
@@ -242,7 +242,7 @@ class BarAccountLog(db.Model):
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
     purchase = db.relationship('BarLog')
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
-    transaction = db.relationship('Transactions')
+    transaction = db.relationship('Transaction')
 
     @property
     def datetime(self):

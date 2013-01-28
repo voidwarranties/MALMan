@@ -17,7 +17,7 @@ patch_request_class(app, 5 * 1024 * 1024) # limit max upload size to 5 megabytes
 @app.route("/accounting")
 @permission_required('membership')
 def accounting():
-    banks = DB.Banks.query.all()
+    banks = DB.Bank.query.all()
     running_account = DB.CashTransaction.query.all()
     running_acount_balance = sum(transaction.amount for transaction in running_account)
     return render_template('accounting.html', banks=banks, running_acount_balance=running_acount_balance)
@@ -27,8 +27,8 @@ def accounting():
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @permission_required('membership')
 def accounting_log(page):
-    log = DB.Transactions.query.filter(DB.Transactions.date_filed != None).order_by(DB.Transactions.id.desc())
-    banks = DB.Banks.query.all()
+    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.id.desc())
+    banks = DB.Bank.query.all()
 
     form = forms.FilterTransaction()
     form.bank_id.choices = [("0","filter by bank")]
@@ -42,9 +42,9 @@ def accounting_log(page):
         if len(filter) > 1: #split() seems to return empty lists, don't run on those
             if filter[0] == "amount":
                 if filter[1] == '1':
-                    log = log.filter(DB.Transactions.amount > 0)
+                    log = log.filter(DB.Transaction.amount > 0)
                 else:
-                    log = log.filter(DB.Transactions.amount < 0)
+                    log = log.filter(DB.Transaction.amount < 0)
             else:
                 args = {filter[0]: filter[1]}
                 log = log.filter_by(**args)
@@ -87,7 +87,7 @@ def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
     del form.bank_id, form.to_from, form.category_id
     if form.validate_on_submit():
-        transaction = DB.Transactions(
+        transaction = DB.Transaction(
             advance_date = request.form["date"], 
             amount = "-" + request.form["amount"],
             description = request.form["description"],
@@ -98,7 +98,7 @@ def accounting_request_reimbursement():
         attachment = request.files['attachment']
         if attachment:
             # upload the attachment
-            transaction = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first() #we can do better than this
+            transaction = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first() #we can do better than this
             filename = secure_filename(attachment.filename)
             url = attachments.save(attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name
@@ -130,15 +130,15 @@ def uploaded_file(transaction, filename):
 @app.route("/accounting/approve_reimbursements")
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursements():
-    requests = DB.Transactions.query.filter_by(date_filed=None)
+    requests = DB.Transaction.query.filter_by(date_filed=None)
     return render_template('accounting_approve_reimbursements.html', requests=requests)
 
 
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursement(transaction_id):
-    banks = DB.Banks.query.all()
-    transaction = DB.Transactions.query.get(transaction_id)
+    banks = DB.Bank.query.all()
+    transaction = DB.Transaction.query.get(transaction_id)
     form = forms.ApproveReimbursement(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories(IN=False)
@@ -161,12 +161,12 @@ def accounting_approve_reimbursement(transaction_id):
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_add_transaction():
-    banks = DB.Banks.query.all()
+    banks = DB.Bank.query.all()
     form = forms.AddTransaction()
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
-        transaction = DB.Transactions(
+        transaction = DB.Transaction(
             date = request.form["date"],
             amount = request.form["amount"],
             to_from = request.form["to_from"], 
@@ -181,10 +181,10 @@ def accounting_add_transaction():
         flash("the transaction was filed", "confirmation")
 
         if request.form["category_id"] == '6':
-            id = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first()
+            id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('topup_bar_account', transaction_id=id.id))
         elif request.form["category_id"] == '8':
-            id = DB.Transactions.query.order_by(DB.Transactions.id.desc()).first()
+            id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('file_membershipfee', transaction_id=id.id))
         return redirect('/accounting/log')
     return render_template('accounting_add_transaction.html', form=form)
@@ -195,7 +195,7 @@ def topup_bar_account(transaction_id):
     users = DB.User.query
     form = forms.TopUpBarAccount()
     form.user_id.choices = [(user.id, user.name) for user in users.all()]
-    transaction = DB.Transactions.query.get(transaction_id)
+    transaction = DB.Transaction.query.get(transaction_id)
     if form.validate_on_submit():
         item = DB.BarAccountLog(
             user_id = request.form["user_id"],
@@ -211,8 +211,8 @@ def topup_bar_account(transaction_id):
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
 def accounting_edit_transaction(transaction_id):
-    banks = DB.Banks.query.all()
-    transaction = DB.Transactions.query.get(transaction_id)
+    banks = DB.Bank.query.all()
+    transaction = DB.Transaction.query.get(transaction_id)
     form = forms.EditTransaction(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
@@ -267,7 +267,7 @@ def file_membershipfee(transaction_id):
     users = DB.User.query
     form = forms.FileMembershipFee()
     form.user_id.choices = [(user.id, user.name) for user in users.all()]
-    transaction = DB.Transactions.query.get(transaction_id)
+    transaction = DB.Transaction.query.get(transaction_id)
 
     if form.validate_on_submit():
         item = DB.MembershipFee(
