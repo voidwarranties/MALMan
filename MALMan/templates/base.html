@@ -13,13 +13,13 @@
         <div id="wrapper">
             <div id="header" class="cf">
                 <h1><a href="/">MALMAN</a></h1>
-{%- if session.email -%}
+{%- if session.email %}
                 <span>logged in as {{ session.email }} (<a href="/logout">log out</a>)</span>
 {%- else -%}
                 <span>you are not logged in (<a href="/login">log in</a>)</span>
-{%- endif -%}
+{%- endif %}
             </div>
-{%-    if category != "login" -%}
+{%-    if category != "login" %}
             <ul class="menu cf">
                 <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="/">my account</a></li>
                 <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="/members">members</a></li>

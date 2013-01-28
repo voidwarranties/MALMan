@@ -26,15 +26,15 @@ Refactoring
         sometimes we do this multiple times in a view, because we need an the id of a row we are writting
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
-    don't have flask-uploads serve attachments, do it ourselves
-        from flask import send_from_directory
-        @app.route('/uploads/<filename>')
-        def uploaded_file(filename):
-            return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
+    josto should be a boolean in the DB
+    bar_log user id in teh DB should not default to 0
+
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
-    somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
+    date should be for facturation date
+        => when filing a reimbursement, date should be set to the date on the bill. 'advance date' should be renamed to 'reimbursement date'. This field is NULL when the payment is not a reimbursement
 
 Usability
     improve graphical design

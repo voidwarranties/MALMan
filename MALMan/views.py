@@ -18,7 +18,7 @@ from urlparse import urlparse
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
-patch_request_class(app, 32 * 1024 * 1024) # limit max upload size to 32 megabytes
+patch_request_class(app, 5 * 1024 * 1024) # limit max upload size to 5 megabytes
 
 _datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
@@ -432,6 +432,7 @@ def add_item():
     categories = DB.StockCategories.query.all()
     form = forms.BarAddItem()
     form.category_id.choices = [(category.id, category.name) for category in categories]
+    
     if form.validate_on_submit():
         josto = forms.booleanfix(request.form, 'josto')
         changes = DB.StockItems(request.form["name"], request.form["stock_max"], 
@@ -440,6 +441,7 @@ def add_item():
         DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")
         return redirect(request.path)
+    
     return render_template('bar_add_item.html', form=form)
 
 
