@@ -12,7 +12,7 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
 @permission_required('membership')
 def bar():
     items = DB.StockItem.query.all()
-    return render_template('bar.html', items=items)
+    return render_template('bar/list_items.html', items=items)
 
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
@@ -24,7 +24,7 @@ def bar_remove(item_id):
         DB.StockItem.remove(item)
         flash('The item was removed', 'confirmation')
         return redirect(url_for('bar'))
-    return render_template('bar_remove.html', item=item, form=form)
+    return render_template('bar/remove_item.html', item=item, form=form)
 
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
@@ -53,7 +53,7 @@ def edit_item_amounts():
                     str(item.id)])
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('bar_edit_item_amounts.html', form=form)
+    return render_template('bar/edit_amounts.html', form=form)
 
 
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
@@ -98,7 +98,7 @@ def edit_items():
                             str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('bar_edit_items.html', form=form)
+    return render_template('bar/edit_items.html', form=form)
 
 
 @app.route("/bar/stockup", methods=['GET', 'POST'])
@@ -136,7 +136,7 @@ def stockup():
                         request.form["amount_" + str(item.id)])
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('bar_stockup.html', form=form)
+    return render_template('bar/stockup.html', form=form)
 
 
 @app.route("/bar/log", defaults={'page': 1}, methods=['GET', 'POST'])
@@ -155,7 +155,7 @@ def bar_log(page):
         DB.BarLog.remove(changes)
         flash('The change was reverted', 'confirmation')
         return redirect(request.path)
-    return render_template('bar_log.html', log=log, pagination=pagination, form=form)
+    return render_template('bar/log.html', log=log, pagination=pagination, form=form)
 
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])
@@ -178,4 +178,4 @@ def add_item():
         flash("added stock item: " + request.form["name"], "confirmation")
         return redirect(request.path)
     
-    return render_template('bar_add_item.html', form=form)
+    return render_template('bar/add_item.html', form=form)

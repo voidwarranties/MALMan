@@ -20,7 +20,7 @@ def accounting():
     banks = DB.Bank.query.all()
     running_account = DB.CashTransaction.query.all()
     running_acount_balance = sum(transaction.amount for transaction in running_account)
-    return render_template('accounting.html', banks=banks, running_acount_balance=running_acount_balance)
+    return render_template('accounting/balance.html', banks=banks, running_acount_balance=running_acount_balance)
 
 
 @app.route("/accounting/log", defaults={'page': 1}, methods=['GET', 'POST'])
@@ -63,7 +63,7 @@ def accounting_log(page):
             if request.form[field] != '0':
                 url += field + ':' + request.form[field] + ","
         return redirect(url)
-    return render_template('accounting_log.html', log=log, form=form, pagination=pagination)
+    return render_template('accounting/log.html', log=log, form=form, pagination=pagination)
 
 
 @app.route("/accounting/cashlog", defaults={'page': 1})
@@ -78,7 +78,7 @@ def accounting_cashlog(page):
         abort(404)
     pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
    
-    return render_template('accounting_cashlog.html', log=log, pagination=pagination)
+    return render_template('accounting/cashlog.html', log=log, pagination=pagination)
 
 
 @app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])
@@ -118,7 +118,7 @@ def accounting_request_reimbursement():
 
         flash("the request for reimbursement was filed", "confirmation")
         return redirect(request.path)
-    return render_template('accounting_request_reimbursement.html', form=form)
+    return render_template('accounting/request_reimbursement.html', form=form)
 
 
 @app.route('/accounting/attachments/<transaction>/<filename>')
@@ -131,7 +131,7 @@ def uploaded_file(transaction, filename):
 @permission_required('membership', 'finances')
 def accounting_approve_reimbursements():
     requests = DB.Transaction.query.filter_by(date_filed=None)
-    return render_template('accounting_approve_reimbursements.html', requests=requests)
+    return render_template('accounting/list_reimbursements.html', requests=requests)
 
 
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
@@ -155,7 +155,7 @@ def accounting_approve_reimbursement(transaction_id):
         DB.db.session.commit()
         flash("the transaction was filed", "confirmation")
         return redirect(request.path)
-    return render_template('accounting_approve_reimbursement.html', form=form)
+    return render_template('accounting/approve_reimbursement.html', form=form)
 
 
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
@@ -187,7 +187,7 @@ def accounting_add_transaction():
             id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('file_membershipfee', transaction_id=id.id))
         return redirect('/accounting/log')
-    return render_template('accounting_add_transaction.html', form=form)
+    return render_template('accounting/add_transaction.html', form=form)
 
 @app.route("/accounting/topup_bar_account_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'finances')
@@ -205,7 +205,7 @@ def topup_bar_account(transaction_id):
         user = users.get(request.form["user_id"])
         flash(u"\u20AC" + str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
         return redirect('/accounting/log')
-    return render_template('accounting_topup_bar_account.html', form=form, transaction=transaction)
+    return render_template('accounting/topup_bar_account.html', form=form, transaction=transaction)
 
 
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
@@ -228,7 +228,7 @@ def accounting_edit_transaction(transaction_id):
                 DB.db.session.commit()
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('accounting_edit_transaction.html', form=form)
+    return render_template('accounting/edit_transaction.html', form=form)
 
 @app.route("/accounting/membershipfees", defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route('/accounting/membershipfees/page/<int:page>')
@@ -258,7 +258,7 @@ def accounting_membershipfees(page):
             url += 'user' + ':' + request.form['user']
         return redirect(url)
    
-    return render_template('accounting_membershipfees.html', log=log, pagination=pagination, form=form)
+    return render_template('accounting/membershipfees.html', log=log, pagination=pagination, form=form)
 
 
 @app.route("/accounting/file_membershipfee_<int:transaction_id>", methods=['GET', 'POST'])
@@ -280,4 +280,4 @@ def file_membershipfee(transaction_id):
         flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
         return redirect('/accounting/log')
     
-    return render_template('accounting_file_membershipfee.html', form=form, transaction=transaction)
+    return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)

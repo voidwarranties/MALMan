@@ -15,7 +15,6 @@ Functionality
             app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 Refactoring
-    put templates in directories based on categories
     check the way users are activated: active, actief_lid, membership role
     check the way forms are initialized and fields are dynamically set
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
