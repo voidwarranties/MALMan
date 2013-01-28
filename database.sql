@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 25, 2013 at 02:21 PM
+-- Generation Time: Jan 28, 2013 at 08:31 PM
 -- Server version: 5.5.29-log
 -- PHP Version: 5.4.11
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `accounting_attachments` (
   `transaction_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `description` text NOT NULL,
   `datetime` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 -- --------------------------------------------------------
 
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `date_filed` date DEFAULT NULL,
   `filed_by_id` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=133 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 
 -- --------------------------------------------------------
 
@@ -183,12 +183,20 @@ CREATE TABLE IF NOT EXISTS `bar_items` (
   `stock_max` int(50) NOT NULL,
   `price` decimal(5,2) NOT NULL,
   `category_id` int(50) NOT NULL,
-  `josto` int(50) NOT NULL,
+  `josto` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Naam` (`name`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=32 ;
+
+--
+-- Dumping data for table `bar_items`
+--
+
+INSERT INTO `bar_items` (`id`, `name`, `stock_max`, `price`, `category_id`, `josto`) VALUES
+(31, 'fanta', 5, '1.20', 3, 1),
+(28, 'club mate', 50, '1.50', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -202,10 +210,47 @@ CREATE TABLE IF NOT EXISTS `bar_log` (
   `amount` int(50) NOT NULL,
   `price` decimal(5,2) NOT NULL,
   `datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id` int(50) DEFAULT '0',
+  `user_id` int(50) DEFAULT NULL,
   `transaction_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=307 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=308 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `members`
+--
+
+CREATE TABLE IF NOT EXISTS `members` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `confirmed_at` datetime DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `street` varchar(255) NOT NULL,
+  `number` int(11) NOT NULL,
+  `bus` varchar(255) NOT NULL,
+  `postalcode` int(11) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `telephone` varchar(255) NOT NULL,
+  `active_member` tinyint(1) NOT NULL,
+  `membership_dues` int(10) NOT NULL,
+  `member_since` date NOT NULL,
+  `show_telephone` tinyint(1) NOT NULL,
+  `show_email` tinyint(1) NOT NULL,
+  `motivation` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=104 ;
+
+--
+-- Dumping data for table `members`
+--
+
+INSERT INTO `members` (`id`, `email`, `password`, `active`, `confirmed_at`, `name`, `street`, `number`, `bus`, `postalcode`, `city`, `date_of_birth`, `telephone`, `active_member`, `membership_dues`, `member_since`, `show_telephone`, `show_email`, `motivation`) VALUES
+(103, 'root@vw.be', '$6$rounds=60000$eDbL726ahcRn5LhM$riPxJb2BVbN5JRFAlQMrp8F1HP86R0wn10CqNs/oH5wXIq/jaKRFUra0FV.ogx0J9EM5MV8DtoLuxeIqAovB61', 1, '2013-01-15 00:00:00', 'name', 'street', 10, '', 2000, 'city', '2000-05-28', '04865245851', 1, 10, '2013-01-09', 0, 0, 'Meh.');
 
 -- --------------------------------------------------------
 
@@ -219,7 +264,7 @@ CREATE TABLE IF NOT EXISTS `members_fees` (
   `transaction_id` int(11) NOT NULL,
   `until` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -258,35 +303,15 @@ CREATE TABLE IF NOT EXISTS `members_roles_users` (
   KEY `role_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `members_users`
+-- Dumping data for table `members_roles_users`
 --
 
-CREATE TABLE IF NOT EXISTS `members_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT NULL,
-  `confirmed_at` datetime DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `street` varchar(255) NOT NULL,
-  `number` int(11) NOT NULL,
-  `bus` varchar(255) NOT NULL,
-  `postalcode` int(11) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `telephone` varchar(255) NOT NULL,
-  `active_member` tinyint(1) NOT NULL,
-  `membership_dues` int(10) NOT NULL,
-  `member_since` date NOT NULL,
-  `show_telephone` tinyint(1) NOT NULL,
-  `show_email` tinyint(1) NOT NULL,
-  `motivation` text NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+INSERT INTO `members_roles_users` (`user_id`, `role_id`) VALUES
+(103, 2),
+(103, 3),
+(103, 4),
+(103, 1);
 
 --
 -- Constraints for dumped tables
@@ -296,5 +321,5 @@ CREATE TABLE IF NOT EXISTS `members_users` (
 -- Constraints for table `members_roles_users`
 --
 ALTER TABLE `members_roles_users`
-  ADD CONSTRAINT `members_roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `members_users` (`id`),
+  ADD CONSTRAINT `members_roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `members` (`id`),
   ADD CONSTRAINT `members_roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `members_roles` (`id`);

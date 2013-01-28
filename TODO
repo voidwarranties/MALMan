@@ -17,7 +17,7 @@ Functionality
 Refactoring
     put templates in directories based on categories
     check the way users are activated: active, actief_lid, membership role
-    check if setattrs are caried over
+    check the way forms are initialized and fields are dynamically set
     remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
     Minimize the number of times we read from the DB
     Minimize the number of times we write to the DB (db.session.commit())
@@ -25,8 +25,6 @@ Refactoring
     check validity of XHTML, CSS & JS
     fix whitespace in produced XHTML
     somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
-    josto should be a boolean in the DB
-    bar_log user id in teh DB should not default to 0
     clean up database.py
         do we need __repr__ and __str__?
 

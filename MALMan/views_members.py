@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, formatbool
 from MALMan.flask_security.recoverable import update_password
 
 from flask import render_template, request, redirect, flash, current_app

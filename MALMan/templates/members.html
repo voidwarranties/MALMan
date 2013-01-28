@@ -27,8 +27,8 @@
             <td>{{ user.name }}</td>
             <td>{{ user.date_of_birth }}</td>
             <td>
-                {%- if user.show_email or perm_members -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_email and perm_members %} (hidden){%- endif -%}
+                {%- if user.show_email or 'members' in session.roles -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_email and 'members' in session.roles  %} (hidden){%- endif -%}
             </td>
             <td>
                 {%- if user.show_telephone or 'members' in session.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}

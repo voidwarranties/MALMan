@@ -21,7 +21,7 @@ def _date_to_datetime(date):
 db = SQLAlchemy(app)
 
 roles_users = db.Table('members_roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('members_users.id')),
+        db.Column('user_id', db.Integer(), db.ForeignKey('members.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('members_roles.id')))
 
 
@@ -38,7 +38,7 @@ class Role(db.Model, RoleMixin):
 
 class User(db.Model, UserMixin):
     """Define the User database table"""
-    __tablename__ = 'members_users'
+    __tablename__ = 'members'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True)
     name = db.Column(db.String(255))
@@ -82,7 +82,7 @@ class MembershipFee(db.Model):
     """Define the members_fees database table"""
     __tablename__ = 'members_fees'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('members.id'))
     user = db.relationship('User')
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
     transaction = db.relationship('Transaction')
@@ -138,7 +138,7 @@ class BarLog(db.Model):
     amount = db.Column(db.Integer)
     price = db.Column(db.Numeric(5, 2), default=0)
     datetime = db.Column(db.DateTime())
-    user_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('members.id'))
     user = db.relationship('User')
     transaction_type = db.Column(db.String(50))
 
@@ -209,7 +209,7 @@ class Transaction(db.Model):
         # the second party involved in the transaction
     category_id = db.Column(db.Integer, db.ForeignKey('accounting_categories.id'))
         # which kind of revenue or expense the transaction is
-    category = db.relationship("AccountingCategories")
+    category = db.relationship("AccountingCategory")
     description = db.Column(db.String)
     bank_id = db.Column(db.Integer, db.ForeignKey('accounting_banks.id'))
         # the bankaccount involved. cash transactions are considered an account too (id=99)
@@ -220,7 +220,7 @@ class Transaction(db.Model):
         # only applicable if it is a reimbursement request; the date the money was advanced
     date_filed = db.Column(db.DateTime())
         # if it is a reimbursement this is the date the request was approved
-    filed_by_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
+    filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
     attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions, 
@@ -230,7 +230,7 @@ class BarAccountLog(db.Model):
     """Define the bar_accounts database table"""
     __tablename__ = 'bar_accounts_log'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('members_users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('members.id'))
     user = db.relationship('User', backref="bar_account_log", lazy="joined")
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
     purchase = db.relationship('BarLog')

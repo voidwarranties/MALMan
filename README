@@ -1,24 +1,14 @@
-Make the configuration file MALMan.cfg in the directory MALMan. Edit and save to following content to this file.
+dependencies
+============
 
-## database
-SQLALCHEMY_DATABASE_URI = 'mysql://user;password@localhost/MALMan'
 
-## debugging options
-## turn these of on production systems!
-DEBUG = True
-TRAP_BAD_REQUEST_ERRORS = True
-SQLALCHEMY_ECHO = True
+to run MALMan
+=============
 
-## mail server
-MAIL_SERVER = 'localhost'
-MAIL_PORT = 465
-MAIL_USE_TLS = False
-MAIL_USE_SSL = True
-MAIL_USERNAME = 'user'
-MAIL_PASSWORD = 'password'
-
-## error mails
-ADMINS = ['yourname@example.com']
-
-## session cookie encryption key
-SECRET_KEY = 'some_secret'
+import database.sql
+copy MALMan.cfg.template to MALMan.cfg and adapt the file to fit your setup
+execute run.py
+MALMan should be running on 0.0.0.0:5000
+by default you can log in with the following credentials: 
+	user: root@vw.be
+	password: password
