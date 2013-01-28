@@ -13,6 +13,7 @@ Functionality
     have a decent error page for RequestEntityTooLarge
         use flask built in limiter:
             app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    add the possibility to select members in a transactions 'to/from' field
 
 Refactoring
     check the way users are activated: active, actief_lid, membership role
@@ -27,11 +28,10 @@ Refactoring
     clean up database.py
         do we need __repr__ and __str__?
 
-
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
-    date should be for facturation date
-        => when filing a reimbursement, date should be set to the date on the bill. 'advance date' should be renamed to 'reimbursement date'. This field is NULL when the payment is not a reimbursement
+    if a reimbursement is filed without a reimbursement_date we don't know it was a reimbursement request anymore, and so can't know it still has to be reimbursed
+    we don't save whom a user payed when he files a reimbursement request
 
 Usability
     improve graphical design

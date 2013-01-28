@@ -18,13 +18,14 @@
     <thead>
         <tr>
             <th>#</th>
-            <th>Date</th>
+            <th>Facturation date</th>
+            <th>Reimbursement date</th>
             <th>Amount</th>
             <th>to/from</th>
             <th>Description</th>
             <th>Category</th>
             <th>Bank account</th>
-            {% if 'finances' in session.roles %}
+            {%- if 'finances' in session.roles %}
             <th>Bank statement</th>
             <th>Date filed</th>
             <th>Filed by</th>
@@ -33,23 +34,30 @@
         </tr>
     </thead>
     <tbody>
-        {% for transaction in log %}
+        {%- for transaction in log %}
         <tr>
             <td>{{ transaction.id }}</td>
-            <td>{% if transaction.date %}{{ transaction.date }}{% else %}<span class="red">not payed yet!</span>{% endif %}</td>
+            <td>{{ transaction.date }}</td>
+            <td>
+                {%- if transaction.reimbursement_date -%}
+                {{ transaction.reimbursement_date }}
+                {%- else -%}
+                NA
+                {%- endif -%}
+            </td>
             <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
             <td>{{ transaction.to_from }}</td>
             <td>{{ transaction.description }}</td>
             <td>{{ transaction.category.name }}</td>
             <td>{{ transaction.bank.name }}</td>
-            {% if 'finances' in session.roles %}
+            {%- if 'finances' in session.roles %}
             <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
             <td>{{ transaction.date_filed }}</td>
             <td>{{ transaction.filed_by.name }}</td>
             <td><a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a></td>
-            {% endif %}
+            {%- endif %}
         </tr>
-        {% endfor %}
+        {%- endfor %}
     </tbody>
 </table>
 {% from "_macros.html" import render_pagination %}

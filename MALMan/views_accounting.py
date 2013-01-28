@@ -88,7 +88,7 @@ def accounting_request_reimbursement():
     del form.bank_id, form.to_from, form.category_id
     if form.validate_on_submit():
         transaction = DB.Transaction(
-            advance_date = request.form["date"], 
+            date = request.form["date"], 
             amount = "-" + request.form["amount"],
             description = request.form["description"],
             to_from = current_user.name)
@@ -143,7 +143,7 @@ def accounting_approve_reimbursement(transaction_id):
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories(IN=False)
     if form.validate_on_submit():
-        transaction.date = request.form["date"]
+        transaction.reimbursement_date = request.form["reimbursement_date"] or "0001-01-01"
         transaction.amount = request.form["amount"]
         transaction.to_from = request.form["to_from"]
         transaction.description = request.form["description"]
@@ -154,7 +154,7 @@ def accounting_approve_reimbursement(transaction_id):
         transaction.filed_by_id = current_user.id
         DB.db.session.commit()
         flash("the transaction was filed", "confirmation")
-        return redirect(request.path)
+        return redirect('accounting/approve_reimbursements')
     return render_template('accounting/approve_reimbursement.html', form=form)
 
 

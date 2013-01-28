@@ -216,8 +216,8 @@ class Transaction(db.Model):
     bank = db.relationship("Bank", backref="Transaction", lazy="joined")
     bank_statement_number = db.Column(db.Integer)
         # number in the bank's account statements 
-    advance_date = db.Column(db.DateTime())
-        # only applicable if it is a reimbursement request; the date the money was advanced
+    reimbursement_date = db.Column(db.DateTime())
+        # only applicable if it is a reimbursement request; the date the money was reimbursed
     date_filed = db.Column(db.DateTime())
         # if it is a reimbursement this is the date the request was approved
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))

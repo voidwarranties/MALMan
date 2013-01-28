@@ -172,7 +172,7 @@ class RequestReimbursement(AddTransaction):
 
 
 class ApproveReimbursement(AddTransaction):
-    date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 
+    reimbursement_date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 
 
 
 class FilterTransaction(Form):

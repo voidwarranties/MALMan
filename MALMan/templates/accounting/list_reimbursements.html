@@ -22,7 +22,7 @@
         <tbody>
             {% for request in requests %}
             <tr>
-                <td>{{ request.advance_date }}</td>
+                <td>{{ request.date }}</td>
                 <td>€{{ request.amount|replace('-','') }}</td>
                 <td>{{ request.to_from }}</td>
                 <td>{{ request.description }}</td>
