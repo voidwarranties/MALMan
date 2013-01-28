@@ -15,7 +15,6 @@ Functionality
             app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 Refactoring
-    split views.py into multiple files based on categories
     put templates in directories based on categories
     make database object model names singular
     check the way users are activated: active, actief_lid, membership role
