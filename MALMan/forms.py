@@ -187,3 +187,4 @@ class FilterMembershipFees(Form):
     user = SelectField('user')
     user.choices = [("0","filter by user")]
     submit = SubmitField('filter')
+

@@ -20,3 +20,9 @@ def error_404(error):
     error = "404 Not Found"
     lastpage = request.referrer
     return render_template('error.html', error=error, lastpage=lastpage), 404
+
+@app.errorhandler(413)
+def error_413(error):
+    error = "413 Request entity too large"
+    lastpage = request.referrer
+    return render_template('error.html', error=error, lastpage=lastpage), 413

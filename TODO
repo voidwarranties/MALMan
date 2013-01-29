@@ -6,13 +6,12 @@ Functionality
     add notifications
     add an api vwcr can hook into
     add active field for stock items instead of removing them
-    do some validation on uploaded files
-    add uploading of attachments to add_transactions and edit transaction
+    improve attachments
+        add attachment functionality to add_transaction and edit_transaction
+        remove attachments in edit_transaction
+        have a validator check a file's size befre saving it
     make script to translate an SQL dump from MALMan1 into a format understood by MALMan2
     have a fancy lightbox to show attachments
-    have a decent error page for RequestEntityTooLarge
-        use flask built in limiter:
-            app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     add the possibility to select members in a transactions 'to/from' field
 
 Refactoring
@@ -27,11 +26,13 @@ Refactoring
     somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
     clean up database.py
         do we need __repr__ and __str__?
+    move security/_macros into macros.html
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
     if a reimbursement is filed without a reimbursement_date we don't know it was a reimbursement request anymore, and so can't know it still has to be reimbursed
     we don't save whom a user payed when he files a reimbursement request
+    when run in debug mode, flask returns a 413 only when a file is smaller than ~1.5MiB, and resets the connetion otherwise
 
 Usability
     improve graphical design

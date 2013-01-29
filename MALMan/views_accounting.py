@@ -6,13 +6,13 @@ from MALMan.view_utils import add_confirmation, return_flash, accounting_categor
 from flask import render_template, request, redirect, flash, abort, url_for, send_from_directory
 from flask.ext.login import current_user
 from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
+from flask.ext.wtf import file_allowed
 
 from werkzeug import secure_filename
 from datetime import date
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
-patch_request_class(app, 5 * 1024 * 1024) # limit max upload size to 5 megabytes
 
 @app.route("/accounting")
 @permission_required('membership')
@@ -85,7 +85,9 @@ def accounting_cashlog(page):
 @permission_required('membership')
 def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
+    form.attachment.validators = [file_allowed(attachments, "This filetype is not whitelisted")]
     del form.bank_id, form.to_from, form.category_id
+   
     if form.validate_on_submit():
         transaction = DB.Transaction(
             date = request.form["date"], 
@@ -95,10 +97,8 @@ def accounting_request_reimbursement():
         DB.db.session.add(transaction)
         DB.db.session.commit()
 
-        attachment = request.files['attachment']
-        if attachment:
-            # upload the attachment
-            transaction = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first() #we can do better than this
+        for attachment in request.files.getlist('attachment'):
+            # save the attachment
             filename = secure_filename(attachment.filename)
             url = attachments.save(attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name
@@ -113,8 +113,8 @@ def accounting_request_reimbursement():
             # link the attachment to the transaction
             setattr(transaction, 'attachments', [attachment])
 
-            # write changes to DB
-            DB.db.session.commit()
+        # write changes to DB
+        DB.db.session.commit()
 
         flash("the request for reimbursement was filed", "confirmation")
         return redirect(request.path)
