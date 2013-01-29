@@ -26,7 +26,6 @@ Refactoring
     somehow the textarea tag around the motivation field is sent along and written to the DB. these tags are then stripped in the view by using the striptag filter. This doesn't happen when using the TextAreaField outside flask_security
     clean up database.py
         do we need __repr__ and __str__?
-    move security/_macros into macros.html
 
 Bugs
     permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
