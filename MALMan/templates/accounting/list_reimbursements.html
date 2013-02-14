@@ -30,7 +30,7 @@
                 <td>{{ request.description }}</td>
                 <td>
                 {% for attachment in request.attachments %}
-                    <a class="lightbox" rel="{{ request.id }}" href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}">attachment</a>
+                    <a class="lightbox" rel="{{ request.id }}" href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}" target="_blank">attachment</a>
                 {% endfor %}
                 </td>
                 <td><a href="/accounting/approve_{{request.id}}">approve!</a></td>
