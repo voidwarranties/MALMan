@@ -11,7 +11,6 @@ Functionality
         remove attachments in edit_transaction
         have a validator check a file's size befre saving it
     make script to translate an SQL dump from MALMan1 into a format understood by MALMan2
-    have a fancy lightbox to show attachments
     add the possibility to select members in a transactions 'to/from' field
 
 Refactoring
@@ -32,6 +31,7 @@ Bugs
     if a reimbursement is filed without a reimbursement_date we don't know it was a reimbursement request anymore, and so can't know it still has to be reimbursed
     we don't save whom a user payed when he files a reimbursement request
     when run in debug mode, flask returns a 413 only when a file is smaller than ~1.5MiB, and resets the connetion otherwise
+    tablesorter doesn't work on approve_reimbursements
 
 Usability
     improve graphical design

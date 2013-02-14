@@ -5,6 +5,8 @@
     {{ super() }}
     {% from "_macros.html" import tablesorter %}
     {{ tablesorter('#transactions') }}
+    {% from "_macros.html" import lightbox %}
+    {{ lightbox() }}
 {% endblock %}
 {% block content %}
 {% if requests|list|count > 0 %}
@@ -28,7 +30,7 @@
                 <td>{{ request.description }}</td>
                 <td>
                 {% for attachment in request.attachments %}
-                    <a href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}" target="_blank">attachment</a>
+                    <a class="lightbox" rel="{{ request.id }}" href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}">attachment</a>
                 {% endfor %}
                 </td>
                 <td><a href="/accounting/approve_{{request.id}}">approve!</a></td>
@@ -39,8 +41,5 @@
 {% else %}
     <p>There are no pending reimbursement requests!</p>
 {%- endif %}
-
-{% from "_macros.html" import pikaday %}
-{{ pikaday('advance_date') }}
 
 {% endblock %}
