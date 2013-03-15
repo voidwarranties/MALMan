@@ -2,7 +2,7 @@
 {% set category = "accounting" %}
 {% block title %}File membership fee{% endblock %}
 {% block content %}
-{% from "security/_macros.html" import render_field_with_errors %}
+{% from "_macros.html" import render_field_with_errors %}
 <p>€{{ transaction.amount }} was payed by {{ transaction.to_from }} on {{ transaction.date }}.</p>
 <p>Please select the member who's dues are being payed and until when this settles his dues.</p>
 <form method="post" class="cf">
