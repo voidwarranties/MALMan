@@ -76,58 +76,6 @@ def donate(amount, description=None):
         string += ": " + description
     _record_cash_transaction(amount, string)
 
-
-def SetReport():
-    connection = MySQLdb.connect(host=dbhost,  user=dbuser, passwd=dbpass)
-    cursor = connection.cursor()
-    selector = "USE " +dbname
-    cursor.execute(selector)
-    query = "insert into Reports (Paid) values ('1')"
-    cursor.execute(query)
-    connection.commit()
-    cursor.close()
-    connection.close()
-    return "ok"
-    
-def GetReport():
-    connection = MySQLdb.connect(host=dbhost,  user=dbuser, passwd=dbpass)
-    cursor = connection.cursor()
-    selector = "USE " +dbname
-    cursor.execute(selector)
-    
-    # Get the latest report date
-    query = "Select Time from Reports where Paid = 1 order by Time Desc"
-    cursor.execute(query)
-    fetched = cursor.fetchone()
-    lastreport = fetched[0]
-    
-    # Get Drinks
-    query = "select * from BarLog where Time > '" + str(lastreport) + "'"
-    cursor.execute(query)
-    DrinksList = cursor.fetchall()
-    
-    #Get DrinkInfo
-    Result = []
-    for Entry in DrinksList:
-        query = "Select * from Bar where ID = " + str(Entry[1])
-        cursor.execute(query)
-        Item = cursor.fetchone()
-        Drink = []
-        Drink.append(Entry[2])
-        Drink.append(Item[0])
-        Drink.append(Item[1])
-        Drink.append(Item[2])
-        Drink.append(Item[3])
-        Drink.append(Item[4])
-        Drink.append(Item[5])
-        Drink.append(Item[6])
-        Drink.append(Item[7])
-        Result.append(Drink)
-    cursor.close()
-    connection.close()
-    answer = []
-    return Result
-    
 def SellDrink(Drink, User):
     if User[0] == 'Cash':
         purchase(Drink['id'], Drink['price'])
@@ -173,8 +121,6 @@ server.register_function(authenticate)
 server.register_function(check_balance)
 server.register_function(GetStockList)
 server.register_function(SellDrink)
-server.register_function(GetReport)
-server.register_function(SetReport)
 server.register_function(GetUserList)
 server.register_function(VerifyBuyer)
 server.register_introspection_functions()
