@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 import SimpleXMLRPCServer
-import MySQLdb
-import hashlib
 from datetime import datetime
 from MALMan import app
-from MALMan.database import db, User, BarLog, BarAccountLog, CashTransaction
+from MALMan.database import db, User, StockItem, BarLog, BarAccountLog, CashTransaction
 from flask_security.utils import verify_password
 
 __title__ = "VWCR"
@@ -85,34 +83,32 @@ def SellDrink(Drink, User):
     return "done"
     
 def GetStockList():
-    connection = MySQLdb.connect(host=dbhost,  user=dbuser, passwd=dbpass)
-    cursor = connection.cursor()
-    selector = "USE " +dbname
-    cursor.execute(selector)
-    cursor.execute("SELECT * from bar_items order by category_id, name")
-    rows = cursor.fetchall()
-    return rows
-    cursor.close()
+    items = StockItem.query\
+        .order_by(StockItem.category_id)\
+        .order_by(StockItem.name).all()
+    # make a tuple of tuple from the db object
+    stock = (( item.id, 
+                item.name.encode('ascii','ignore'),
+                item.stock_max,
+                item.price,
+                item.category_id,
+                int(item.josto)
+            ) for item in items)
+    stock = tuple(stock)
+    return stock
 
 def GetUserList():
-    connection = MySQLdb.connect(host=dbhost,  user=dbuser, passwd=dbpass)
-    cursor = connection.cursor()
-    selector = "USE " +dbname
-    cursor.execute(selector)
-    cursor.execute("SELECT id, name from members where active = 1 order by name")
-    rows = cursor.fetchall()
-    return rows
+    users = User.query\
+        .filter_by(active_member='1')\
+        .order_by(User.name).all()
+    # make a tuple of tuple from the db object
+    members = (( user.id, user.name.encode('ascii','ignore')) for user in users )
+    members = tuple(members)
+    return members
 
 def VerifyBuyer(firstname, lastname,  price,  password):
     if verify_password(user, password) and bar_account_balance >= str(price):
         return user
-    
-# Database
-dbhost = "localhost"
-dbname = "MALMan2"
-dbuser = "MALMan2"
-dbpass = "MALMan2"
-dbport = "3306"
 
 # VWCR_Server
 adres = ("0.0.0.0",  9000)
