@@ -99,10 +99,10 @@ def GetStockList():
 
 def GetUserList():
     users = User.query\
-        .filter_by(active_member='1')\
+        .filter_by(active_member=1)\
         .order_by(User.name).all()
     # make a tuple of tuple from the db object
-    members = (( user.id, user.name.encode('ascii','ignore')) for user in users )
+    members = (( user.id, user.name.encode('ascii','ignore')) for user in users if user.bar_account_balance > 0)
     members = tuple(members)
     return members
 
