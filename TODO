@@ -4,10 +4,9 @@ Functionality
         cash log
     add pages 'dagboek' and 'kasboek'
     add notifications
-    add an api vwcr can hook into
     add active field for stock items instead of removing them
     improve attachments
-        add attachment functionality to add_transaction and edit_transaction
+        add attachment functionality to and edit_transaction
         remove attachments in edit_transaction
         have a validator check a file's size befre saving it
     make script to translate an SQL dump from MALMan1 into a format understood by MALMan2

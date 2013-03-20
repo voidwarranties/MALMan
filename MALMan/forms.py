@@ -1,9 +1,14 @@
 """Define the various forms used in MALMan"""
 
+from MALMan import app
 from wtforms import Form as wtforms_Form
 from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField, 
     DateField, IntegerField, SubmitField, SelectField, DecimalField, 
     TextAreaField, FileField, validators, EqualTo)
+from flask.ext.uploads import UploadSet, configure_uploads
+
+attachments = UploadSet(name='attachments')
+configure_uploads(app, attachments)
 
 def booleanfix(post, var):
     """returns a boolean indicating if a variable was in the received POST"""
@@ -141,6 +146,8 @@ class AddTransaction(Form):
     bank_statement_number = IntegerField('bank statement number (optional)', 
         [validators.Optional(), validators.NumberRange(min=0, 
             message='please enter a positive number')])
+    attachment = FileField("attachment", 
+        [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('file transaction')
 
 
@@ -159,7 +166,7 @@ class FileMembershipFee(Form):
 
 class EditTransaction(AddTransaction):
     submit = SubmitField('edit transaction')
-
+#        form.attachment.validators = [file_allowed(attachments, "This filetype is not whitelisted")]
 
 class RequestReimbursement(AddTransaction):
     date = DateField('date of advance (yyyy-mm-dd)', 
@@ -167,7 +174,7 @@ class RequestReimbursement(AddTransaction):
             message='please enter a date using the specified formatting')])
     amount = DecimalField('amount advanced (e.g. 1.52)', 
         [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
-    attachment = FileField("attachment")
+
     submit = SubmitField('request reimbursement')
 
 

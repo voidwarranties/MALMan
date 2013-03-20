@@ -85,7 +85,6 @@ def accounting_cashlog(page):
 @permission_required('membership')
 def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
-    form.attachment.validators = [file_allowed(attachments, "This filetype is not whitelisted")]
     del form.bank_id, form.to_from, form.category_id
    
     if form.validate_on_submit():
@@ -103,18 +102,15 @@ def accounting_request_reimbursement():
             url = attachments.save(attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name
                 name = filename)
-        
             # add the attachment to the accounting_attachments DB table
             attachment = DB.AccountingAttachment(
                 filename = filename,
                 transaction_id = transaction.id)
             DB.db.session.add(attachment)
-
             # link the attachment to the transaction
             setattr(transaction, 'attachments', [attachment])
-
-        # write changes to DB
-        DB.db.session.commit()
+            # write changes to DB
+            DB.db.session.commit()
 
         flash("the request for reimbursement was filed", "confirmation")
         return redirect(request.path)
@@ -153,6 +149,7 @@ def accounting_approve_reimbursement(transaction_id):
         transaction.date_filed = date.today()
         transaction.filed_by_id = current_user.id
         DB.db.session.commit()
+
         flash("the transaction was filed", "confirmation")
         return redirect('accounting/approve_reimbursements')
     return render_template('accounting/approve_reimbursement.html', form=form)
@@ -178,7 +175,22 @@ def accounting_add_transaction():
             )
         DB.db.session.add(transaction)
         DB.db.session.commit()
-        flash("the transaction was filed", "confirmation")
+
+        for attachment in request.files.getlist('attachment'):
+            filename = secure_filename(attachment.filename)
+            url = attachments.save(attachment, 
+                folder = str(transaction.id), #minimizes the chance of a file existing with the same name
+                name = filename
+                )
+            # add the attachment to the accounting_attachments DB table
+            attachment = DB.AccountingAttachment(
+                filename = filename,
+                transaction_id = transaction.id)
+            DB.db.session.add(attachment)
+            # link the attachment to the transaction
+            setattr(transaction, 'attachments', [attachment])
+            # write changes to DB
+            DB.db.session.commit()
 
         if request.form["category_id"] == '6':
             id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
@@ -187,6 +199,8 @@ def accounting_add_transaction():
             id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('file_membershipfee', transaction_id=id.id))
         return redirect('/accounting/log')
+
+        flash("the transaction was filed", "confirmation")
     return render_template('accounting/add_transaction.html', form=form)
 
 @app.route("/accounting/topup_bar_account_<int:transaction_id>", methods=['GET', 'POST'])

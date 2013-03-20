@@ -50,11 +50,17 @@
             <td>{{ transaction.description }}</td>
             <td>{{ transaction.category.name }}</td>
             <td>{{ transaction.bank.name }}</td>
+            <td>
+                {% for attachment in transaction.attachments -%}
+                <a class="lightbox" rel="{{ transaction.id }}" href="/accounting/attachments/{{ transaction.id }}/{{ attachment.filename }}" target="_blank">attachment</a>
+            {% endfor %}</td>
             {%- if 'finances' in session.roles %}
             <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
             <td>{{ transaction.date_filed }}</td>
             <td>{{ transaction.filed_by.name }}</td>
-            <td><a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a></td>
+            <td>
+                <a href="/accounting/edit_{{transaction.id}}"><img src="/static/edit.gif" alt="edit transaction" /></a>
+            </td>
             {%- endif %}
         </tr>
         {%- endfor %}
