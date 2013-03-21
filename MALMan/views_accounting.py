@@ -65,6 +65,29 @@ def accounting_log(page):
         return redirect(url)
     return render_template('accounting/log.html', log=log, form=form, pagination=pagination)
 
+@app.route("/accounting/accounting/remove_attachment_<transaction_id>_<attachment_id>", methods=['GET', 'POST'])
+@permission_required('membership', 'finances')
+def accounting_remove_attachment(transaction_id, attachment_id):
+    if 'cancel' in request.form:
+        flash("removing the attachment was canceled", "confirmation")
+        return redirect('/accounting/log')
+    
+    transaction = DB.Transaction.query.get(transaction_id)
+    form = forms.Remove_Attachment()
+    
+    if form.validate_on_submit():
+        new_attachments = []
+        print attachments
+        for attachment in transaction.attachments:
+            if str(attachment.id) != str(attachment_id):
+                new_attachments.append(attachment)
+        setattr(transaction, 'attachments', new_attachments)
+        DB.db.session.commit()
+        flash("the attachment was removed", "confirmation")
+        return redirect('/accounting/log')
+    
+    return render_template('accounting/remove_attachment.html', form=form)
+
 
 @app.route("/accounting/cashlog", defaults={'page': 1})
 @app.route('/accounting/cashlog/page/<int:page>')
@@ -97,18 +120,22 @@ def accounting_request_reimbursement():
         DB.db.session.commit()
 
         for attachment in request.files.getlist('attachment'):
-            # save the attachment
+            # save attachment
             filename = secure_filename(attachment.filename)
-            url = attachments.save(attachment, 
+            url = attachments.save(
+                attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name
                 name = filename)
             # add the attachment to the accounting_attachments DB table
-            attachment = DB.AccountingAttachment(
-                filename = filename,
-                transaction_id = transaction.id)
+            attachment = DB.AccountingAttachment(filename = filename)
             DB.db.session.add(attachment)
-            # link the attachment to the transaction
-            setattr(transaction, 'attachments', [attachment])
+            # link the transaction to the attachment in attachments_transactions
+            if transaction.attachments:
+                attachment_field = getattr(transaction, 'attachments')
+                attachment_field.append(attachment)
+            else:
+                new_attachments = [attachment]
+                setattr(transaction, 'attachments', new_attachments)
             # write changes to DB
             DB.db.session.commit()
 
@@ -183,12 +210,15 @@ def accounting_add_transaction():
                 name = filename
                 )
             # add the attachment to the accounting_attachments DB table
-            attachment = DB.AccountingAttachment(
-                filename = filename,
-                transaction_id = transaction.id)
+            attachment = DB.AccountingAttachment(filename = filename)
             DB.db.session.add(attachment)
-            # link the attachment to the transaction
-            setattr(transaction, 'attachments', [attachment])
+            # link the transaction to the attachment in attachments_transactions
+            if transaction.attachments:
+                attachment_field = getattr(transaction, 'attachments')
+                attachment_field.append(attachment)
+            else:
+                new_attachments = [attachment]
+                setattr(transaction, 'attachments', new_attachments)
             # write changes to DB
             DB.db.session.commit()
 
@@ -232,17 +262,41 @@ def accounting_edit_transaction(transaction_id):
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = app.CHANGE_MSG
-        for atribute in ['date', 'amount', 'to_from', 'description', 'category_id', 'bank_id', 'bank_statement_number']:
+        atributes = ['date', 'amount', 'to_from', 'description', 
+            'category_id', 'bank_id', 'date_filed', 'filed_by_id']
+        for atribute in atributes:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):
                 setattr(transaction, atribute, new_value)
                 confirmation = add_confirmation(confirmation, str(atribute) + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
-                DB.db.session.commit()
+        DB.db.session.commit()
+
+        for attachment in request.files.getlist('attachment'):
+            if attachment.filename == '': 
+                break
+
+            filename = secure_filename(attachment.filename)
+            url = attachments.save(attachment, 
+                folder = str(transaction.id), #minimizes the chance of a file existing with the same name
+                name = filename
+                )
+            # add the attachment to the accounting_attachments DB table
+            attachment = DB.AccountingAttachment(
+                filename = filename)
+            DB.db.session.add(attachment)
+            # link the attachment to the transaction
+            setattr(transaction, 'attachments', [attachment])
+            confirmation = add_confirmation(confirmation, "attachment was added")
+            # write changes to DB
+            DB.db.session.commit()
+
+        print transaction.attachments
+
         return_flash(confirmation)
         return redirect(request.path)
-    return render_template('accounting/edit_transaction.html', form=form)
+    return render_template('accounting/edit_transaction.html', form=form, transaction=transaction)
 
 @app.route("/accounting/membershipfees", defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route('/accounting/membershipfees/page/<int:page>')

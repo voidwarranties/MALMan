@@ -188,7 +188,6 @@ class AccountingAttachment(db.Model):
     __tablename__ = 'accounting_attachments'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String) 
-    transaction_id = db.Column(db.Integer)
 
 
 attachments_transactions = db.Table('accounting_attachments_transactions',
