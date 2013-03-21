@@ -276,23 +276,26 @@ def accounting_edit_transaction(transaction_id):
         for attachment in request.files.getlist('attachment'):
             if attachment.filename == '': 
                 break
-
+            # save attachment
             filename = secure_filename(attachment.filename)
-            url = attachments.save(attachment, 
+            url = attachments.save(
+                attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name
                 name = filename
                 )
             # add the attachment to the accounting_attachments DB table
-            attachment = DB.AccountingAttachment(
-                filename = filename)
+            attachment = DB.AccountingAttachment(filename = filename)
             DB.db.session.add(attachment)
-            # link the attachment to the transaction
-            setattr(transaction, 'attachments', [attachment])
-            confirmation = add_confirmation(confirmation, "attachment was added")
+            # link the attachment to the transaction            
+            if transaction.attachments:
+                attachment_field = getattr(transaction, 'attachments')
+                attachment_field.append(attachment)
+            else:
+                new_attachments = [attachment]
+                setattr(transaction, 'attachments', new_attachments)
             # write changes to DB
             DB.db.session.commit()
-
-        print transaction.attachments
+            confirmation = add_confirmation(confirmation, "attachment was added")
 
         return_flash(confirmation)
         return redirect(request.path)

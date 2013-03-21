@@ -11,7 +11,7 @@
     {{ render_field_with_errors(form.description) }}
     {{ render_field_with_errors(form.category_id) }}
         <label style="width=100%">current attachments</label>
-        <span style="float: right;text-align: right;margin-left: 5px;">
+        <span style="float: right;text-align: right;">
             {% for attachment in transaction.attachments -%}
             <a style="text-align: right" class="lightbox" rel="{{ transaction.id }}" href="/accounting/attachments/{{ transaction.id }}/{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a>
             <a href="accounting/remove_attachment_{{transaction.id}}_{{ attachment.id }}">delete</a> 
