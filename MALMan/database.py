@@ -100,6 +100,7 @@ class StockItem(db.Model):
     category = db.relationship("StockCategory", backref="dranken", lazy="joined")
     josto = db.Column(db.Boolean())
     purchases = db.relationship("BarLog", backref="Drank")
+    active = db.Column(db.Boolean())
 
     @property
     def stock(self):
@@ -112,11 +113,6 @@ class StockItem(db.Model):
 
     def __repr__(self):
         return '<Bar item %r>' % self.name
-
-    def remove(entry):
-        """remove entry from StockItem table"""
-        db.session.delete(entry)
-        db.session.commit()
 
 
 class StockCategory(db.Model):

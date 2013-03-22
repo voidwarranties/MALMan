@@ -11,7 +11,7 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
 @app.route("/bar")
 @permission_required('membership')
 def bar():
-    items = DB.StockItem.query.all()
+    items = DB.StockItem.query.filter_by(active=True).all()
     return render_template('bar/list_items.html', items=items)
 
 
@@ -21,7 +21,8 @@ def bar_remove(item_id):
     item = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
-        DB.StockItem.remove(item)
+        item.active = 0
+        DB.db.session.commit()
         flash('The item was removed', 'confirmation')
         return redirect(url_for('bar'))
     return render_template('bar/remove_item.html', item=item, form=form)
@@ -172,7 +173,8 @@ def add_item():
             stock_max = request.form["stock_max"], 
             price = request.form["price"], 
             category_id = request.form["category_id"], 
-            josto = josto)
+            josto = josto,
+            active = 1)
         DB.db.session.add(item)
         DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")
