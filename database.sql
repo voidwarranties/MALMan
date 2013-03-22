@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 22, 2013 at 01:41 AM
+-- Generation Time: Mar 22, 2013 at 02:02 AM
 -- Server version: 5.1.66
 -- PHP Version: 5.3.3-7+squeeze15
 
@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `advance_date` date DEFAULT NULL,
   `date_filed` date DEFAULT NULL,
   `filed_by_id` tinyint(4) DEFAULT NULL,
+  `reimbursement_date` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 
