@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.5
+-- version 3.3.7deb7
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 28, 2013 at 08:31 PM
--- Server version: 5.5.29-log
--- PHP Version: 5.4.11
+-- Generation Time: Mar 22, 2013 at 01:41 AM
+-- Server version: 5.1.66
+-- PHP Version: 5.3.3-7+squeeze15
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -17,7 +16,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `MALMan2`
+-- Database: `MALMan`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +28,14 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `accounting_attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` text NOT NULL,
-  `transaction_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+
+--
+-- Dumping data for table `accounting_attachments`
+--
+
 
 -- --------------------------------------------------------
 
@@ -44,6 +47,11 @@ CREATE TABLE IF NOT EXISTS `accounting_attachments_transactions` (
   `attachment_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `accounting_attachments_transactions`
+--
+
 
 -- --------------------------------------------------------
 
@@ -80,6 +88,11 @@ CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `datetime` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+--
+-- Dumping data for table `accounting_cashregister`
+--
+
 
 -- --------------------------------------------------------
 
@@ -133,6 +146,11 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 
+--
+-- Dumping data for table `accounting_transactions`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -148,6 +166,11 @@ CREATE TABLE IF NOT EXISTS `bar_accounts_log` (
   UNIQUE KEY `transaction_id` (`transaction_id`),
   UNIQUE KEY `purchase_id` (`purchase_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+
+--
+-- Dumping data for table `bar_accounts_log`
+--
+
 
 -- --------------------------------------------------------
 
@@ -215,6 +238,11 @@ CREATE TABLE IF NOT EXISTS `bar_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=308 ;
 
+--
+-- Dumping data for table `bar_log`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -265,6 +293,11 @@ CREATE TABLE IF NOT EXISTS `members_fees` (
   `until` date NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `members_fees`
+--
+
 
 -- --------------------------------------------------------
 
