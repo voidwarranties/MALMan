@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 22, 2013 at 02:02 AM
+-- Generation Time: Mar 23, 2013 at 01:01 AM
 -- Server version: 5.1.66
 -- PHP Version: 5.3.3-7+squeeze15
 
@@ -208,6 +208,7 @@ CREATE TABLE IF NOT EXISTS `bar_items` (
   `price` decimal(5,2) NOT NULL,
   `category_id` int(50) NOT NULL,
   `josto` tinyint(1) NOT NULL,
+  `active` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Naam` (`name`),
   UNIQUE KEY `id` (`id`),
@@ -218,9 +219,9 @@ CREATE TABLE IF NOT EXISTS `bar_items` (
 -- Dumping data for table `bar_items`
 --
 
-INSERT INTO `bar_items` (`id`, `name`, `stock_max`, `price`, `category_id`, `josto`) VALUES
-(31, 'fanta', 5, '1.20', 3, 1),
-(28, 'club mate', 50, '1.50', 3, 0);
+INSERT INTO `bar_items` (`id`, `name`, `stock_max`, `price`, `category_id`, `josto`, `active`) VALUES
+(31, 'fanta', 5, '1.20', 3, 1, 1),
+(28, 'club mate', 50, '1.50', 3, 0, 1);
 
 -- --------------------------------------------------------
 
