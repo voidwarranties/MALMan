@@ -85,6 +85,11 @@ class BarRemoveItem(Form):
     submit = SubmitField('remove stock item')
 
 
+class BarActivateItem(Form):
+    #some fields are added by the view
+    submit = SubmitField("activate stock item(s)")
+
+
 # this is not used, check views.py for more info
 class BarEditAmounts(Form):
     # some fields are added by the view

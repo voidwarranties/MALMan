@@ -9,23 +9,48 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
     IntegerField, validators)
 
 @app.route("/bar")
-@permission_required('membership')
+@permission_required('membership', 'bar')
 def bar():
     items = DB.StockItem.query.filter_by(active=True).all()
     return render_template('bar/list_items.html', items=items)
 
+@app.route("/bar/activate_stockitems", methods=['GET', 'POST'])
+@permission_required('membership', 'bar')
+def activate_stockitems():
+    stockitems = DB.StockItem.query.filter_by(active=False).all()
+    for stockitem in stockitems:
+        setattr(forms.BarActivateItem, 'activate_' + str(stockitem.id), 
+            BooleanField('activate item'))
+    form = forms.BarActivateItem()
+
+    if form.validate_on_submit():
+        confirmation = 'the following stockitem\'s status were set to "active": '
+        for stockitem in stockitems:
+            new_value = forms.booleanfix(request.form, 
+                'activate_' + str(stockitem.id))
+            if new_value != stockitem.active:
+                stockitem.active = True
+                confirmation = confirmation + stockitem.name + ", "
+        DB.db.session.commit()
+        return_flash(confirmation)
+        return redirect(request.path)
+
+    return render_template('bar/activate_stockitems.html', stockitems=stockitems, form=form)
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
 def bar_remove(item_id):
-    item = DB.StockItem.query.get(item_id)
+    stockitem = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
-        item.active = 0
-        DB.db.session.commit()
-        flash('The item was removed', 'confirmation')
+        new_value = forms.booleanfix(request.form, 
+            'activate_' + str(stockitem.id))
+        if new_value != stockitem.active:
+            stockitem.active = False
+            DB.db.session.commit()
+            flash('The item "' + stockitem.name + '" status was set to "inactive"', 'confirmation')
         return redirect(url_for('bar'))
-    return render_template('bar/remove_item.html', item=item, form=form)
+    return render_template('bar/remove_item.html', stockitem=stockitem, form=form)
 
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])

@@ -2,13 +2,13 @@
 {% set category = "stock" %}
 {% block title %}Remove stock item{% endblock %}
 {% block content %}
-{% if item %}
-	<p>Are you sure you want to delete {{ item.name }}?</p>
+{% if stockitem %}
+	<p>Are you sure you want to delete {{ stockitem.name }}?</p>
 	<form method="POST" class="cf">
     	{{ form.hidden_tag() }}
     	{{ form.submit }}
 	</form>
 {% else %}
-	<p>The item you want to remove doesn't exist!</p>
+	<p>The stockitem you want to remove doesn't exist!</p>
 {% endif %}
 {% endblock %}
