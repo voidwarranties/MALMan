@@ -3,15 +3,30 @@
 {% block title %}Approve reimbursement{% endblock %}
 {% block content %}
 {% from "_macros.html" import render_field_with_errors %}
-<form method="post" class="cf">
+<form method="post" class="cf" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     {{ render_field_with_errors(form.reimbursement_date) }}
     {{ render_field_with_errors(form.amount) }}
     {{ render_field_with_errors(form.to_from) }}
     {{ render_field_with_errors(form.description) }}
     {{ render_field_with_errors(form.category_id) }}
+
+    <h2>Bank properties</h2>
     {{ render_field_with_errors(form.bank_id) }}
     {{ render_field_with_errors(form.bank_statement_number) }}
+
+    <h2>Attachments</h2>
+        <label style="width=100%">current attachments</label>
+        <span style="float: right;text-align: right;">
+            {% for attachment in transaction.attachments -%}
+            <a style="text-align: right" class="lightbox" rel="{{ transaction.id }}" href="/accounting/attachments/{{ transaction.id }}/{{ attachment.filename }}" target="_blank">{{ attachment.filename }}</a>
+            <a href="accounting/remove_attachment_{{transaction.id}}_{{ attachment.id }}">delete</a> 
+            <br \>
+            {% endfor %}
+        </span>
+    <p></p>
+    {{ render_field_with_errors(form.attachment, multiple="") }}
+
     {{ form.submit}}
 </form>
 

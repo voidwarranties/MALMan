@@ -10,9 +10,14 @@
     {{ render_field_with_errors(form.to_from) }}
     {{ render_field_with_errors(form.description) }}
     {{ render_field_with_errors(form.category_id) }}
-    {{ render_field_with_errors(form.attachment, multiple="") }}
+    
+    <h2>Bank properties</h2>
     {{ render_field_with_errors(form.bank_id) }}
     {{ render_field_with_errors(form.bank_statement_number) }}
+    
+    <h2>Attachments</h2>
+    {{ render_field_with_errors(form.attachment, multiple="") }}
+
     {{ form.submit}}
 </form>
 

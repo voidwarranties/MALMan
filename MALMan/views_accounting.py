@@ -120,6 +120,8 @@ def accounting_request_reimbursement():
         DB.db.session.commit()
 
         for attachment in request.files.getlist('attachment'):
+            if attachment.filename == '': 
+                break
             # save attachment
             filename = secure_filename(attachment.filename)
             url = attachments.save(
@@ -177,9 +179,31 @@ def accounting_approve_reimbursement(transaction_id):
         transaction.filed_by_id = current_user.id
         DB.db.session.commit()
 
+        for attachment in request.files.getlist('attachment'):
+            if attachment.filename == '': 
+                break
+            # save attachment
+            filename = secure_filename(attachment.filename)
+            url = attachments.save(
+                attachment, 
+                folder = str(transaction.id), #minimizes the chance of a file existing with the same name
+                name = filename)
+            # add the attachment to the accounting_attachments DB table
+            attachment = DB.AccountingAttachment(filename = filename)
+            DB.db.session.add(attachment)
+            # link the transaction to the attachment in attachments_transactions
+            if transaction.attachments:
+                attachment_field = getattr(transaction, 'attachments')
+                attachment_field.append(attachment)
+            else:
+                new_attachments = [attachment]
+                setattr(transaction, 'attachments', new_attachments)
+            # write changes to DB
+            DB.db.session.commit()
+
         flash("the transaction was filed", "confirmation")
         return redirect('accounting/approve_reimbursements')
-    return render_template('accounting/approve_reimbursement.html', form=form)
+    return render_template('accounting/approve_reimbursement.html', form=form, transaction=transaction )
 
 
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
@@ -204,6 +228,8 @@ def accounting_add_transaction():
         DB.db.session.commit()
 
         for attachment in request.files.getlist('attachment'):
+            if attachment.filename == '': 
+                break
             filename = secure_filename(attachment.filename)
             url = attachments.save(attachment, 
                 folder = str(transaction.id), #minimizes the chance of a file existing with the same name

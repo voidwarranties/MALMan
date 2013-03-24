@@ -151,7 +151,7 @@ class AddTransaction(Form):
     bank_statement_number = IntegerField('bank statement number (optional)', 
         [validators.Optional(), validators.NumberRange(min=0, 
             message='please enter a positive number')])
-    attachment = FileField("attachment", 
+    attachment = FileField("add attachment", 
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('file transaction')
 
