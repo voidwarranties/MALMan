@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set category = "stock" %}
+{% block title %}Activate stock items{% endblock %}
+{% block content %}
+{% if stockitems|list|count > 0 %}
+    <form method="POST" class="cf">
+        {{ form.hidden_tag() }}
+        {%- for stockitem in stockitems %}
+        <dl>
+            <dt>name: </dt><dd>{{ stockitem.name }}</dd>
+            <dt>price: </dt><dd>{{ stockitem.price }}</dd>
+            <dt>josto: </dt><dd>{{ stockitem.josto }}</dd>
+            <dt>category: </dt><dd>{{ stockitem.category.name }}</dd>
+            <dt>{{ form['activate_' ~ stockitem.id].label }}: </dt><dd>{{ form['activate_' ~ stockitem.id] }}</dd>
+            <p></p>
+        </dl>
+        {% endfor %}
+        {{ form.submit }}
+    </form>
+{% else %}
+    <p>There are no inactive stock items!</p>
+{%- endif %}
+{% endblock %}
