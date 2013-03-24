@@ -7,6 +7,7 @@ from flask.ext.principal import Permission, RoleNeed
 from functools import wraps
 from urlparse import urlparse
 from math import ceil
+from werkzeug import secure_filename
 
 def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
@@ -106,3 +107,30 @@ def url_for_other_page(page):
     query = '?' + urlparse(request.url).query
     return url + query
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
+
+
+def upload_attachments(request, attachments, transaction, DB):
+    confirmation = ""
+    for attachment in request.files.getlist('attachment'):
+        if attachment.filename == '': 
+            break
+        # save attachment
+        filename = secure_filename(attachment.filename)
+        url = attachments.save(
+            attachment,
+            folder = str(transaction.id), #minimizes the chance of a file existing with the same name
+            name = filename)
+        # add the attachment to the accounting_attachments DB table
+        attachment = DB.AccountingAttachment(filename = filename)
+        DB.db.session.add(attachment)
+        # link the attachment to the transaction
+        if transaction.attachments:
+            attachment_field = getattr(transaction, 'attachments')
+            attachment_field.append(attachment)
+        else:
+            new_attachments = [attachment]
+            setattr(transaction, 'attachments', new_attachments)
+        # write changes to DB
+        DB.db.session.commit()
+        confirmation = add_confirmation(confirmation, "added the attachment " + attachment.filename)
+    return confirmation
