@@ -84,7 +84,7 @@ def accounting_remove_attachment(transaction_id, attachment_id):
         setattr(transaction, 'attachments', new_attachments)
         DB.db.session.commit()
         flash("the attachment was removed", "confirmation")
-        return redirect('/accounting/edit/' + str(transaction.id))
+        return redirect('/accounting/edit_' + str(transaction.id))
     
     return render_template('accounting/remove_attachment.html', form=form)
 
