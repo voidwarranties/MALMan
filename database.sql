@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `advance_date` date DEFAULT NULL,
   `date_filed` date DEFAULT NULL,
   `filed_by_id` tinyint(4) DEFAULT NULL,
-  `reimbursement_date` date NOT NULL,
+  `reimbursement_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 

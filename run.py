@@ -6,4 +6,4 @@ from MALMan import app
 #toolbar = DebugToolbarExtension(app)
 
 # make server visible to external IPs
-app.run(host='0.0.0.0')
+app.run(host='::')
