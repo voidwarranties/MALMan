@@ -1,0 +1,6 @@
+flask
+flask-login
+flask-principal
+flask-security
+flask-uploads
+flask-sqlalchemy
