@@ -18,6 +18,7 @@
             <th>member since</th>
             <th>roles</th>
             <th>dues</th>
+            {% if 'finances' in session.roles %}<th>bar account balance</th>{% endif %}
             {% if 'members' in session.roles %}<th>modify</th>{% endif %}
         </tr>
     </thead>
@@ -47,6 +48,8 @@
                 {%- endfor -%}
             </td>
             <td>€{{ user.membership_dues }}</td>
+            {% if 'finances' in session.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
+            <td></td>
             {% if 'members' in session.roles %}<td><a href="/members/edit_{{user.id}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
         </tr>
 {% endfor %}
