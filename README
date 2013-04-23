@@ -1,14 +1,84 @@
-dependencies
-============
+installing MALMan
+=================
 
+getting the code
+----------------
+create a directory to contain the whole program:
+    # mkdir /srv/MALMan
+    # cd /srv/MALMan
+get the source code:
+	sudo svn checkout http://discuss.voidwarranties.be/svn/MALMan/trunk/web/ .
 
-to run MALMan
-=============
+setting up the virtualenv and getting dependencies
+--------------------------------------------------
+install version 2 of python, pip and python2-virtualenv
+	# pacman -S python2 python2-pip python2-virtualenv
+create a virtualenv:
+	# virtualenv-2.7 env
+have pip install all required python packages from the python repos:
+	# env/bin/pip install -r requirements.txt
 
-import database.sql
-copy MALMan.cfg.template to MALMan.cfg and adapt the file to fit your setup
-execute run.py
+setting up the database
+-----------------------
+In this guide we will set up the database using MariaDB on arch linux, but this should work with other database services and distibutions too.
+
+install, configure and start MariaDB
+	# pacman -S mariadb libmariadbclient mariadb-clients
+	# systemctl start mysqld
+	# mysql_secure_installation
+	# systemctl start mysqld
+
+set up a separate user to handle the MALMan database
+
+log in to the MySQL server as root:
+	# mysql -p -u root
+create the MALMan database:
+	> cCREATE DATABASE MALMan;
+create a new user (replace 'password'):
+	> CREATE USER 'MALMan'@localhost IDENTIFIED BY 'password';
+grant our new user full access to this database:
+	> GRANT ALL PRIVILEGES ON MALMan . * TO 'newuser'@localhost;
+close the MySQL shell:
+	> exit
+import the MALMan database content into the empty MALMan database:
+	$ mysql -u MALMan -p -h localhost MALMan < database.sql
+
+configuration
+-------------
+copy MALMan.cfg.template to MALMan.cfg 
+	# cp MALMan/MALMan.cfg{.template,}
+adapt the file to fit your setup, so MALMan can acces the MySQL server and SMTP server
+
+running in debug mode
+---------------------
+You can now run MALMan in dev mode:
+	$ env/bin/python2.7 run.py 
 MALMan should be running on 0.0.0.0:5000
 by default you can log in with the following credentials: 
 	user: root@vw.be
 	password: password
+
+running as a WSGI app
+---------------------
+In this example we will set up MALMan as a WSGI app in apache. But first we will set it up for production use by disabling the DEBUG mode in MALMan/MALMan.cfg.
+
+add the following the following to /etc/httpd/conf/httpd.conf:
+
+	LoadModule wsgi_module modules/mod_wsgi.so
+	WSGIScriptAlias /MALMan /srv/MALMan/MALMan.wsgi
+	<Directory /srv/MALMan>
+    	Order deny,allow
+    	Allow from all
+    	WSGIScriptReloading On
+	</Directory>
+
+The last snippet tells apache to load the wsgi module and serve MALMan (situated at /srv/MALMan) when the /MALMan directory is requested. For example: http://0.0.0.0/MALMan
+
+Now restart apache to load the new config:
+	# systemctl restart httpd.service
+
+MALMan should now be running on your server
+by default you can log in with the following credentials: 
+	user: root@vw.be
+	password: password
+
