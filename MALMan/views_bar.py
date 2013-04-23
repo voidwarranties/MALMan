@@ -9,7 +9,7 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
     IntegerField, validators)
 
 @app.route("/bar")
-@permission_required('membership', 'bar')
+@permission_required('membership')
 def bar():
     items = DB.StockItem.query.filter_by(active=True).all()
     return render_template('bar/list_items.html', items=items)
