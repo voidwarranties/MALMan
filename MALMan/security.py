@@ -35,7 +35,7 @@ def before_request():
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     # Get the user information from the db
-    account = DB.User.query.filter_by(id=identity.name).first()
+    account = DB.User.query.filter_by(id=identity.id).first()
     # Update the roles that a user can provide
     if account:
         for role in account.roles:
