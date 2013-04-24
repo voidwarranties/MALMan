@@ -30,10 +30,10 @@
                 <td>{{ request.description }}</td>
                 <td>
                 {% for attachment in request.attachments %}
-                    <a class="lightbox" rel="{{ request.id }}" href="/accounting/attachments/{{ request.id }}/{{ attachment.filename }}" target="_blank">attachment</a>
+                    <a class="lightbox" rel="{{ request.id }}" href="{{ url_for('accounting_attachment', transaction=request.id, filename=attachment.filename) }}" target="_blank">attachment</a>
                 {% endfor %}
                 </td>
-                <td><a href="/accounting/approve_{{request.id}}">approve!</a></td>
+                <td><a href="{{ url_for('accounting_approve_reimbursement', transaction_id=request.id)}}">approve!</a></td>
             </tr>
             {% endfor %}
         </tbody>

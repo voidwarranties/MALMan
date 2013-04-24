@@ -5,76 +5,76 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <title>MALMan -- {% block title -%}{%- endblock -%}</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-        <link rel="stylesheet" type="text/css" href="/static/Pikaday/pikaday.css" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Pikaday/pikaday.css') }}" />
         <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
         {%- endblock -%}
     </head>
     <body>
         <div id="wrapper">
             <div id="header" class="cf">
-                <h1><a href="/">MALMAN</a></h1>
+                <h1><a href="{{ url_for('index')}}">MALMAN</a></h1>
 {%- if session.email %}
-                <span>logged in as {{ session.email }} (<a href="/logout">log out</a>)</span>
+                <span>logged in as {{ session.email }} (<a href="{{ url_for_security('logout') }}">log out</a>)</span>
 {%- else -%}
-                <span>you are not logged in (<a href="/login">log in</a>)</span>
+                <span>you are not logged in (<a href="{{ url_for_security('login') }}">log in</a>)</span>
 {%- endif %}
             </div>
 {%-    if category != "login" %}
             <ul class="menu cf">
-                <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="/">my account</a></li>
-                <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="/members">members</a></li>
-                <li class="{%- if category == "stock" -%}bold{%- endif -%}"><a href="/bar">stock bar</a></li>
-                <li class="{%- if category == "accounting" -%}bold{%- endif -%}"><a href="/accounting">accounting</a></li>
+                <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="{{ url_for('index')}}">my account</a></li>
+                <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="{{ url_for('members')}}">members</a></li>
+                <li class="{%- if category == "stock" -%}bold{%- endif -%}"><a href="{{ url_for('bar')}}">stock bar</a></li>
+                <li class="{%- if category == "accounting" -%}bold{%- endif -%}"><a href="{{ url_for('accounting')}}">accounting</a></li>
             </ul>
 {%- endif -%}
 {%- if category == "account" -%}
             <ul class="menu cf">
-                <li><a href="/">overview</a></li>
+                <li><a href="{{ url_for('index')}}">overview</a></li>
                 {% if 'membership' in session.roles %}
-                    <li><a href="/my_account/bar_account">my bar account</a></li>
+                    <li><a href="{{ url_for('account_bar_account') }}">my bar account</a></li>
                 {% endif %}
-                <li><a href="/my_account/edit_own_account">edit my profile information</a></li>
-                <li><a href="/my_account/edit_password">edit my password</a></li>
+                <li><a href="{{ url_for('account_edit_own_account') }}">edit my profile information</a></li>
+                <li><a href="{{ url_for('account_edit_own_password') }}">edit my password</a></li>
             </ul>
 {%- elif category == "leden" -%}            
             <ul class="menu cf">
-                <li><a href="/members">memberlist</a></li>
+                <li><a href="{{ url_for('members') }}">memberlist</a></li>
                 {% if 'members' in session.roles %}
-                <li><a href="/members/approve_new_members">new members</a></li>
+                <li><a href="{{ url_for('members_approve_new_members')}}">new members</a></li>
                 {% endif %}
             </ul>
 {%- elif category == "stock" -%}
             <ul class="menu cf">
-                <li><a href="/bar">list stock</a></li>
+                <li><a href="{{ url_for('bar') }}">list stock</a></li>
                 {% if 'bar' in session.roles %}
-                <li><a href="/bar/edit_item_amounts">edit stock amounts</a></li>
-                <li><a href="/bar/edit_items">edit stock items</a></li>
-                <li><a href="/bar/activate_stockitems">activate stock items</a></li>
-                <li><a href="/bar/stockup">stock up (Josto)</a></li>
-                <li><a href="/bar/log">stock log</a></li>
-                <li><a href="/bar/add_item">add stock item</a></li>
+                <li><a href="{{ url_for('bar_edit_item_amounts') }}">edit stock amounts</a></li>
+                <li><a href="{{ url_for('bar_edit_items') }}">edit stock items</a></li>
+                <li><a href="{{ url_for('bar_activate_stockitems') }}">activate stock items</a></li>
+                <li><a href="{{ url_for('bar_stockup') }}">stock up (Josto)</a></li>
+                <li><a href="{{ url_for('bar_log') }}">stock log</a></li>
+                <li><a href="{{ url_for('bar_add_item') }}">add stock item</a></li>
                 {% endif %}
             </ul>
 {%- elif category == "accounting" -%}
             <ul class="menu cf">
-                <li><a href="/accounting">balance</a></li>
-                <li><a href="/accounting/log">transaction log</a></li>
+                <li><a href="{{ url_for('accounting') }}">balance</a></li>
+                <li><a href="{{ url_for('accounting_log') }}">transaction log</a></li>
                 {% if 'finances' in session.roles %}
-                <li><a href="/accounting/cashlog">running account log</a></li>
+                <li><a href="{{ url_for('accounting_cashlog') }}">running account log</a></li>
                 {% endif %}
-                <li><a href="/accounting/request_reimbursement">request reimbursement</a></li>
+                <li><a href="{{ url_for('accounting_request_reimbursement') }}">request reimbursement</a></li>
                 {% if 'finances' in session.roles %}
-                <li><a href="/accounting/approve_reimbursements">approve reimbursements</a></li>
-                <li><a href="/accounting/add_transaction">add transaction</a></li>
-                <li><a href="/accounting/membershipfees">membership fees</a></li>
+                <li><a href="{{ url_for('accounting_approve_reimbursements') }}">approve reimbursements</a></li>
+                <li><a href="{{ url_for('accounting_add_transaction') }}">add transaction</a></li>
+                <li><a href="{{ url_for('accounting_membershipfees') }}">membership fees</a></li>
                 {% endif %}
             </ul>
 {%-    elif category == "login" -%}
             <ul class="menu cf">
-                <li><a href="login">login</a></li>
-                <li><a href="register">register</a></li>
-                <li><a href="reset">forgot password</a></li>
-                <li><a href="confirm">confirm account</a></li>
+                <li><a href="{{ url_for_security('login') }}">login</a></li>
+                <li><a href="{{ url_for_security('register') }}">register</a></li>
+                <li><a href="{{ url_for_security('forgot_password') }}">forgot password</a></li>
+                <li><a href="{{ url_for_security('send_confirmation') }}">confirm account</a></li>
             </ul>
 {%- endif %}
 {%- with messages = get_flashed_messages(with_categories=true) -%}

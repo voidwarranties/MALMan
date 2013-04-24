@@ -8,7 +8,7 @@
     {{ form.hidden_tag() }}
     <h2>Login info</h2>
     {{ render_field_with_errors(form.email) }}
-    <p><a href="members/edit_password">click here to edit your password</a></p>
+    <p><a href="{{ url_for('account_edit_own_password') }}">click here to edit your password</a></p>
     <h2>Personal info</h2>
     {{ render_field_with_errors(form.name) }}
     {{ render_field_with_errors(form.date_of_birth) }}

@@ -31,7 +31,7 @@
             <td>{{ item.category.name }}</td>
             <td>{{ item.josto }}</td>
             {% if 'bar' in session.roles %}
-            <td><a href="bar_remove_{{item.id}}">remove item</a></td>
+            <td><a href="{{ url_for('bar_remove_item', item_id=item.id) }}">remove item</a></td>
             {% endif %}
         </tr>
 {% endfor %}

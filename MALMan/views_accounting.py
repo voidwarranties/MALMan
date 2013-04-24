@@ -71,7 +71,7 @@ def accounting_log(page):
 def accounting_remove_attachment(transaction_id, attachment_id):
     if 'cancel' in request.form:
         flash("removing the attachment was canceled", "confirmation")
-        return redirect('/accounting/log')
+        return redirect(url_for('accounting_log'))
     
     transaction = DB.Transaction.query.get(transaction_id)
     form = forms.Remove_Attachment()
@@ -84,7 +84,7 @@ def accounting_remove_attachment(transaction_id, attachment_id):
         setattr(transaction, 'attachments', new_attachments)
         DB.db.session.commit()
         flash("the attachment was removed", "confirmation")
-        return redirect('/accounting/edit_' + str(transaction.id))
+        return redirect(url_for('accounting_edit_transaction', transaction_id=transaction.id))
     
     return render_template('accounting/remove_attachment.html', form=form)
 
@@ -127,7 +127,7 @@ def accounting_request_reimbursement():
 
 
 @app.route('/accounting/attachments/<transaction>/<filename>')
-def uploaded_file(transaction, filename):
+def accounting_attachment(transaction, filename):
     directory = app.config['UPLOADED_ATTACHMENTS_DEST'] + '/' + transaction + '/'
     return send_from_directory(directory, filename)
 
@@ -162,7 +162,7 @@ def accounting_approve_reimbursement(transaction_id):
         upload_attachments(request, attachments, transaction, DB)
 
         flash("the transaction was filed", "confirmation")
-        return redirect('accounting/approve_reimbursements')
+        return redirect(url_for('accounting_approve_reimbursement'))
     return render_template('accounting/approve_reimbursement.html', form=form, transaction=transaction )
 
 
@@ -195,7 +195,7 @@ def accounting_add_transaction():
         elif request.form["category_id"] == '8':
             id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('file_membershipfee', transaction_id=id.id))
-        return redirect('/accounting/log')
+        return redirect(url_for('accounting_log'))
 
         flash("the transaction was filed", "confirmation")
     return render_template('accounting/add_transaction.html', form=form)
@@ -215,7 +215,7 @@ def topup_bar_account(transaction_id):
         DB.db.session.commit()
         user = users.get(request.form["user_id"])
         flash(u"\u20AC" + str(transaction.amount) + " was added to " + user.name + "'s bar account", "confirmation")
-        return redirect('/accounting/log')
+        return redirect(url_for('accounting_log'))
     return render_template('accounting/topup_bar_account.html', form=form, transaction=transaction)
 
 
@@ -296,6 +296,6 @@ def file_membershipfee(transaction_id):
         DB.db.session.commit()
         user = users.get(request.form["user_id"])
         flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
-        return redirect('/accounting/log')
+        return redirect(url_for('accounting_log'))
     
     return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)

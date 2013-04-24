@@ -3,6 +3,7 @@ import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.view_utils import add_confirmation, return_flash, permission_required, formatbool
 from MALMan.flask_security.recoverable import update_password
+from MALMan.flask_security.utils import url_for_security
 
 from flask import render_template, request, redirect, flash, current_app
 from flask.ext.login import current_user, login_required
@@ -20,12 +21,12 @@ def index():
         return render_template('my_account/waiting_aproval.html')
     else:
         # is not logged in
-        return redirect('login')
+        return redirect(url_for_security('login'))
 
 
 @app.route("/my_account/bar_account")
 @permission_required('membership')
-def bar_account():
+def account_bar_account():
     log = DB.BarAccountLog.query.filter_by(user_id=current_user.id)
     log = sorted(log, key=lambda i: i.datetime, reverse=True) #sort descending
     return render_template('my_account/bar_account_log.html', log=log)
@@ -33,7 +34,7 @@ def bar_account():
 
 @app.route('/my_account/edit_own_account', methods=['GET', 'POST'])
 @login_required
-def edit_own_account():
+def account_edit_own_account():
     userdata = DB.User.query.get(current_user.id)
     form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
@@ -62,7 +63,7 @@ def edit_own_account():
 
 @app.route('/my_account/edit_password', methods=['GET', 'POST'])
 @login_required
-def members_edit_password():
+def account_edit_own_password():
     form = forms.MembersEditPassword()
     _security = LocalProxy(lambda: current_app.extensions['security'])
     _datastore = LocalProxy(lambda: _security.datastore)

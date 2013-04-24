@@ -17,7 +17,7 @@ def members():
 
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('membership', 'members')
-def approve_new_members():
+def members_approve_new_members():
     new_members = DB.User.query.filter_by(active_member='0')
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id), 
@@ -42,7 +42,7 @@ def approve_new_members():
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
 @permission_required('membership', 'members')
-def members_edit(userid):
+def members_edit_member(userid):
     userdata = DB.User.query.get(userid)
     roles = DB.Role.query.all()
     # add roles to form

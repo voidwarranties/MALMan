@@ -16,7 +16,7 @@ def bar():
 
 @app.route("/bar/activate_stockitems", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def activate_stockitems():
+def bar_activate_stockitems():
     stockitems = DB.StockItem.query.filter_by(active=False).all()
     for stockitem in stockitems:
         setattr(forms.BarActivateItem, 'activate_' + str(stockitem.id), 
@@ -39,7 +39,7 @@ def activate_stockitems():
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def bar_remove(item_id):
+def bar_remove_item(item_id):
     stockitem = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
@@ -55,7 +55,7 @@ def bar_remove(item_id):
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def edit_item_amounts():
+def bar_edit_item_amounts():
     items = DB.StockItem.query.all()
     for item in items:
         setattr(forms.BarEditAmounts, 'amount_' + str(item.id), 
@@ -84,7 +84,7 @@ def edit_item_amounts():
 
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def edit_items():
+def bar_edit_items():
     items = DB.StockItem.query.all()
     categories = DB.StockCategory.query.all()
     for item in items:
@@ -129,7 +129,7 @@ def edit_items():
 
 @app.route("/bar/stockup", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def stockup():
+def bar_stockup():
     # get all stock items from josto
     items = DB.StockItem.query.filter_by(josto=True).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
@@ -186,7 +186,7 @@ def bar_log(page):
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])
 @permission_required('membership', 'bar')
-def add_item():
+def bar_add_item():
     categories = DB.StockCategory.query.all()
     form = forms.BarAddItem()
     form.category_id.choices = [(category.id, category.name) for category in categories]
