@@ -9,8 +9,8 @@ webserver, database server or path.
 getting the code
 ----------------
 create a directory to contain the whole program:
-    # mkdir /srv/MALMan
-    # cd /srv/MALMan
+	# mkdir /srv/MALMan
+	# cd /srv/MALMan
 get the source code:
 	# svn checkout http://discuss.voidwarranties.be/svn/MALMan/trunk/web/ .
 
