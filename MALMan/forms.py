@@ -69,10 +69,30 @@ class MembersEditPassword(Form):
     submit = SubmitField("change my password")
 
 
-# this is used by flask_security to generate the register form
-class NewFormFields(MembersEditOwnAccount):
+from flask_security.forms import ConfirmRegisterForm, unique_user_email
+class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
+    '''The register form'''
     motivation = TextAreaField('My motivation to become a member:', 
         [validators.Required()])
+    email = TextField('Email', [unique_user_email, 
+        validators.Email(message='please enter a valid email address')])
+    submit = SubmitField("create my account")
+
+    def to_dict(self):
+        return dict(
+            email = self.email.data,
+            password = self.password.data,
+            name = self.name.data,
+            street = self.street.data,
+            number = self.number.data,
+            bus = self.bus.data,
+            postalcode = self.postalcode.data,
+            city = self.city.data,
+            date_of_birth = self.date_of_birth.data,
+            telephone = self.telephone.data,
+            show_telephone = self.show_telephone.data,
+            show_email = self.show_email.data,
+            motivation = self.motivation)
 
 
 ## check if a name is alreasy in use
@@ -203,4 +223,3 @@ class FilterMembershipFees(Form):
     user = SelectField('user')
     user.choices = [("0","filter by user")]
     submit = SubmitField('filter')
-

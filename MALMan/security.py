@@ -1,6 +1,6 @@
 from MALMan import app
 import MALMan.database as DB
-from MALMan.flask_security import Security
+from flask_security import Security
 from flask import session
 from flask.ext.principal import Principal, RoleNeed, identity_loaded
 from flask.ext.mail import Mail
@@ -19,7 +19,8 @@ app.config['DEFAULT_MAIL_SENDER'] = 'MALMan@voidwarranties.be'
 mail = Mail(app)
 
 # Setup Flask-Security
-security = Security(app, DB.user_datastore)
+from MALMan.forms import RegisterForm
+security = Security(app, DB.user_datastore, confirm_register_form=RegisterForm )
 
 # Setup Principal extension
 principals = Principal(app)

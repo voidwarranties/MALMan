@@ -1,7 +1,7 @@
 """Connect to the database and define the database table models"""
 
 from MALMan import app
-from MALMan.flask_security import SQLAlchemyUserDatastore, UserMixin, RoleMixin
+from flask_security import SQLAlchemyUserDatastore, UserMixin, RoleMixin
 try:
     from flask.ext.sqlalchemy import SQLAlchemy
 except ImportError:
