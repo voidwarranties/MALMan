@@ -16,7 +16,7 @@
             <th>Stock maximum</th>
             <th>Category</th>
             <th>Josto</th>
-            {% if 'bar' in session.roles %}
+            {% if hasrole(session.user_id, 'bar') %}
             <th>remove item</th>
             {% endif %}
         </tr>
@@ -30,7 +30,7 @@
             <td>{{ item.stock_max }}</td>
             <td>{{ item.category.name }}</td>
             <td>{{ item.josto }}</td>
-            {% if 'bar' in session.roles %}
+            {% if hasrole(session.user_id, 'bar') %}
             <td><a href="{{ url_for('bar_remove_item', item_id=item.id) }}">remove item</a></td>
             {% endif %}
         </tr>

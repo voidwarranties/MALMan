@@ -26,7 +26,7 @@
             <th>Category</th>
             <th>Bank account</th>
             <th>Attachments</th>
-            {%- if 'finances' in session.roles %}
+            {%- if hasrole(session.user_id, 'finances') %}
             <th>Bank statement</th>
             <th>Date filed</th>
             <th>Filed by</th>
@@ -55,7 +55,7 @@
                 {% for attachment in transaction.attachments -%}
                 <a class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', transaction=transaction.id, filename=attachment.filename) }}" target="_blank">attachment</a>
             {% endfor %}</td>
-            {%- if 'finances' in session.roles %}
+            {%- if hasrole(session.user_id, 'finances') %}
             <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
             <td>{{ transaction.date_filed }}</td>
             <td>{{ transaction.filed_by.name }}</td>

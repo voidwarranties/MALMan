@@ -18,8 +18,8 @@
             <th>member since</th>
             <th>roles</th>
             <th>dues</th>
-            {% if 'finances' in session.roles %}<th>bar account balance</th>{% endif %}
-            {% if 'members' in session.roles %}<th>modify</th>{% endif %}
+            {% if hasrole(session.user_id, 'finances') %}<th>bar account balance</th>{% endif %}
+            {% if hasrole(session.user_id, 'members') %}<th>modify</th>{% endif %}
         </tr>
     </thead>
     <tbody>
@@ -28,12 +28,12 @@
             <td>{{ user.name }}</td>
             <td>{{ user.date_of_birth }}</td>
             <td>
-                {%- if user.show_email or 'members' in session.roles -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_email and 'members' in session.roles  %} (hidden){%- endif -%}
+                {%- if user.show_email or hasrole(session.user_id, 'members') -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_email and hasrole(session.user_id, 'members')  %} (hidden){%- endif -%}
             </td>
             <td>
-                {%- if user.show_telephone or 'members' in session.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_telephone and 'members' in session.roles %} (hidden){%- endif -%}
+                {%- if user.show_telephone or hasrole(session.user_id, 'members') -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
+                {%- if not user.show_telephone and hasrole(session.user_id, 'members') %} (hidden){%- endif -%}
             </td>
             <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>
             <td>{{ user.member_since }}</td>
@@ -48,9 +48,9 @@
                 {%- endfor -%}
             </td>
             <td>€{{ user.membership_dues }}</td>
-            {% if 'finances' in session.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
+            {% if hasrole(session.user_id, 'finances') %}<td>{{ user.bar_account_balance}}</td>{% endif %}
             <td></td>
-            {% if 'members' in session.roles %}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
+            {% if hasrole(session.user_id, 'members') %}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
         </tr>
 {% endfor %}
     </tbody>

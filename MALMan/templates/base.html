@@ -13,8 +13,8 @@
         <div id="wrapper">
             <div id="header" class="cf">
                 <h1><a href="{{ url_for('index')}}">MALMAN</a></h1>
-{%- if session.email %}
-                <span>logged in as {{ session.email }} (<a href="{{ url_for_security('logout') }}">log out</a>)</span>
+{%- if session.user_id %}
+                <span>logged in as {{ getmail(session.user_id).email }} (<a href="{{ url_for_security('logout') }}">log out</a>)</span>
 {%- else -%}
                 <span>you are not logged in (<a href="{{ url_for_security('login') }}">log in</a>)</span>
 {%- endif %}
@@ -30,7 +30,7 @@
 {%- if category == "account" -%}
             <ul class="menu cf">
                 <li><a href="{{ url_for('index')}}">overview</a></li>
-                {% if 'membership' in session.roles %}
+                {% if hasrole(session.user_id, 'membership') %}
                     <li><a href="{{ url_for('account_bar_account') }}">my bar account</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('account_edit_own_account') }}">edit my profile information</a></li>
@@ -39,14 +39,14 @@
 {%- elif category == "leden" -%}            
             <ul class="menu cf">
                 <li><a href="{{ url_for('members') }}">memberlist</a></li>
-                {% if 'members' in session.roles %}
+                {% if hasrole(session.user_id, 'members') %}
                 <li><a href="{{ url_for('members_approve_new_members')}}">new members</a></li>
                 {% endif %}
             </ul>
 {%- elif category == "stock" -%}
             <ul class="menu cf">
                 <li><a href="{{ url_for('bar') }}">list stock</a></li>
-                {% if 'bar' in session.roles %}
+                {% if hasrole(session.user_id, 'bar') %}
                 <li><a href="{{ url_for('bar_edit_item_amounts') }}">edit stock amounts</a></li>
                 <li><a href="{{ url_for('bar_edit_items') }}">edit stock items</a></li>
                 <li><a href="{{ url_for('bar_activate_stockitems') }}">activate stock items</a></li>
@@ -59,11 +59,11 @@
             <ul class="menu cf">
                 <li><a href="{{ url_for('accounting') }}">balance</a></li>
                 <li><a href="{{ url_for('accounting_log') }}">transaction log</a></li>
-                {% if 'finances' in session.roles %}
+                {% if hasrole(session.user_id, 'finances') %}
                 <li><a href="{{ url_for('accounting_cashlog') }}">running account log</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('accounting_request_reimbursement') }}">request reimbursement</a></li>
-                {% if 'finances' in session.roles %}
+                {% if hasrole(session.user_id, 'finances') %}
                 <li><a href="{{ url_for('accounting_approve_reimbursements') }}">approve reimbursements</a></li>
                 <li><a href="{{ url_for('accounting_add_transaction') }}">add transaction</a></li>
                 <li><a href="{{ url_for('accounting_membershipfees') }}">membership fees</a></li>

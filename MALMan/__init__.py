@@ -17,4 +17,6 @@ from MALMan import logging
 
 from MALMan import security
 
+from MALMan import jinja_functions
+
 from MALMan import views_my_account, views_members, views_bar, views_accounting, views_errors
