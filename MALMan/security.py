@@ -13,6 +13,9 @@ app.config['SECURITY_RECOVERABLE'] = True
 app.config['SECURITY_PASSWORD_HASH'] = 'sha512_crypt'
 app.config['SECURITY_PASSWORD_SALT'] = app.config['SECURITY_PASSWORD_SALT']
 
+app.config['SECURITY_POST_LOGIN_VIEW'] = 'index'
+app.config['SECURITY_POST_LOGOUT_VIEW'] = 'index'
+
 app.config['DEFAULT_MAIL_SENDER'] = 'MALMan@voidwarranties.be'
 
 # Setup mail extension
