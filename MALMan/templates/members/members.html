@@ -49,7 +49,6 @@
             </td>
             <td>€{{ user.membership_dues }}</td>
             {% if hasrole(session.user_id, 'finances') %}<td>{{ user.bar_account_balance}}</td>{% endif %}
-            <td></td>
             {% if hasrole(session.user_id, 'members') %}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
         </tr>
 {% endfor %}
