@@ -34,8 +34,8 @@
 {% endmacro %}
 
 {% macro pikaday(element) %}
-    <script src="/static/Pikaday/moment.js"></script>
-    <script src="/static/Pikaday/pikaday.js"></script>
+    <script src="{{ url_for('static', filename='Pikaday/moment.js') }}"></script>
+    <script src="{{ url_for('static', filename='Pikaday/pikaday.js') }}"></script>
     <script>
         var picker = new Pikaday({
             field: document.getElementById("{{element}}"),
@@ -49,8 +49,8 @@
 {% endmacro %}
 
 {% macro tablesorter(element)%}
-    <script type="text/javascript" src="/static/jquery-latest.js"></script> 
-    <script type="text/javascript" src="/static/jquery.tablesorter.js"></script> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
     <script type="text/javascript">
         $(function() { $("{{element}}").tablesorter(); } ); 
     </script>
@@ -58,8 +58,8 @@
 
 {% macro lightbox() %}
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="/static/Fancybox/source/jquery.fancybox.js?v=2.1.4"></script>
-    <link rel="stylesheet" type="text/css" href="/static/Fancybox/source/jquery.fancybox.css?v=2.1.4" media="screen" />
+    <script type="text/javascript" src="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.js?v=2.1.4') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.css?v=2.1.4') }}" media="screen" />
     <script type="text/javascript">
         $(document).ready(function() {
             $(".lightbox").fancybox({
