@@ -55,7 +55,7 @@ def permission_required(*roles):
             perms = [Permission(RoleNeed(role)) for role in roles]
             for role in roles:
                 if not Permission(RoleNeed(role)).can():
-                    if role == 'member':
+                    if role == 'membership':
                         flash ('You need to be aproved as a member to access this resource', 'error') 
                         abort(401)
                     else:
