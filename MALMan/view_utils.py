@@ -28,7 +28,7 @@ def return_flash (confirmation):
 
 
 def formatbool(var):
-    """return a variable's boolean value in a onsistent way"""
+    """return a variable's boolean value in a consistent way"""
     if var:
         return True
     else:
