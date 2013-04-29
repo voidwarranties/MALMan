@@ -1,8 +1,9 @@
 from MALMan import app
 import MALMan.database as DB
 
-from flask import request, flash, abort, url_for
+from flask import request, flash, abort, url_for, current_app
 from flask.ext.principal import Permission, RoleNeed
+from flask.ext.login import current_user, login_required
 
 from functools import wraps
 from urlparse import urlparse
@@ -46,22 +47,38 @@ def accounting_categories(IN=True, OUT=True):
         OUT = [(str(category.id), category.name + " (OUT)") for category in categories if not category.is_revenue]
         choices.extend(OUT) 
     return choices
-   
 
-def permission_required(*roles):
+
+def membership_required():
+    '''Check if a user is logged in and a member. If not, redirrect to login page or display an error'''
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
-            perms = [Permission(RoleNeed(role)) for role in roles]
+            if not current_user.is_authenticated():
+                return current_app.login_manager.unauthorized()
+            if not current_user.active_member:
+                flash ('You need to be aproved as a member to access this resource', 'error') 
+                abort(403)
+            return fn(*args, **kwargs)
+        return decorated_view
+    return wrapper
+
+
+def permission_required(*roles):
+    '''Check if a user had one or more permission roles. For this the user must be logged in and a member.'''
+    def wrapper(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if not current_user.is_authenticated():
+                return current_app.login_manager.unauthorized()
+            if not current_user.active_member:
+                flash ('You need to be aproved as a member to access this resource', 'error') 
+                abort(403)
             for role in roles:
                 if not Permission(RoleNeed(role)).can():
-                    if role == 'membership':
-                        flash ('You need to be aproved as a member to access this resource', 'error') 
-                        abort(401)
-                    else:
-                        flash('You need the permission \'' + str(role) + 
-                            '\' to access this resource.', 'error')
-                        abort(403)
+                    flash('You need the permission \'' + str(role) + 
+                        '\' to access this resource.', 'error')
+                    abort(403)
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper

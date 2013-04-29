@@ -40,10 +40,8 @@
             <td>
                 {%- set i = user.roles|length -%}
                 {%- for perm in user.roles|sort -%}
-                    {% if perm != 'membership' %}
-                        {{perm}}
-                        {%- if i > 1 -%},{%- endif -%}
-                    {% endif %}
+                    {{perm}}
+                    {%- if i > 1 -%},{%- endif -%}
                     {%- set i = i - 1 -%}
                 {%- endfor -%}
             </td>

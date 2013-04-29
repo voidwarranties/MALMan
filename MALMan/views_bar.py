@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, accounting_categories, permission_required, Pagination, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, accounting_categories, permission_required, membership_required, Pagination, formatbool
 
 from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.login import current_user
@@ -9,13 +9,13 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
     IntegerField, validators)
 
 @app.route("/bar")
-@permission_required('membership')
+@membership_required()
 def bar():
     items = DB.StockItem.query.filter_by(active=True).all()
     return render_template('bar/list_items.html', items=items)
 
 @app.route("/bar/activate_stockitems", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_activate_stockitems():
     stockitems = DB.StockItem.query.filter_by(active=False).all()
     for stockitem in stockitems:
@@ -38,7 +38,7 @@ def bar_activate_stockitems():
     return render_template('bar/activate_stockitems.html', stockitems=stockitems, form=form)
 
 @app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_remove_item(item_id):
     stockitem = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
@@ -54,7 +54,7 @@ def bar_remove_item(item_id):
 
 
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_edit_item_amounts():
     items = DB.StockItem.query.all()
     for item in items:
@@ -83,7 +83,7 @@ def bar_edit_item_amounts():
 
 
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_edit_items():
     items = DB.StockItem.query.all()
     categories = DB.StockCategory.query.all()
@@ -128,7 +128,7 @@ def bar_edit_items():
 
 
 @app.route("/bar/stockup", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_stockup():
     # get all stock items from josto
     items = DB.StockItem.query.filter_by(josto=True).all()
@@ -167,7 +167,7 @@ def bar_stockup():
 
 @app.route("/bar/log", defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route("/bar/log/page/<int:page>", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_log(page):
     log = DB.BarLog.query.order_by(DB.BarLog.datetime.desc())
     item_count = len(log.all())
@@ -185,7 +185,7 @@ def bar_log(page):
 
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])
-@permission_required('membership', 'bar')
+@permission_required('bar')
 def bar_add_item():
     categories = DB.StockCategory.query.all()
     form = forms.BarAddItem()

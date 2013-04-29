@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, formatbool
 from flask_security.recoverable import update_password
 from flask_security.utils import url_for_security
 
@@ -25,7 +25,7 @@ def index():
 
 
 @app.route("/my_account/bar_account")
-@permission_required('membership')
+@membership_required()
 def account_bar_account():
     log = DB.BarAccountLog.query.filter_by(user_id=current_user.id)
     log = sorted(log, key=lambda i: i.datetime, reverse=True) #sort descending

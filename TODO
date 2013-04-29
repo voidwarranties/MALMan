@@ -4,17 +4,10 @@ Functionality
         cash log
     add pages 'dagboek' and 'kasboek'
     add notifications
-    add active field for stock items instead of removing them
-    improve attachments
-        add multiple attachments in edit_transaction
-        have a validator check a file's size before saving it
-    make script to translate an SQL dump from MALMan1 into a format understood by MALMan2
     add the possibility to select members in a transactions 'to/from' field
 
 Refactoring
-    check the way users are activated: active, actief_lid, membership role
     check the way forms are initialized and fields are dynamically set
-    remove unused code from flask_security/ (~2000 of ~3000 LOC are in here)
     Minimize the number of times we read from the DB
     Minimize the number of times we write to the DB (db.session.commit())
         sometimes we do this multiple times in a view, because we need an the id of a row we are writting
@@ -25,7 +18,6 @@ Refactoring
         do we need __repr__ and __str__?
 
 Bugs
-    permissions and user email are saved in user session. this is only written on login. Therefore users will need to log out and log back in to see the change.
     if a reimbursement is filed without a reimbursement_date we don't know it was a reimbursement request anymore, and so can't know it still has to be reimbursed
     we don't save whom a user payed when he files a reimbursement request
     when run in debug mode, flask returns a 413 only when a file is smaller than ~1.5MiB, and resets the connetion otherwise

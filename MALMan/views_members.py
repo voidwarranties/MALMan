@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, formatbool
 
 from flask import render_template, request, redirect
 from flask.ext.wtf import BooleanField
@@ -9,14 +9,14 @@ from flask.ext.wtf import BooleanField
 from datetime import date
 
 @app.route("/members")
-@permission_required('membership')
+@membership_required()
 def members():
     users = DB.User.query.filter_by(active_member='1')
     return render_template('members/members.html', users=users)
 
 
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
-@permission_required('membership', 'members')
+@permission_required('members')
 def members_approve_new_members():
     new_members = DB.User.query.filter_by(active_member='0')
     for user in new_members:
@@ -41,20 +41,19 @@ def members_approve_new_members():
 
 
 @app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
-@permission_required('membership', 'members')
+@permission_required('members')
 def members_edit_member(userid):
     userdata = DB.User.query.get(userid)
     roles = DB.Role.query.all()
     # add roles to form
     for role in roles:
-        if role != 'membership':
-            # check the checkbox if the user has the role
-            if role in userdata.roles:
-                setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
-                    BooleanField(role.name, default='y'))
-            else:
-                setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
-                    BooleanField(role.name))
+        # check the checkbox if the user has the role
+        if role in userdata.roles:
+            setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
+                BooleanField(role.name, default='y'))
+        else:
+            setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
+                BooleanField(role.name))
     form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():

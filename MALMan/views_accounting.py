@@ -2,7 +2,7 @@ from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.view_utils import (add_confirmation, return_flash, accounting_categories, 
-    permission_required, Pagination, upload_attachments)
+    permission_required, membership_required, Pagination, upload_attachments)
 
 from flask import render_template, request, redirect, flash, abort, url_for, send_from_directory
 from flask.ext.login import current_user
@@ -16,7 +16,7 @@ attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
 
 @app.route("/accounting")
-@permission_required('membership')
+@membership_required()
 def accounting():
     banks = DB.Bank.query.all()
     running_account = DB.CashTransaction.query.all()
@@ -26,7 +26,7 @@ def accounting():
 
 @app.route("/accounting/log", defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
-@permission_required('membership')
+@membership_required()
 def accounting_log(page):
     log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.id.desc())
     banks = DB.Bank.query.all()
@@ -67,7 +67,7 @@ def accounting_log(page):
     return render_template('accounting/log.html', log=log, form=form, pagination=pagination)
 
 @app.route("/accounting/accounting/remove_attachment_<transaction_id>_<attachment_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_remove_attachment(transaction_id, attachment_id):
     if 'cancel' in request.form:
         flash("removing the attachment was canceled", "confirmation")
@@ -91,7 +91,7 @@ def accounting_remove_attachment(transaction_id, attachment_id):
 
 @app.route("/accounting/cashlog", defaults={'page': 1})
 @app.route('/accounting/cashlog/page/<int:page>')
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_cashlog(page):
     log = DB.CashTransaction.query.order_by(DB.CashTransaction.id.desc())
     
@@ -105,7 +105,7 @@ def accounting_cashlog(page):
 
 
 @app.route("/accounting/request_reimbursement", methods=['GET', 'POST'])
-@permission_required('membership')
+@membership_required()
 def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
     del form.bank_id, form.to_from, form.category_id
@@ -133,14 +133,14 @@ def accounting_attachment(transaction, filename):
 
 
 @app.route("/accounting/approve_reimbursements")
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_approve_reimbursements():
     requests = DB.Transaction.query.filter_by(date_filed=None)
     return render_template('accounting/list_reimbursements.html', requests=requests)
 
 
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_approve_reimbursement(transaction_id):
     banks = DB.Bank.query.all()
     transaction = DB.Transaction.query.get(transaction_id)
@@ -167,7 +167,7 @@ def accounting_approve_reimbursement(transaction_id):
 
 
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_add_transaction():
     banks = DB.Bank.query.all()
     form = forms.AddTransaction()
@@ -201,7 +201,7 @@ def accounting_add_transaction():
     return render_template('accounting/add_transaction.html', form=form)
 
 @app.route("/accounting/topup_bar_account_<int:transaction_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def topup_bar_account(transaction_id):
     users = DB.User.query
     form = forms.TopUpBarAccount()
@@ -220,7 +220,7 @@ def topup_bar_account(transaction_id):
 
 
 @app.route("/accounting/edit_<int:transaction_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_edit_transaction(transaction_id):
     banks = DB.Bank.query.all()
     transaction = DB.Transaction.query.get(transaction_id)
@@ -250,7 +250,7 @@ def accounting_edit_transaction(transaction_id):
 
 @app.route("/accounting/membershipfees", defaults={'page': 1}, methods=['GET', 'POST'])
 @app.route('/accounting/membershipfees/page/<int:page>')
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def accounting_membershipfees(page):
     log = DB.MembershipFee.query
     users = DB.User.query
@@ -280,7 +280,7 @@ def accounting_membershipfees(page):
 
 
 @app.route("/accounting/file_membershipfee_<int:transaction_id>", methods=['GET', 'POST'])
-@permission_required('membership', 'finances')
+@permission_required('finances')
 def file_membershipfee(transaction_id):
     users = DB.User.query
     form = forms.FileMembershipFee()
