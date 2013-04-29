@@ -49,7 +49,6 @@
 {% endmacro %}
 
 {% macro tablesorter(element)%}
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
     <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
     <script type="text/javascript">
         $(function() { $("{{element}}").tablesorter(); } ); 
@@ -57,9 +56,8 @@
 {% endmacro %}
 
 {% macro lightbox() %}
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.js?v=2.1.4') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.css?v=2.1.4') }}" media="screen" />
+    <script type="text/javascript" src="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.css') }}" media="screen" />
     <script type="text/javascript">
         $(document).ready(function() {
             $(".lightbox").fancybox({
