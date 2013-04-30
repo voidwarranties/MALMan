@@ -128,7 +128,7 @@ def accounting_request_reimbursement():
 
 @app.route('/accounting/attachments/<transaction>/<filename>')
 def accounting_attachment(transaction, filename):
-    directory = app.config['UPLOADED_ATTACHMENTS_DEST'] + '/' + transaction + '/'
+    directory = app.config['UPLOADED_ATTACHMENTS_DEST'] + '/'
     return send_from_directory(directory, filename)
 
 

@@ -5,6 +5,7 @@ from flask import request, flash, abort, url_for, current_app
 from flask.ext.principal import Permission, RoleNeed
 from flask.ext.login import current_user, login_required
 
+import os
 from functools import wraps
 from urlparse import urlparse
 from math import ceil
@@ -124,13 +125,11 @@ def upload_attachments(request, attachments, transaction, DB):
         if attachment.filename == '': 
             break
         # save attachment
-        filename = secure_filename(attachment.filename)
         url = attachments.save(
             attachment,
-            folder = str(transaction.id), #minimizes the chance of a file existing with the same name
-            name = filename)
+            name = str(transaction.id) + '.')
         # add the attachment to the accounting_attachments DB table
-        attachment = DB.AccountingAttachment(filename = filename)
+        attachment = DB.AccountingAttachment(filename = os.path.basename(url))
         DB.db.session.add(attachment)
         # link the attachment to the transaction
         if transaction.attachments:

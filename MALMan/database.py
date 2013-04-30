@@ -183,7 +183,7 @@ class AccountingAttachment(db.Model):
     """Define the accounting_attachments database table"""
     __tablename__ = 'accounting_attachments'
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String) 
+    filename = db.Column(db.String)
 
 
 attachments_transactions = db.Table('accounting_attachments_transactions',
