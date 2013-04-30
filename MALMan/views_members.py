@@ -26,8 +26,7 @@ def members_approve_new_members():
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for user in new_members:
-            new_value = forms.booleanfix(request.form, 
-                'activate_' + str(user.id))
+            new_value = 'activate_' + str(user.id) in request.form
             if new_value != user.active_member:
                 setattr(user, 'active_member', True)
                 setattr(user, 'member_since', date.today())
@@ -65,15 +64,14 @@ def members_edit_member(userid):
         atributes.extend(permissions)
         for atribute in atributes:
             if atribute in roles:
-                new_value = forms.booleanfix(request.form, 
-                    'perm_' + str(atribute))
+                new_value = 'perm_' + str(atribute) in request.form
                 if atribute in userdata.roles:
                     old_value = True
                 else:
                     old_value = False
             elif atribute in ['show_telephone', 'show_email', 'active_member']:
                 old_value = formatbool(getattr(userdata, atribute))
-                new_value = forms.booleanfix(request.form, atribute)
+                new_value = atribute in request.form
             else:
                 old_value = getattr(userdata, str(atribute))
                 new_value = request.form.get(atribute)

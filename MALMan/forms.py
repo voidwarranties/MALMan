@@ -10,13 +10,6 @@ from flask.ext.uploads import UploadSet, configure_uploads
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
 
-def booleanfix(post, var):
-    """returns a boolean indicating if a variable was in the received POST"""
-    if var in post:
-        return True
-    else:
-        return False
-
 class NewMembers(Form):
     #some fields are added by the view
     submit = SubmitField("activate account(s)")

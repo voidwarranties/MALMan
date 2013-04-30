@@ -45,7 +45,7 @@ def account_edit_own_account():
         for atribute in atributes:
             if atribute == 'show_telephone' or atribute == 'show_email':
                 old_value = formatbool(getattr(userdata, atribute))
-                new_value = forms.booleanfix(request.form, atribute)
+                new_value = atribute in request.form
             else:
                 old_value = getattr(userdata, atribute)
                 new_value = request.form.get(atribute)

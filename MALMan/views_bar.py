@@ -26,8 +26,7 @@ def bar_activate_stockitems():
     if form.validate_on_submit():
         confirmation = 'the following stockitem\'s status were set to "active": '
         for stockitem in stockitems:
-            new_value = forms.booleanfix(request.form, 
-                'activate_' + str(stockitem.id))
+            new_value = 'activate_' + str(stockitem.id) in request.form
             if new_value != stockitem.active:
                 stockitem.active = True
                 confirmation = confirmation + stockitem.name + ", "
@@ -43,8 +42,7 @@ def bar_remove_item(item_id):
     stockitem = DB.StockItem.query.get(item_id)
     form = forms.BarRemoveItem()
     if form.validate_on_submit():
-        new_value = forms.booleanfix(request.form, 
-            'activate_' + str(stockitem.id))
+        new_value = 'activate_' + str(stockitem.id) in request.form
         if new_value != stockitem.active:
             stockitem.active = False
             DB.db.session.commit()
@@ -102,7 +100,7 @@ def bar_edit_items():
             for atribute in atributes:
                 if atribute == 'josto':
                     old_value = formatbool(getattr(item, atribute))
-                    new_value = forms.booleanfix(request.form, str(item.id) + '_josto')
+                    new_value = str(item.id) + '_josto' in request.form
                 else: 
                     old_value = getattr(item, atribute)
                     new_value = request.form[str(item.id) + '_' + atribute]
@@ -147,7 +145,7 @@ def bar_stockup():
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for item in items:
-            checked = forms.booleanfix(request.form, 'check_' + str(item.id))
+            checked = 'check_' + str(item.id) in request.form
             if checked: 
                 if int(request.form["amount_" + str(item.id)]) != 0:
                     changes = DB.BarLog(
@@ -192,7 +190,7 @@ def bar_add_item():
     form.category_id.choices = [(category.id, category.name) for category in categories]
     
     if form.validate_on_submit():
-        josto = forms.booleanfix(request.form, 'josto')
+        josto = 'josto' in request.form
         item = DB.StockItem(
             name = request.form["name"],
             stock_max = request.form["stock_max"], 
