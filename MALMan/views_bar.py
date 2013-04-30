@@ -33,7 +33,7 @@ def bar_activate_stockitems():
                 confirmation = confirmation + stockitem.name + ", "
         DB.db.session.commit()
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
 
     return render_template('bar/activate_stockitems.html', stockitems=stockitems, form=form)
 
@@ -78,7 +78,7 @@ def bar_edit_item_amounts():
                     item.name + " = " + request.form["amount_" + 
                     str(item.id)])
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('bar/edit_amounts.html', form=form)
 
 
@@ -123,7 +123,7 @@ def bar_edit_items():
                             atribute + " " + item.name + " = " +
                             str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('bar/edit_items.html', form=form)
 
 
@@ -161,7 +161,7 @@ def bar_stockup():
                         item.name + " = +" + 
                         request.form["amount_" + str(item.id)])
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('bar/stockup.html', form=form)
 
 
@@ -180,7 +180,7 @@ def bar_log(page):
         changes = DB.BarLog.query.get(request.form["revert"])
         DB.BarLog.remove(changes)
         flash('The change was reverted', 'confirmation')
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('bar/log.html', log=log, pagination=pagination, form=form)
 
 
@@ -203,6 +203,6 @@ def bar_add_item():
         DB.db.session.add(item)
         DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")
-        return redirect(request.path)
+        return redirect(url_for('bar'))
     
     return render_template('bar/add_item.html', form=form)

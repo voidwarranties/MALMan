@@ -35,7 +35,7 @@ def members_approve_new_members():
                 confirmation = add_confirmation(confirmation, 
                     user.email + " was made an active member")
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('members/approve_new_members.html', new_members=new_members, 
         form=form)
 
@@ -90,5 +90,5 @@ def members_edit_member(userid):
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
                 DB.db.session.commit()
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('members/edit_account.html', form=form)

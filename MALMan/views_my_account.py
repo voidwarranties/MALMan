@@ -56,7 +56,7 @@ def account_edit_own_account():
                 confirmation = add_confirmation(confirmation, atribute + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('my_account/edit_own_account.html', userdata=userdata, 
         form=form)
 
@@ -71,5 +71,5 @@ def account_edit_own_password():
         update_password(current_user, request.form['password'])
         _datastore.commit()
         flash("your password was updated", "confirmation")
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('my_account/edit_password.html', form=form)

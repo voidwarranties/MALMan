@@ -122,7 +122,7 @@ def accounting_request_reimbursement():
         upload_attachments(request, attachments, transaction, DB)
 
         flash("the request for reimbursement was filed", "confirmation")
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('accounting/request_reimbursement.html', form=form)
 
 
@@ -245,7 +245,7 @@ def accounting_edit_transaction(transaction_id):
         
         confirmation = add_confirmation(confirmation, uploadconfirmation)
         return_flash(confirmation)
-        return redirect(request.path)
+        return redirect(request.url)
     return render_template('accounting/edit_transaction.html', form=form, transaction=transaction)
 
 @app.route("/accounting/membershipfees", defaults={'page': 1}, methods=['GET', 'POST'])
