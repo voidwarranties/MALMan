@@ -183,7 +183,11 @@ class AccountingAttachment(db.Model):
     """Define the accounting_attachments database table"""
     __tablename__ = 'accounting_attachments'
     id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String)
+    extension = db.Column(db.String)
+
+    @property
+    def filename(self):
+        return str(self.id) + '.' + self.extension
 
 
 attachments_transactions = db.Table('accounting_attachments_transactions',
@@ -220,6 +224,7 @@ class Transaction(db.Model):
     filed_by = db.relationship('User')
     attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions, 
         backref=db.backref('transactions', lazy='dynamic'))
+
 
 class BarAccountLog(db.Model):
     """Define the bar_accounts database table"""

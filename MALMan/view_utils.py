@@ -121,24 +121,25 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
 def upload_attachments(request, attachments, transaction, DB):
     confirmation = ""
-    for attachment in request.files.getlist('attachment'):
-        if attachment.filename == '': 
+    for uploaded_attachment in request.files.getlist('attachment'):
+        last_attachment_id = DB.AccountingAttachment.query.order_by(DB.AccountingAttachment.id.desc()).first().id
+        new_attachment_id = last_attachment_id + 1
+        if uploaded_attachment.filename == '': 
             break
         # save attachment
         url = attachments.save(
-            attachment,
-            name = str(transaction.id) + '.')
+            uploaded_attachment,
+            name = str(new_attachment_id) + '.')
         # add the attachment to the accounting_attachments DB table
-        attachment = DB.AccountingAttachment(filename = os.path.basename(url))
-        DB.db.session.add(attachment)
+        extension = uploaded_attachment.filename.rsplit('.', 1)[1]
+        accounting_attachment = DB.AccountingAttachment(extension = extension)
+        DB.db.session.add(accounting_attachment)
         # link the attachment to the transaction
         if transaction.attachments:
-            attachment_field = getattr(transaction, 'attachments')
-            attachment_field.append(attachment)
+            getattr(transaction, 'attachments').append(accounting_attachment)
         else:
-            new_attachments = [attachment]
-            setattr(transaction, 'attachments', new_attachments)
+            setattr(transaction, 'attachments', [accounting_attachment])
         # write changes to DB
         DB.db.session.commit()
-        confirmation = add_confirmation(confirmation, "added the attachment " + attachment.filename)
+        confirmation = add_confirmation(confirmation, "added the attachment " + uploaded_attachment.filename)
     return confirmation

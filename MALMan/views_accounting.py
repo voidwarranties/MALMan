@@ -4,7 +4,7 @@ import MALMan.forms as forms
 from MALMan.view_utils import (add_confirmation, return_flash, accounting_categories, 
     permission_required, membership_required, Pagination, upload_attachments)
 
-from flask import render_template, request, redirect, flash, abort, url_for, send_from_directory
+from flask import render_template, request, redirect, flash, abort, url_for, send_file
 from flask.ext.login import current_user
 from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
 from flask.ext.wtf import file_allowed
@@ -126,10 +126,10 @@ def accounting_request_reimbursement():
     return render_template('accounting/request_reimbursement.html', form=form)
 
 
-@app.route('/accounting/attachments/<transaction>/<filename>')
-def accounting_attachment(transaction, filename):
-    directory = app.config['UPLOADED_ATTACHMENTS_DEST'] + '/'
-    return send_from_directory(directory, filename)
+@app.route('/accounting/attachments/<filename>')
+def accounting_attachment(filename):
+    url= app.config['UPLOADED_ATTACHMENTS_DEST'] + '/' + filename
+    return send_file(url, filename)
 
 
 @app.route("/accounting/approve_reimbursements")
