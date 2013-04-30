@@ -4,3 +4,5 @@ flask-principal
 flask-security
 flask-uploads
 flask-sqlalchemy
+MySQL-python
+flup
