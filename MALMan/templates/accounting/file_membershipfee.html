@@ -1,8 +1,9 @@
+{% from "_macros.html" import render_field_with_errors, pikaday %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
+
 {% block title %}File membership fee{% endblock %}
 {% block content %}
-{% from "_macros.html" import render_field_with_errors %}
 <p>€{{ transaction.amount }} was payed by {{ transaction.to_from }} on {{ transaction.date }}.</p>
 <p>Please select the member who's dues are being payed and until when this settles his dues.</p>
 <form method="post" class="cf">
@@ -11,8 +12,7 @@
 {{ render_field_with_errors(form.until) }}
 {{ form.submit }}
 </form>
-
-{% from "_macros.html" import pikaday %}
-{{ pikaday('until') }}
-
+{% endblock %}
+{% block scripts %}
+    {{ pikaday('until') }}
 {% endblock %}

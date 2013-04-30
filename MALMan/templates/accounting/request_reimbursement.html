@@ -1,8 +1,9 @@
+{% from "_macros.html" import render_field_with_errors, pikaday %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
+
 {% block title %}Approve reimbursements{% endblock %}
 {% block content %}
-{% from "_macros.html" import render_field_with_errors %}
 <form method="post" class="cf" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     {{ render_field_with_errors(form.date) }}
@@ -14,8 +15,7 @@
 
     {{ form.submit}}
 </form>
-
-{% from "_macros.html" import pikaday %}
-{{ pikaday('date') }}
-
+{% endblock %}
+{% block scripts %}
+    {{ pikaday('date') }}
 {% endblock %}

@@ -1,11 +1,8 @@
+{% from "_macros.html" import tablesorter, render_pagination %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
+
 {% block title %}membership fees{% endblock %}
-{% block head %}
-    {{ super() }}
-    {% from "_macros.html" import tablesorter %}
-    {{ tablesorter('#membershipfees') }}
-{% endblock %}
 {% block content %}
 <form method="post" class="cf" id="filter">
     {{ form.hidden_tag() }}
@@ -32,8 +29,8 @@
         {% endfor %}
     </tbody>
 </table>
-
-{% from "_macros.html" import render_pagination %}
 {{ render_pagination(pagination) }}
-
+{% endblock %}
+{% block scripts %}
+    {{ tablesorter('#membershipfees') }}
 {% endblock %}

@@ -1,11 +1,8 @@
+{% from "_macros.html" import tablesorter %}
 {% extends "base.html" %}
 {% set category = "account" %}
+
 {% block title %}My bar account{% endblock %}
-{% block head %}
-    {{ super() }}
-    {% from "_macros.html" import tablesorter %}
-    {{ tablesorter('#bar_account_log') }}
-{% endblock %}
 {% block content %}
 <table id="bar_account_log">
     <thead>
@@ -30,4 +27,7 @@
 {% endfor %}
     </tbody>
 </table>
+{% endblock %}
+{% block scripts %}
+    {{ tablesorter('#bar_account_log') }}
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% set category = "accounting" %}
+
 {% block title %}Accounting{% endblock %}
 {% block content %}
 <h2>On the books</h2>
@@ -15,5 +16,4 @@
 	{% set balance = [cash.balance, running_acount_balance] %}
 </dl>
 <p>(amount in cash register: €{{ balance|sum() }})</p>
-
 {% endblock %}

@@ -1,9 +1,9 @@
+{% from "_macros.html" import render_field_with_errors, pikaday %}
 {% extends "base.html" %}
 {% set category = "login" %}
+
 {% block title %}register_user{% endblock %}
 {% block content %}
-
-{% from "_macros.html" import render_field_with_errors %}
 <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form" class="cf">
     {{ register_user_form.hidden_tag() }}
     <h2>Login info</h2>
@@ -33,8 +33,7 @@
     {{ render_field_with_errors(register_user_form.show_email) }}
     {{ register_user_form.submit }}
 </form>
-
-{% from "_macros.html" import pikaday %}
-{{ pikaday('date_of_birth') }}
-
+{% endblock %}
+{% block scripts %}
+    {{ pikaday('date_of_birth') }}
 {% endblock %}

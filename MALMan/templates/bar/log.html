@@ -1,12 +1,8 @@
+{% from "_macros.html" import tablesorter, render_pagination %}
 {% extends "base.html" %}
 {% set category = "stock" %}
+
 {% block title %}Stock log{% endblock %}
-{% block head %}
-{{ super() }}
-    {{ super() }}
-    {% from "_macros.html" import tablesorter %}
-    {{ tablesorter('#stock_log') }}
-{% endblock %}
 {% block content %}
 <form class="empty" method="POST">
     {{ form.hidden_tag() }}
@@ -41,6 +37,8 @@
         </tbody>
     </table>
 </form>
-{% from "_macros.html" import render_pagination %}
 {{ render_pagination(pagination) }}
+{% endblock %}
+{% block scripts %}
+    {{ tablesorter('#stock_log') }}
 {% endblock %}

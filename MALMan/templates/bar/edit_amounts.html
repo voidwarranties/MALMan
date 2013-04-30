@@ -1,8 +1,9 @@
+{% from "_macros.html" import render_field_with_errors %}
 {% extends "base.html" %}
 {% set category = "stock" %}
+
 {% block title %}Edit stock amount{% endblock %}
 {%- block content %}
-{% from "_macros.html" import render_field_with_errors %}
             <form method="POST" class="cf">
             {{ form.hidden_tag() }}
             {%- for item in form -%}
