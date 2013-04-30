@@ -38,7 +38,7 @@ def account_edit_own_account():
     userdata = DB.User.query.get(current_user.id)
     form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
-        confirmation = app.CHANGE_MSG
+        confirmation = app.config['CHANGE_MSG']
         atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email']

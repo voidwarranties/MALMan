@@ -24,7 +24,7 @@ def members_approve_new_members():
             BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
-        confirmation = app.CHANGE_MSG
+        confirmation = app.config['CHANGE_MSG']
         for user in new_members:
             new_value = forms.booleanfix(request.form, 
                 'activate_' + str(user.id))
@@ -57,7 +57,7 @@ def members_edit_member(userid):
     form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():
-        confirmation = app.CHANGE_MSG
+        confirmation = app.config['CHANGE_MSG']
         atributes = ['name', 'date_of_birth', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email', 'active_member', 'membership_dues']

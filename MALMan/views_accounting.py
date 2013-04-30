@@ -52,10 +52,10 @@ def accounting_log(page):
             setattr(form[filter[0]], 'data', filter[1])
     
     item_count = len(log.all())
-    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
 
     if form.validate_on_submit():   
         url = '/accounting/log?filters='
@@ -96,10 +96,10 @@ def accounting_cashlog(page):
     log = DB.CashTransaction.query.order_by(DB.CashTransaction.id.desc())
     
     item_count = len(log.all())
-    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
    
     return render_template('accounting/cashlog.html', log=log, pagination=pagination)
 
@@ -162,7 +162,7 @@ def accounting_approve_reimbursement(transaction_id):
         upload_attachments(request, attachments, transaction, DB)
 
         flash("the transaction was filed", "confirmation")
-        return redirect(url_for('accounting_approve_reimbursement'))
+        return redirect(url_for('accounting_approve_reimbursements'))
     return render_template('accounting/approve_reimbursement.html', form=form, transaction=transaction )
 
 
@@ -228,7 +228,7 @@ def accounting_edit_transaction(transaction_id):
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
-        confirmation = app.CHANGE_MSG
+        confirmation = app.config['CHANGE_MSG']
         atributes = ['date', 'amount', 'to_from', 'description', 
             'category_id', 'bank_id']
         for atribute in atributes:
@@ -265,10 +265,10 @@ def accounting_membershipfees(page):
         setattr(form[filter[0]], 'data', filter[1])
     
     item_count = len(log.all())
-    log = log.paginate(page, app.ITEMS_PER_PAGE, False).items
+    log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
         abort(404)
-    pagination = Pagination(page, app.ITEMS_PER_PAGE, item_count)
+    pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
 
     if form.validate_on_submit():   
         url = '/accounting/membershipfees?filters='

@@ -12,7 +12,7 @@ from werkzeug import secure_filename
 
 def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
-    if var != app.CHANGE_MSG:
+    if var != app.config['CHANGE_MSG']:
         var += ", "
     var += confirmation
     return var
@@ -22,7 +22,7 @@ def return_flash (confirmation):
     """return a confirmation if something changed or an error if there are
     no changes
     """
-    if confirmation == app.CHANGE_MSG:
+    if confirmation == app.config['CHANGE_MSG']:
         flash("No changes were specified", "error")
     else:
         flash(confirmation, 'confirmation')
