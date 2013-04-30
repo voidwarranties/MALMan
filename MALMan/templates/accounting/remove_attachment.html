@@ -3,10 +3,10 @@
 
 {% block title %}Remove attachment{% endblock %}
 {% block content %}
-Are you certain you want to remove this attachment from this transaction?
-<form method="post" class="cf">
-    {{ form.hidden_tag() }}
-    {{ form.cancel }}
-    {{ form.submit }}
-</form>
+    <p>Are you certain you want to remove this attachment from this transaction?</p>
+    <form method="post" class="cf">
+        {{ form.hidden_tag() }}
+        {{ form.cancel }}
+        {{ form.submit }}
+    </form>
 {% endblock %}

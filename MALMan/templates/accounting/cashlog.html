@@ -4,25 +4,25 @@
 
 {% block title %}running account log{% endblock %}
 {% block content %}
-<table id="transactions">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for transaction in log %}
-        <tr>
-            <td>{{ transaction.datetime }}</td>
-            <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
-            <td>{{ transaction.description }}{% if transaction.purchase %} of a {{ transaction.purchase.item.name }}{% endif%}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{{ render_pagination(pagination) }}
+    <table id="transactions">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in log %}
+            <tr>
+                <td>{{ transaction.datetime }}</td>
+                <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
+                <td>{{ transaction.description }}{% if transaction.purchase %} of a {{ transaction.purchase.item.name }}{% endif%}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#transactions') }}

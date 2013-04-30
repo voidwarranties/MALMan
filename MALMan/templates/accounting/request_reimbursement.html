@@ -4,17 +4,17 @@
 
 {% block title %}Approve reimbursements{% endblock %}
 {% block content %}
-<form method="post" class="cf" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    {{ render_field_with_errors(form.date) }}
-    {{ render_field_with_errors(form.amount) }}
-    {{ render_field_with_errors(form.description) }}
-    
-    <h2>Attachments</h2>
-    {{ render_field_with_errors(form.attachment, multiple="") }}
+    <form method="post" class="cf" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ render_field_with_errors(form.date) }}
+        {{ render_field_with_errors(form.amount) }}
+        {{ render_field_with_errors(form.description) }}
+        
+        <h2>Attachments</h2>
+        {{ render_field_with_errors(form.attachment, multiple="") }}
 
-    {{ form.submit}}
-</form>
+        {{ form.submit}}
+    </form>
 {% endblock %}
 {% block scripts %}
     {{ pikaday('date') }}

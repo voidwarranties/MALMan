@@ -4,36 +4,36 @@
 
 {% block title %}Stock{% endblock %}
 {% block content %}
-<table id="stockitems">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Amount in stock</th>
-            <th>Stock maximum</th>
-            <th>Category</th>
-            <th>Josto</th>
-            {% if 'bar' in current_user.roles %}
-            <th>remove item</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-{% for item in items %}
-        <tr>
-            <td>{{ item.name }}</td>
-            <td>€{{ item.price }}</td>
-            <td>{{ item.stock }}</td>
-            <td>{{ item.stock_max }}</td>
-            <td>{{ item.category.name }}</td>
-            <td>{{ item.josto }}</td>
-            {% if 'bar' in current_user.roles %}
-            <td><a href="{{ url_for('bar_remove_item', item_id=item.id) }}">remove item</a></td>
-            {% endif %}
-        </tr>
-{% endfor %}
-    </tbody>
-</table>
+    <table id="stockitems">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Amount in stock</th>
+                <th>Stock maximum</th>
+                <th>Category</th>
+                <th>Josto</th>
+                {% if 'bar' in current_user.roles %}
+                <th>remove item</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+    {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>€{{ item.price }}</td>
+                <td>{{ item.stock }}</td>
+                <td>{{ item.stock_max }}</td>
+                <td>{{ item.category.name }}</td>
+                <td>{{ item.josto }}</td>
+                {% if 'bar' in current_user.roles %}
+                <td><a href="{{ url_for('bar_remove_item', item_id=item.id) }}">remove item</a></td>
+                {% endif %}
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#stockitems') }}

@@ -33,9 +33,9 @@ def before_request():
     # add the role and email variables to the session if they are missing but user is logged in.
     # this happens after a session is resumed from a cookie
     if session and ('user_id' in session) and (not 'email' in session):
-    	user = DB.User.query.get(current_user.id)
+        user = DB.User.query.get(current_user.id)
         session['email'] = user.email
-    	session['roles'] = [role.name for role in user.roles]
+        session['roles'] = [role.name for role in user.roles]
 
 ## I don't think we need this bit, the function is already defined by flask_security/core.py
 # @identity_loaded.connect_via(app)

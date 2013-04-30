@@ -4,67 +4,67 @@
 
 {% block title %}Accounting log{% endblock %}
 {% block content %}
-<form method="post" class="cf" id="filter">
-    {{ form.hidden_tag() }}
-    {{ form.amount }}
-    {{ form.bank_id }}
-    {{ form.category_id }}
-    {{ form.submit }}
-</form>
-<table id="transactions">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Facturation date</th>
-            <th>Reimbursement date</th>
-            <th>Amount</th>
-            <th>to/from</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Bank account</th>
-            <th>Attachments</th>
-            {%- if 'finances' in current_user.roles %}
-            <th>Bank statement</th>
-            <th>Date filed</th>
-            <th>Filed by</th>
-            <th>Modify</th>
-            {% endif %}
-        </tr>
-    </thead>
-    <tbody>
-        {%- for transaction in log %}
-        <tr>
-            <td>{{ transaction.id }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>
-                {%- if transaction.reimbursement_date -%}
-                {{ transaction.reimbursement_date }}
-                {%- else -%}
-                NA
-                {%- endif -%}
-            </td>
-            <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
-            <td>{{ transaction.to_from }}</td>
-            <td>{{ transaction.description }}</td>
-            <td>{{ transaction.category.name }}</td>
-            <td>{{ transaction.bank.name }}</td>
-            <td>
-                {% for attachment in transaction.attachments -%}
-                <a class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
-            {% endfor %}</td>
-            {%- if 'finances' in current_user.roles %}
-            <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
-            <td>{{ transaction.date_filed }}</td>
-            <td>{{ transaction.filed_by.name }}</td>
-            <td>
-                <a href="{{ url_for('accounting_edit_transaction', transaction_id=transaction.id)}}"><img src="{{ url_for('static', filename='edit.gif') }}" alt="edit transaction" /></a>
-            </td>
-            {%- endif %}
-        </tr>
-        {%- endfor %}
-    </tbody>
-</table>
-{{ render_pagination(pagination) }}
+    <form method="post" class="cf" id="filter">
+        {{ form.hidden_tag() }}
+        {{ form.amount }}
+        {{ form.bank_id }}
+        {{ form.category_id }}
+        {{ form.submit }}
+    </form>
+    <table id="transactions">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Facturation date</th>
+                <th>Reimbursement date</th>
+                <th>Amount</th>
+                <th>to/from</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Bank account</th>
+                <th>Attachments</th>
+                {%- if 'finances' in current_user.roles %}
+                <th>Bank statement</th>
+                <th>Date filed</th>
+                <th>Filed by</th>
+                <th>Modify</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {%- for transaction in log %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.date }}</td>
+                <td>
+                    {%- if transaction.reimbursement_date -%}
+                    {{ transaction.reimbursement_date }}
+                    {%- else -%}
+                    NA
+                    {%- endif -%}
+                </td>
+                <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
+                <td>{{ transaction.to_from }}</td>
+                <td>{{ transaction.description }}</td>
+                <td>{{ transaction.category.name }}</td>
+                <td>{{ transaction.bank.name }}</td>
+                <td>
+                    {% for attachment in transaction.attachments -%}
+                    <a class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
+                {% endfor %}</td>
+                {%- if 'finances' in current_user.roles %}
+                <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
+                <td>{{ transaction.date_filed }}</td>
+                <td>{{ transaction.filed_by.name }}</td>
+                <td>
+                    <a href="{{ url_for('accounting_edit_transaction', transaction_id=transaction.id)}}"><img src="{{ url_for('static', filename='edit.gif') }}" alt="edit transaction" /></a>
+                </td>
+                {%- endif %}
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+    {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}
    {{ lightbox() }}

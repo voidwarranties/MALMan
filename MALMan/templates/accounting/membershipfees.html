@@ -4,32 +4,32 @@
 
 {% block title %}membership fees{% endblock %}
 {% block content %}
-<form method="post" class="cf" id="filter">
-    {{ form.hidden_tag() }}
-    {{ form.user }}
-    {{ form.submit }}
-</form>
-<table id="membershipfees">
-    <thead>
-        <tr>
-            <th>date</th>
-            <th>user</th>
-            <th>amount</th>
-            <th>until</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for transaction in log %}
-        <tr>
-            <td>{{ transaction.transaction.date }}</td>
-            <td>{{ transaction.user.name }}</td>
-            <td>€{{ transaction.transaction.amount }}</td>
-            <td>{{ transaction.until }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{{ render_pagination(pagination) }}
+    <form method="post" class="cf" id="filter">
+        {{ form.hidden_tag() }}
+        {{ form.user }}
+        {{ form.submit }}
+    </form>
+    <table id="membershipfees">
+        <thead>
+            <tr>
+                <th>date</th>
+                <th>user</th>
+                <th>amount</th>
+                <th>until</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in log %}
+            <tr>
+                <td>{{ transaction.transaction.date }}</td>
+                <td>{{ transaction.user.name }}</td>
+                <td>€{{ transaction.transaction.amount }}</td>
+                <td>{{ transaction.until }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#membershipfees') }}

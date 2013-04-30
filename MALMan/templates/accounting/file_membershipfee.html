@@ -4,14 +4,14 @@
 
 {% block title %}File membership fee{% endblock %}
 {% block content %}
-<p>€{{ transaction.amount }} was payed by {{ transaction.to_from }} on {{ transaction.date }}.</p>
-<p>Please select the member who's dues are being payed and until when this settles his dues.</p>
-<form method="post" class="cf">
-{{ form.hidden_tag() }}
-{{ render_field_with_errors(form.user_id) }}
-{{ render_field_with_errors(form.until) }}
-{{ form.submit }}
-</form>
+    <p>€{{ transaction.amount }} was payed by {{ transaction.to_from }} on {{ transaction.date }}.</p>
+    <p>Please select the member who's dues are being payed and until when this settles his dues.</p>
+    <form method="post" class="cf">
+    {{ form.hidden_tag() }}
+    {{ render_field_with_errors(form.user_id) }}
+    {{ render_field_with_errors(form.until) }}
+    {{ form.submit }}
+    </form>
 {% endblock %}
 {% block scripts %}
     {{ pikaday('until') }}

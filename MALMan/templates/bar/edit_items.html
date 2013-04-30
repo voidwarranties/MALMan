@@ -4,37 +4,37 @@
 
 {% block title %}Edit stock{% endblock %}
 {% block content %}
-<form method="POST" class="cf">
-    {{ form.hidden_tag() }}
-    <table id="stockitems">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Stock maximum</th>
-                <th>Category</th>
-                <th>Josto</th>
-            </tr>
-        </thead>
-        <tbody>
-    {%- for item in form -%}
-        {%- if item.name != 'csrf_token' and item.name != 'submit' %}
-            <tr>
-                {%- for field in item %}
-                <td>
-                    {{ field }}
-                    {%- for error in field.errors -%}
-                        <span style="color: red; display: block;">{{ error }}</span>
-                      {%- endfor -%}
-                  </td>
-                {%- endfor %}
-            </tr>
-        {%- endif -%}
-    {%- endfor -%}
-        </tbody>
-    </table>
-    {{ form.submit }}
-</form>
+    <form method="POST" class="cf">
+        {{ form.hidden_tag() }}
+        <table id="stockitems">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock maximum</th>
+                    <th>Category</th>
+                    <th>Josto</th>
+                </tr>
+            </thead>
+            <tbody>
+        {%- for item in form -%}
+            {%- if item.name != 'csrf_token' and item.name != 'submit' %}
+                <tr>
+                    {%- for field in item %}
+                    <td>
+                        {{ field }}
+                        {%- for error in field.errors -%}
+                            <span style="color: red; display: block;">{{ error }}</span>
+                          {%- endfor -%}
+                      </td>
+                    {%- endfor %}
+                </tr>
+            {%- endif -%}
+        {%- endfor -%}
+            </tbody>
+        </table>
+        {{ form.submit }}
+    </form>
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#stockitems') }}

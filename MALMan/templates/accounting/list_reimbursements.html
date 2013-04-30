@@ -4,7 +4,7 @@
 
 {% block title %}Approve reimbursements{% endblock %}
 {% block content %}
-{% if requests|list|count > 0 %}
+    {% if requests|list|count > 0 %}
     <table id="transactions">
         <thead>
             <tr>
@@ -33,9 +33,9 @@
             {% endfor %}
         </tbody>
     </table>
-{% else %}
+    {% else %}
     <p>There are no pending reimbursement requests!</p>
-{%- endif %}
+    {%- endif %}
 {% endblock %}
 {% block scripts %}
     {{ lightbox() }}

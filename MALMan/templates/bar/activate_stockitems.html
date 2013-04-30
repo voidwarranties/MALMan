@@ -3,7 +3,7 @@
 
 {% block title %}Activate stock items{% endblock %}
 {% block content %}
-{% if stockitems|list|count > 0 %}
+    {% if stockitems|list|count > 0 %}
     <form method="POST" class="cf">
         {{ form.hidden_tag() }}
         {%- for stockitem in stockitems %}
@@ -18,7 +18,7 @@
         {% endfor %}
         {{ form.submit }}
     </form>
-{% else %}
+    {% else %}
     <p>There are no inactive stock items!</p>
-{%- endif %}
+    {%- endif %}
 {% endblock %}

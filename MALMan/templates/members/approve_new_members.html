@@ -3,7 +3,7 @@
 
 {% block title %}New members{% endblock %}
 {% block content %}
-{% if new_members|list|count > 0 %}
+    {% if new_members|list|count > 0 %}
     <form method="POST" class="cf">
         {{ form.hidden_tag() }}
         {%- for user in new_members %}
@@ -21,7 +21,7 @@
         {% endfor %}
         {{ form.submit }}
     </form>
-{% else %}
+    {% else %}
     <p>There are no new members to approve!</p>
-{%- endif %}
+    {%- endif %}
 {% endblock %}

@@ -4,29 +4,29 @@
 
 {% block title %}My bar account{% endblock %}
 {% block content %}
-<table id="bar_account_log">
-    <thead>
-        <tr>
-            <th>time</th>
-            <th>description</th>
-            <th>amount</th>
-        </tr>
-    </thead>
-    <tbody>
-{% for item in log %}
-        <tr>
-            <td>{{ item.datetime|replace(' 00:00:00', '') }}</td>
-            {% if item.transaction %}
-                <td>Topped up account, transaction # {{ item.transaction.id }}
-                <td><span class="green">+ €{{ item.transaction.amount }}</td>
-            {% else %}
-                <td>bought a {{ item.purchase.item.name }}</td>
-                <td><span class="red">- €{{ item.purchase.price }}</td>
-            {% endif %}
-        </tr>
-{% endfor %}
-    </tbody>
-</table>
+    <table id="bar_account_log">
+        <thead>
+            <tr>
+                <th>time</th>
+                <th>description</th>
+                <th>amount</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in log %}
+            <tr>
+                <td>{{ item.datetime|replace(' 00:00:00', '') }}</td>
+                {% if item.transaction %}
+                    <td>Topped up account, transaction # {{ item.transaction.id }}
+                    <td><span class="green">+ €{{ item.transaction.amount }}</td>
+                {% else %}
+                    <td>bought a {{ item.purchase.item.name }}</td>
+                    <td><span class="red">- €{{ item.purchase.price }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#bar_account_log') }}

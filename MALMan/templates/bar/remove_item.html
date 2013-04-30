@@ -3,13 +3,13 @@
 
 {% block title %}Remove stock item{% endblock %}
 {% block content %}
-{% if stockitem %}
-	<p>Are you sure you want to delete {{ stockitem.name }}?</p>
-	<form method="POST" class="cf">
-    	{{ form.hidden_tag() }}
-    	{{ form.submit }}
-	</form>
-{% else %}
-	<p>The stockitem you want to remove doesn't exist!</p>
-{% endif %}
+    {% if stockitem %}
+    <p>Are you sure you want to delete {{ stockitem.name }}?</p>
+    <form method="POST" class="cf">
+        {{ form.hidden_tag() }}
+        {{ form.submit }}
+    </form>
+    {% else %}
+    <p>The stockitem you want to remove doesn't exist!</p>
+    {% endif %}
 {% endblock %}

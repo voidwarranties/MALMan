@@ -4,32 +4,32 @@
 
 {% block title %}Edit account{% endblock %}
 {% block content %}
-<form method="POST" class="cf">
-    {{ form.hidden_tag() }}
-    <h2>Personal info</h2>
-    {{ render_field_with_errors(form.name) }}
-    {{ render_field_with_errors(form.date_of_birth) }}
-    {{ render_field_with_errors(form.telephone) }}
-    {{ render_field_with_errors(form.street) }}
-    {{ render_field_with_errors(form.number) }}
-    {{ render_field_with_errors(form.bus) }}
-    {{ render_field_with_errors(form.postalcode) }}
-    {{ render_field_with_errors(form.city) }}
-    <h2>Privacy settings</h2>
-    {{ render_field_with_errors(form.show_email) }}
-    {{ render_field_with_errors(form.show_telephone) }}
-    <h2>Permissions</h2>
-    {% for input in form %}
-        {# get all input fields which start with 'perm_' #}
-        {% if input.name|truncate(length=5, killwords=True, end='') == "perm_" %}
-                {{ render_field_with_errors(input) }}
-        {% endif %}
-    {% endfor %}
-    <h2>Membership</h2>
-    {{ render_field_with_errors(form.active_member) }}
-    {{ render_field_with_errors(form.membership_dues) }}
-    {{ form.submit }}
-</form>
+    <form method="POST" class="cf">
+        {{ form.hidden_tag() }}
+        <h2>Personal info</h2>
+        {{ render_field_with_errors(form.name) }}
+        {{ render_field_with_errors(form.date_of_birth) }}
+        {{ render_field_with_errors(form.telephone) }}
+        {{ render_field_with_errors(form.street) }}
+        {{ render_field_with_errors(form.number) }}
+        {{ render_field_with_errors(form.bus) }}
+        {{ render_field_with_errors(form.postalcode) }}
+        {{ render_field_with_errors(form.city) }}
+        <h2>Privacy settings</h2>
+        {{ render_field_with_errors(form.show_email) }}
+        {{ render_field_with_errors(form.show_telephone) }}
+        <h2>Permissions</h2>
+        {% for input in form %}
+            {# get all input fields which start with 'perm_' #}
+            {% if input.name|truncate(length=5, killwords=True, end='') == "perm_" %}
+                    {{ render_field_with_errors(input) }}
+            {% endif %}
+        {% endfor %}
+        <h2>Membership</h2>
+        {{ render_field_with_errors(form.active_member) }}
+        {{ render_field_with_errors(form.membership_dues) }}
+        {{ form.submit }}
+    </form>
 {% endblock %}
 {% block scripts %}
     {{ pikaday('date_of_birth') }}

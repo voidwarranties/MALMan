@@ -4,51 +4,51 @@
 
 {% block title %}Members{% endblock %}
 {% block content %}
-<table id="members">
-    <thead>
-        <tr>
-            <th>name</th>
-            <th>date of birth</th>
-            <th>email</th>
-            <th>telephone</th>
-            <th>address</th>
-            <th>member since</th>
-            <th>roles</th>
-            <th>dues</th>
-            {% if 'finances' in current_user.roles %}<th>bar account balance</th>{% endif %}
-            {% if 'members' in current_user.roles %}<th>modify</th>{% endif %}
-        </tr>
-    </thead>
-    <tbody>
-{%- for user in users %}
-        <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.date_of_birth }}</td>
-            <td>
-                {%- if user.show_email or 'members' in current_user.roles -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_email and 'members' in current_user.roles  %} (hidden){%- endif -%}
-            </td>
-            <td>
-                {%- if user.show_telephone or 'members' in current_user.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
-                {%- if not user.show_telephone and 'members' in current_user.roles %} (hidden){%- endif -%}
-            </td>
-            <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>
-            <td>{{ user.member_since }}</td>
-            <td>
-                {%- set i = user.roles|length -%}
-                {%- for perm in user.roles|sort -%}
-                    {{perm}}
-                    {%- if i > 1 -%},{%- endif -%}
-                    {%- set i = i - 1 -%}
-                {%- endfor -%}
-            </td>
-            <td>€{{ user.membership_dues }}</td>
-            {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
-            {% if 'members' in current_user.roles%}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
-        </tr>
-{% endfor %}
-    </tbody>
-</table>
+    <table id="members">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>date of birth</th>
+                <th>email</th>
+                <th>telephone</th>
+                <th>address</th>
+                <th>member since</th>
+                <th>roles</th>
+                <th>dues</th>
+                {% if 'finances' in current_user.roles %}<th>bar account balance</th>{% endif %}
+                {% if 'members' in current_user.roles %}<th>modify</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {%- for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.date_of_birth }}</td>
+                <td>
+                    {%- if user.show_email or 'members' in current_user.roles -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
+                    {%- if not user.show_email and 'members' in current_user.roles  %} (hidden){%- endif -%}
+                </td>
+                <td>
+                    {%- if user.show_telephone or 'members' in current_user.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
+                    {%- if not user.show_telephone and 'members' in current_user.roles %} (hidden){%- endif -%}
+                </td>
+                <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>
+                <td>{{ user.member_since }}</td>
+                <td>
+                    {%- set i = user.roles|length -%}
+                    {%- for perm in user.roles|sort -%}
+                        {{perm}}
+                        {%- if i > 1 -%},{%- endif -%}
+                        {%- set i = i - 1 -%}
+                    {%- endfor -%}
+                </td>
+                <td>€{{ user.membership_dues }}</td>
+                {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
+                {% if 'members' in current_user.roles%}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#members') }}

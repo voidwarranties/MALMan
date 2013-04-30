@@ -4,40 +4,40 @@
 
 {% block title %}Stock log{% endblock %}
 {% block content %}
-<form class="empty" method="POST">
-    {{ form.hidden_tag() }}
-    <table id="stock_log">
-        <thead>
-            <tr>
-                <th>date</th>
-                <th>type</th>
-                <th>item</th>
-                <th>stock effect</th>
-                <th>financial effect</th>
-                <th>user</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entry in log %}
-            <tr>
-                <td>{{ entry.datetime }}</td>
-                <td>{{ entry.transaction_type }}</td>
-                <td>{{ entry.item.name }}</td>
-                <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
-                {% if entry.price == 0 %}
-                <td>0</td>
-                {% else %}
-                <td>{% if entry.price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.price }}<span></td>
-                {% endif %}
-                <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
-                <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
-            </tr>
-        {%- endfor -%}
-        </tbody>
-    </table>
-</form>
-{{ render_pagination(pagination) }}
+    <form class="empty" method="POST">
+        {{ form.hidden_tag() }}
+        <table id="stock_log">
+            <thead>
+                <tr>
+                    <th>date</th>
+                    <th>type</th>
+                    <th>item</th>
+                    <th>stock effect</th>
+                    <th>financial effect</th>
+                    <th>user</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for entry in log %}
+                <tr>
+                    <td>{{ entry.datetime }}</td>
+                    <td>{{ entry.transaction_type }}</td>
+                    <td>{{ entry.item.name }}</td>
+                    <td>{% if entry.amount > 0 %}+{% endif%}{{ entry.amount }}</td>
+                    {% if entry.price == 0 %}
+                    <td>0</td>
+                    {% else %}
+                    <td>{% if entry.price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.price }}<span></td>
+                    {% endif %}
+                    <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
+                    <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
+                </tr>
+            {%- endfor -%}
+            </tbody>
+        </table>
+    </form>
+    {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}
     {{ tablesorter('#stock_log') }}

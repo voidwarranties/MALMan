@@ -4,13 +4,13 @@
 
 {% block title %}Add stock item{% endblock %}
 {% block content %}
-<form method="post" class="cf">
-    {{ form.hidden_tag() }}
-    {{ render_field_with_errors(form.name) }}
-    {{ render_field_with_errors(form.price) }}
-    {{ render_field_with_errors(form.stock_max) }}
-    {{ render_field_with_errors(form.category_id) }}
-    {{ render_field_with_errors(form.josto) }}
-    {{ form.submit}}
-</form>
+    <form method="post" class="cf">
+        {{ form.hidden_tag() }}
+        {{ render_field_with_errors(form.name) }}
+        {{ render_field_with_errors(form.price) }}
+        {{ render_field_with_errors(form.stock_max) }}
+        {{ render_field_with_errors(form.category_id) }}
+        {{ render_field_with_errors(form.josto) }}
+        {{ form.submit}}
+    </form>
 {% endblock %}

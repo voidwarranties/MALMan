@@ -3,8 +3,8 @@
 
 {% block title %}Top up bar account{% endblock %}
 {% block content %}
-<form method="post" class="cf">
-{{ form.hidden_tag() }}
-<p>Add €{{ transaction.amount }} to this account's bar account: {{ form.user_id }} {{ form.submit }}</p>
-</form>
+    <form method="post" class="cf">
+    {{ form.hidden_tag() }}
+    <p>Add €{{ transaction.amount }} to this account's bar account: {{ form.user_id }} {{ form.submit }}</p>
+    </form>
 {% endblock %}
