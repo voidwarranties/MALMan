@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required
 from flask_security.recoverable import update_password
 from flask_security.utils import url_for_security
 
@@ -43,11 +43,10 @@ def account_edit_own_account():
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email']
         for atribute in atributes:
-            if atribute == 'show_telephone' or atribute == 'show_email':
-                old_value = formatbool(getattr(userdata, atribute))
+            old_value = getattr(userdata, atribute)
+            if atribute in ['show_telephone', 'show_email']:
                 new_value = atribute in request.form
             else:
-                old_value = getattr(userdata, atribute)
                 new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):
                 user = DB.User.query.get(current_user.id)

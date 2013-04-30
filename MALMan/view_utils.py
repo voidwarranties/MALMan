@@ -28,14 +28,6 @@ def return_flash (confirmation):
         flash(confirmation, 'confirmation')
 
 
-def formatbool(var):
-    """return a variable's boolean value in a consistent way"""
-    if var:
-        return True
-    else:
-        return False
-
-
 def accounting_categories(IN=True, OUT=True):
     """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
     categories = DB.AccountingCategory.query.all()

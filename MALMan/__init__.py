@@ -15,7 +15,7 @@ app.config['UPLOADED_ATTACHMENTS_DEST'] = '/home/berz_/voidwarranties/malman/tru
 app.config['UPLOADED_ATTACHMENTS_URL'] = 'accounting/attachments/'
 app.config['UPLOADED_ATTACHMENTS_ALLOW'] = ['txt', 'rtf', 'odf', 'ods', 'gnumeric', 'abw', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg', 'bmp', 'pdf', 'TXT', 'RTF', 'ODF', 'ODS', 'GNUMERIC', 'ABW', 'DOC', 'DOCX', 'XLS', 'XLSX', 'JPG', 'JPE', 'JPEG', 'PNG', 'GIF', 'SVG', 'BMP', 'PDF']
 app.config['UPLOADED_ATTACHMENTS_DEST'] = os.path.join(os.path.dirname(os.path.abspath( __file__ )), 'attachments')
-app.config['CHANGE_MSG'] = 'These values were updated:'
+app.config['CHANGE_MSG'] = 'These values were updated: '
 app.config['ITEMS_PER_PAGE'] = 10
 
 # set config values from config file (and overwrite defaults)

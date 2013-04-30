@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required
 
 from flask import render_template, request, redirect
 from flask.ext.wtf import BooleanField
@@ -60,20 +60,16 @@ def members_edit_member(userid):
         atributes = ['name', 'date_of_birth', 'telephone', 'city', 
             'postalcode', 'bus', 'number', 'street', 'show_telephone', 
             'show_email', 'active_member', 'membership_dues']
-        permissions = [role for role in roles if role != 'membership']
-        atributes.extend(permissions)
+        atributes.extend([role for role in roles])
         for atribute in atributes:
             if atribute in roles:
-                new_value = 'perm_' + str(atribute) in request.form
-                if atribute in userdata.roles:
-                    old_value = True
-                else:
-                    old_value = False
+                old_value = atribute in userdata.roles
+                new_value = 'perm_' + atribute.name in request.form
             elif atribute in ['show_telephone', 'show_email', 'active_member']:
-                old_value = formatbool(getattr(userdata, atribute))
+                old_value = getattr(userdata, atribute)
                 new_value = atribute in request.form
             else:
-                old_value = getattr(userdata, str(atribute))
+                old_value = getattr(userdata, atribute)
                 new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):
                 if atribute in roles:

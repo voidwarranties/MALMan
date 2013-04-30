@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, accounting_categories, permission_required, membership_required, Pagination, formatbool
+from MALMan.view_utils import add_confirmation, return_flash, accounting_categories, permission_required, membership_required, Pagination
 
 from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.login import current_user
@@ -98,11 +98,10 @@ def bar_edit_items():
             # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB 
             atributes = ['name' , 'price' , 'stock_max', 'category_id', 'josto']
             for atribute in atributes:
+                old_value = getattr(item, atribute)
                 if atribute == 'josto':
-                    old_value = formatbool(getattr(item, atribute))
                     new_value = str(item.id) + '_josto' in request.form
                 else: 
-                    old_value = getattr(item, atribute)
                     new_value = request.form[str(item.id) + '_' + atribute]
                 if str(old_value) != str(new_value):
                     setattr(item, atribute, new_value)
