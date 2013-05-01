@@ -24,7 +24,7 @@ app.secret_key = app.config['SECRET_KEY']
 
 CSRF_ENABLED = True
 
-from MALMan import logging
+from MALMan import logs
 
 from MALMan import security
 
