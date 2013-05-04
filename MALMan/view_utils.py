@@ -122,18 +122,17 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 def upload_attachments(request, attachments, transaction, DB):
     confirmation = ""
     for uploaded_attachment in request.files.getlist('attachment'):
-        last_attachment_id = DB.AccountingAttachment.query.order_by(DB.AccountingAttachment.id.desc()).first().id
-        new_attachment_id = last_attachment_id + 1
         if uploaded_attachment.filename == '': 
             break
-        # save attachment
-        url = attachments.save(
-            uploaded_attachment,
-            name = str(new_attachment_id) + '.')
         # add the attachment to the accounting_attachments DB table
         extension = uploaded_attachment.filename.rsplit('.', 1)[1]
         accounting_attachment = DB.AccountingAttachment(extension = extension)
         DB.db.session.add(accounting_attachment)
+        DB.db.session.commit()
+        # save attachment
+        url = attachments.save(
+            uploaded_attachment,
+            name = str(accounting_attachment.id) + '.')
         # link the attachment to the transaction
         if transaction.attachments:
             getattr(transaction, 'attachments').append(accounting_attachment)
