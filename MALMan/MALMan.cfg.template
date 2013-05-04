@@ -15,7 +15,7 @@ MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_USERNAME = 'user'
 MAIL_PASSWORD = 'password'
-DEFAULT_MAIL_SENDER= '"MALMan", "malman@voidwarranties.be"'
+DEFAULT_MAIL_SENDER = '"MALMan", "malman@voidwarranties.be"'
 
 # security keys
 SECURITY_PASSWORD_SALT = 'super secret'

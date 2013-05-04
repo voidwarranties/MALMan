@@ -3,17 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2013 at 01:01 AM
+-- Generation Time: May 04, 2013 at 12:50 PM
 -- Server version: 5.1.66
 -- PHP Version: 5.3.3-7+squeeze15
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `MALMan`
@@ -27,10 +21,10 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 CREATE TABLE IF NOT EXISTS `accounting_attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `filename` text NOT NULL,
+  `extention` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `accounting_attachments`
@@ -46,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `accounting_attachments` (
 CREATE TABLE IF NOT EXISTS `accounting_attachments_transactions` (
   `attachment_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `accounting_attachments_transactions`
@@ -63,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `accounting_banks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
 
 --
 -- Dumping data for table `accounting_banks`
@@ -87,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `description` text NOT NULL,
   `datetime` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `accounting_cashregister`
@@ -106,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `accounting_categories` (
   `legal_category` varchar(255) NOT NULL,
   `is_revenue` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `accounting_categories`
@@ -145,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `filed_by_id` tinyint(4) DEFAULT NULL,
   `reimbursement_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
 
 --
 -- Dumping data for table `accounting_transactions`
@@ -166,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `bar_accounts_log` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_id` (`transaction_id`),
   UNIQUE KEY `purchase_id` (`purchase_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Dumping data for table `bar_accounts_log`
@@ -273,7 +267,7 @@ CREATE TABLE IF NOT EXISTS `members` (
   `motivation` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=104 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=104 ;
 
 --
 -- Dumping data for table `members`
@@ -294,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `members_fees` (
   `transaction_id` int(11) NOT NULL,
   `until` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `members_fees`
@@ -313,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `members_roles` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `members_roles`
@@ -336,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `members_roles_users` (
   `role_id` int(11) DEFAULT NULL,
   KEY `user_id` (`user_id`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `members_roles_users`
@@ -348,13 +342,3 @@ INSERT INTO `members_roles_users` (`user_id`, `role_id`) VALUES
 (103, 4),
 (103, 1);
 
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `members_roles_users`
---
-ALTER TABLE `members_roles_users`
-  ADD CONSTRAINT `members_roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `members` (`id`),
-  ADD CONSTRAINT `members_roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `members_roles` (`id`);
