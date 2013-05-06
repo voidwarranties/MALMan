@@ -187,6 +187,7 @@ class EditTransaction(AddTransaction):
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('edit transaction')
 
+
 class RequestReimbursement(AddTransaction):
     date = DateField('date of advance (yyyy-mm-dd)', 
         [validators.Required(
@@ -196,9 +197,11 @@ class RequestReimbursement(AddTransaction):
 
     submit = SubmitField('request reimbursement')
 
+
 class Remove_Attachment(Form):
     cancel = SubmitField('cancel')
     submit = SubmitField('remove attachment')
+
 
 class ApproveReimbursement(AddTransaction):
     reimbursement_date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 
@@ -216,3 +219,9 @@ class FilterMembershipFees(Form):
     user = SelectField('user')
     user.choices = [("0","filter by user")]
     submit = SubmitField('filter')
+
+
+class FilterKasboek(Form):
+    year = SelectField('year')
+    bank_id = SelectField('bank')
+    submit = SubmitField('go')

@@ -62,6 +62,7 @@
             <ul class="menu cf">
                 <li><a href="{{ url_for('accounting') }}">balance</a></li>
                 <li><a href="{{ url_for('accounting_log') }}">transaction log</a></li>
+                <li><a href="{{ url_for('accounting_cashbook') }}">cashbook</a></li>
                 {% if 'finances' in current_user.roles %}
                 <li><a href="{{ url_for('accounting_cashlog') }}">running account log</a></li>
                 {% endif %}
