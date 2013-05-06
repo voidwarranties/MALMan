@@ -1,0 +1,50 @@
+{% from "_macros.html" import tablesorter, render_pagination, lightbox %}
+{% extends "base.html" %}
+{% set category = "accounting" %}
+
+{% block title %}Accounting log{% endblock %}
+{% block content %}
+    <form method="post" class="cf" id="filter">
+        {{ form.hidden_tag() }}
+        <label style="float: left; width: auto; padding-right: 5px;">Bank</label> {{ form.bank_id }}
+        <label style="float: left; width: auto; padding-right: 5px;">Year</label> {{ form.year }}
+        {{ form.submit }}
+    </form>
+    <table id="transactions">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Datum</th>
+                <th>Omschrijving</th>
+                <th>FactuurNr</th>
+                <th>Inkomsten</th>
+                <th>Uitgaven</th>
+                <th>Totalen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for transaction in log %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>
+                    {%- if transaction.reimbursement_date -%}
+                    {{ transaction.reimbursement_date }}
+                    {%- else -%}
+                    {{ transaction.date }}
+                    {%- endif -%}
+                </td>
+                <td>{{ transaction.description }}</td>
+                <td></td>
+                {% if transaction.amount > 0 %}
+                <td>{{ transaction.amount }}</td>
+                <td></td>
+                {% else %}
+                <td></td>
+                <td>{{ transaction.amount|abs() }}</td>
+                {% endif%}
+                <td>{{ transaction.amount }}</td>
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+{% endblock %}
