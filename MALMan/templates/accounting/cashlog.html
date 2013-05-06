@@ -16,7 +16,7 @@
             {% for transaction in log %}
             <tr>
                 <td>{{ transaction.datetime }}</td>
-                <td>{% if transaction.amount > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ transaction.amount }}</span></td>
+                <td>{% if transaction.is_revenue %}<span class="green">+{% else %}<span class="red">-{% endif%}€{{ transaction.amount }}</span></td>
                 <td>{{ transaction.description }}{% if transaction.purchase %} of a {{ transaction.purchase.item.name }}{% endif%}</td>
             </tr>
             {% endfor %}

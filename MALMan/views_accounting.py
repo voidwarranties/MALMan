@@ -106,7 +106,8 @@ def accounting_request_reimbursement():
     if form.validate_on_submit():
         transaction = DB.Transaction(
             advance_date = request.form["advance_date"], 
-            amount = "-" + request.form["amount"],
+            is_revenue = False,
+            amount = request.form["amount"],
             description = request.form["description"],
             to_from = current_user.name)
         DB.db.session.add(transaction)
@@ -140,6 +141,7 @@ def accounting_approve_reimbursement(transaction_id):
     form = forms.ApproveReimbursement(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories(IN=False)
+    del form.is_revenue
     if form.validate_on_submit():
         transaction.date = request.form["date"]
         transaction.facturation_date = request.form["date"]
@@ -175,6 +177,7 @@ def accounting_add_transaction():
         transaction = DB.Transaction(
             date = request.form["date"],
             facturation_date = facturation_date,
+            is_revenue = request.form["is_revenue"],
             amount = request.form["amount"],
             to_from = request.form["to_from"], 
             description = request.form["description"],
@@ -228,11 +231,16 @@ def accounting_edit_transaction(transaction_id):
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['date', 'facturation_date', 'amount', 'to_from', 'description', 
+        atributes = ['date', 'facturation_date', 'is_revenue', 'amount', 'to_from', 'description', 
             'category_id', 'bank_id']
         for atribute in atributes:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
+            if atribute == 'is_revenue':
+                if new_value == 'True': 
+                    new_value = True 
+                elif new_value == 'False': 
+                    new_value = False
             if str(new_value) != str(old_value):
                 if atribute == 'facturation_date' and new_value == '':
                     new_value = request.form.get('date')

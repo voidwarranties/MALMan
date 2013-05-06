@@ -156,7 +156,13 @@ class Bank(db.Model):
 
     @property
     def balance(self):
-        return sum(item.amount for item in self.transactions)
+        calculated_balance = 0
+        for transaction in self.transactions:
+            if transaction.is_revenue:
+                calculated_balance += transaction.amount
+            else:
+                calculated_balance -= transaction.amount
+        return calculated_balance
 
 
 class CashTransaction(db.Model):
@@ -206,6 +212,7 @@ class Transaction(db.Model):
         # only applicable if the money was advanced
     facturation_date = db.Column(db.DateTime())
         # same as 'date' if there is no invoice 
+    is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
         # positive is it is a revenue, negative if it's an expense
     to_from = db.Column(db.String)

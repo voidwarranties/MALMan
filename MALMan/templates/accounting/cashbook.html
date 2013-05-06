@@ -31,14 +31,14 @@
                 </td>
                 <td>{{ transaction.description }}</td>
                 <td></td>
-                {% if transaction.amount > 0 %}
+                {% if transaction.is_revenue %}
                 <td>{{ transaction.amount }}</td>
                 <td></td>
                 {% else %}
                 <td></td>
-                <td>{{ transaction.amount|abs() }}</td>
-                {% endif%}
                 <td>{{ transaction.amount }}</td>
+                {% endif%}
+                <td>{% if not transation.is_revenue %}-{% endif %}{{ transaction.amount }}</td>
             </tr>
             {%- endfor %}
         </tbody>
