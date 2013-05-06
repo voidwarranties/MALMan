@@ -38,7 +38,7 @@
                 <td></td>
                 <td>{{ transaction.amount }}</td>
                 {% endif%}
-                <td>{% if not transation.is_revenue %}-{% endif %}{{ transaction.amount }}</td>
+                <td>{% if not transaction.is_revenue %}-{% endif %}{{ transaction.amount }}</td>
             </tr>
             {%- endfor %}
         </tbody>

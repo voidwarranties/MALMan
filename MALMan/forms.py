@@ -158,7 +158,7 @@ class AddTransaction(Form):
     facturation_date = DateField('facturation date (optional, yyyy-mm-dd)', 
         [validators.Optional()])
     is_revenue = SelectField('type', 
-        choices = [("True", "revenue"), ("False", "expense")])
+        choices = [(1, "revenue"), (0, "expense")], coerce=int)
     amount = DecimalField('amount (e.g. 1.52)', 
         [validators.NumberRange(message='please enter a positive or negative number')], places=2)
     description = TextField('description', [validators.Required()])
@@ -229,7 +229,7 @@ class FilterMembershipFees(Form):
     submit = SubmitField('filter')
 
 
-class FilterKasboek(Form):
+class FilterCashbook(Form):
     year = SelectField('year')
     bank_id = SelectField('bank')
     submit = SubmitField('go')

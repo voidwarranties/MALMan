@@ -234,9 +234,9 @@ def accounting_edit_transaction(transaction_id):
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if atribute == 'is_revenue':
-                if new_value == 'True': 
+                if new_value == '1': 
                     new_value = True 
-                elif new_value == 'False': 
+                elif new_value == '0': 
                     new_value = False
             if str(new_value) != str(old_value):
                 if atribute == 'facturation_date' and new_value == '':
@@ -309,21 +309,23 @@ def file_membershipfee(transaction_id):
 @app.route("/accounting/cashbook", methods=['GET', 'POST'])
 @membership_required()
 def accounting_cashbook():
-    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.facturation_date.desc())
+    log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.desc())
     banks = DB.Bank.query.all()
-    years = [transaction.date.year for transaction in log]
+    years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
 
-    form = forms.FilterKasboek()
+    form = forms.FilterCashbook()
     form.bank_id.choices = [(str(bank.id), bank.name) for bank in banks if bank.name != 'cash']
     form.year.choices = [(str(year), year) for year in years]
 
     # filter by bank and year
     bank_id = request.args.get('bank_id') or banks[0].id
     log = log.filter_by(bank_id=bank_id)
+    form.bank_id.data = str(bank_id)
     if years:
         year = int(request.args.get('year') or years[0])
         log = [transaction for transaction in log if transaction.date.year == year]
+        form.year.data = str(year)
 
     if form.validate_on_submit():
         args = request.view_args.copy()
