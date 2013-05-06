@@ -168,8 +168,13 @@ def accounting_add_transaction():
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
+        if request.form["facturation_date"] != '':
+            facturation_date = request.form["facturation_date"]
+        else:
+            facturation_date = request.form["date"]
         transaction = DB.Transaction(
             date = request.form["date"],
+            facturation_date = facturation_date,
             amount = request.form["amount"],
             to_from = request.form["to_from"], 
             description = request.form["description"],
@@ -223,12 +228,14 @@ def accounting_edit_transaction(transaction_id):
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['date', 'amount', 'to_from', 'description', 
+        atributes = ['date', 'facturation_date', 'amount', 'to_from', 'description', 
             'category_id', 'bank_id']
         for atribute in atributes:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):
+                if atribute == 'facturation_date' and new_value == '':
+                    new_value = request.form.get('date')
                 setattr(transaction, atribute, new_value)
                 confirmation = add_confirmation(confirmation, str(atribute) + 
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
@@ -297,7 +304,7 @@ def file_membershipfee(transaction_id):
 @app.route("/accounting/cashbook", methods=['GET', 'POST'])
 @membership_required()
 def accounting_cashbook():
-    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.date.desc())
+    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.facturation_date.desc())
     banks = DB.Bank.query.all()
     years = [transaction.date.year for transaction in log]
     years = list(set(years)) # remove duplicates

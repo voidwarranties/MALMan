@@ -14,7 +14,7 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Datum</th>
+                <th>Facturatie Datum</th>
                 <th>Omschrijving</th>
                 <th>FactuurNr</th>
                 <th>Inkomsten</th>
@@ -27,11 +27,7 @@
             <tr>
                 <td>{{ transaction.id }}</td>
                 <td>
-                    {%- if transaction.reimbursement_date -%}
-                    {{ transaction.reimbursement_date }}
-                    {%- else -%}
-                    {{ transaction.date }}
-                    {%- endif -%}
+                    {{ transaction.facturation_date }}
                 </td>
                 <td>{{ transaction.description }}</td>
                 <td></td>

@@ -202,6 +202,10 @@ class Transaction(db.Model):
         # Could be used to tag (paper, or scanned) receipts to transactions.
     date = db.Column(db.DateTime())
         # date the transaction took place.
+    reimbursement_date = db.Column(db.DateTime())
+        # only applicable if it is a reimbursement request; the date the money was reimbursed
+    facturation_date = db.Column(db.DateTime())
+        # only applicable if we received an invoice
     amount = db.Column(db.Integer)
         # positive is it is a revenue, negative if it's an expense
     to_from = db.Column(db.String)
@@ -215,8 +219,6 @@ class Transaction(db.Model):
     bank = db.relationship("Bank", backref="Transaction", lazy="joined")
     bank_statement_number = db.Column(db.Integer)
         # number in the bank's account statements 
-    reimbursement_date = db.Column(db.DateTime())
-        # only applicable if it is a reimbursement request; the date the money was reimbursed
     date_filed = db.Column(db.DateTime())
         # if it is a reimbursement this is the date the request was approved
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))

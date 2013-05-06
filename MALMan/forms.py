@@ -155,6 +155,8 @@ class AddTransaction(Form):
     date = DateField('date (yyyy-mm-dd)', 
         [validators.Required(
             message='please enter a date using the specified formatting')])
+    facturation_date = DateField('facturation date (optional, yyyy-mm-dd)', 
+        [validators.Optional()])
     amount = DecimalField('amount (e.g. 1.52)', 
         [validators.NumberRange(message='please enter a positive or negative number')], places=2)
     description = TextField('description', [validators.Required()])
