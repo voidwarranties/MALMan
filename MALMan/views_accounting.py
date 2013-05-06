@@ -40,7 +40,7 @@ def accounting_log(page):
     args = {} 
     for item in ['is_revenue', 'bank_id', 'category_id']:
         field = request.args.get(item)
-        if field and field != '':
+        if field:
             setattr(form[item], 'data', field)
             if item == 'is_revenue':
                 if field == 'True':
@@ -255,13 +255,13 @@ def accounting_membershipfees(page):
     users = DB.User.query
 
     form = forms.FilterMembershipFees()
-    form.user.choices = [("0","filter by user")]
+    form.user.choices = [("","filter by user")]
     form.user.choices.extend([(str(user.id), user.name) for user in users])
 
-    filter = request.args.get('filters', '').split(":")
-    if len(filter) > 1: #split() seems to return empty lists, don't run on those
-        log = log.filter_by(user_id=filter[1])
-        setattr(form[filter[0]], 'data', filter[1])
+    user = request.args.get('user')
+    if user:
+        log = log.filter_by(user_id=user)
+        setattr(form.user, 'data', user)
     
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
@@ -269,12 +269,12 @@ def accounting_membershipfees(page):
         abort(404)
     pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
 
-    if form.validate_on_submit():   
-        url = '/accounting/membershipfees?filters='
-        if request.form['user'] != '0':
-            url += 'user' + ':' + request.form['user']
-        return redirect(url)
-   
+    if form.validate_on_submit():
+        args = request.view_args.copy()
+        if request.form['user'] != '':
+            args['user'] = request.form['user']
+        return redirect(url_for('accounting_membershipfees', **args))
+
     return render_template('accounting/membershipfees.html', log=log, pagination=pagination, form=form)
 
 
