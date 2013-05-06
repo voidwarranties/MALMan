@@ -308,9 +308,10 @@ def accounting_cashbook():
 
     # filter by bank and year
     bank_id = request.args.get('bank_id') or banks[0].id
-    year = int(request.args.get('year') or years[0])
     log = log.filter_by(bank_id=bank_id)
-    log = [transaction for transaction in log if transaction.date.year == year]
+    if years:
+        year = int(request.args.get('year') or years[0])
+        log = [transaction for transaction in log if transaction.date.year == year]
 
     if form.validate_on_submit():
         args = request.view_args.copy()
