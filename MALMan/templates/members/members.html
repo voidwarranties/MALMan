@@ -8,10 +8,10 @@
         <thead>
             <tr>
                 <th>name</th>
-                <th>date of birth</th>
+                {% if 'members' in current_user.roles %}<th>date of birth</th>{% endif %}
                 <th>email</th>
                 <th>telephone</th>
-                <th>address</th>
+                {% if 'members' in current_user.roles %}<th>address</th>{% endif %}
                 <th>member since</th>
                 <th>roles</th>
                 <th>dues</th>
@@ -23,7 +23,7 @@
         {%- for user in users %}
             <tr>
                 <td>{{ user.name }}</td>
-                <td>{{ user.date_of_birth }}</td>
+                {% if 'members' in current_user.roles %}<td>{{ user.date_of_birth }}</td>{% endif %}
                 <td>
                     {%- if user.show_email or 'members' in current_user.roles -%}{{- user.email -}}{%- else -%} hidden {%- endif -%}
                     {%- if not user.show_email and 'members' in current_user.roles  %} (hidden){%- endif -%}
@@ -32,7 +32,7 @@
                     {%- if user.show_telephone or 'members' in current_user.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
                     {%- if not user.show_telephone and 'members' in current_user.roles %} (hidden){%- endif -%}
                 </td>
-                <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>
+                {% if 'members' in current_user.roles %}<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>{% endif %}
                 <td>{{ user.member_since }}</td>
                 <td>
                     {%- set i = user.roles|length -%}
