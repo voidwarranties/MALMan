@@ -208,8 +208,8 @@ class ApproveReimbursement(AddTransaction):
 
 
 class FilterTransaction(Form):
-    amount = SelectField('type', 
-        choices = [("0","filter by type"), ("1", "revenues"), ("2", "expenses")])
+    is_revenue = SelectField('type', 
+        choices = [("","filter by type"), ("True", "revenues"), ("False", "expenses")])
     category_id = SelectField('category_id')
     bank_id = SelectField('bank')
     submit = SubmitField('filter')

@@ -32,38 +32,37 @@ def accounting_log(page):
     banks = DB.Bank.query.all()
 
     form = forms.FilterTransaction()
-    form.bank_id.choices = [("0","filter by bank")]
+    form.bank_id.choices = [("","filter by bank")]
     form.bank_id.choices.extend([(str(bank.id), bank.name) for bank in banks])
-    form.category_id.choices = [("0","filter by category")]
+    form.category_id.choices = [("","filter by category")]
     form.category_id.choices.extend(accounting_categories())
 
-    filters = request.args.get('filters', '').split(",")
-    for filter in filters:
-        filter = filter.split(":")
-        if len(filter) > 1: #split() seems to return empty lists, don't run on those
-            if filter[0] == "amount":
-                if filter[1] == '1':
+    args = {} 
+    for item in ['is_revenue', 'bank_id', 'category_id']:
+        field = request.args.get(item)
+        if field and field != '':
+            setattr(form[item], 'data', field)
+            if item == 'is_revenue':
+                if field == 'True':
                     log = log.filter(DB.Transaction.amount > 0)
                 else:
                     log = log.filter(DB.Transaction.amount < 0)
             else:
-                args = {filter[0]: filter[1]}
-                log = log.filter_by(**args)
-            setattr(form[filter[0]], 'data', filter[1])
-    
+                args[item] = field
+    log = log.filter_by(**args)
+
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
 
-    if form.validate_on_submit():   
-        url = '/accounting/log?filters='
-        fields = ["bank_id", "category_id", "amount"]
-        for field in fields:
-            if request.form[field] != '0':
-                url += field + ':' + request.form[field] + ","
-        return redirect(url)
+    if form.validate_on_submit():
+        args = request.view_args.copy()
+        for field in [ "is_revenue", "bank_id", "category_id"]:
+            if request.form[field] != '':
+                args[field] = request.form[field]
+        return redirect(url_for('accounting_log', **args))
     return render_template('accounting/log.html', log=log, form=form, pagination=pagination)
 
 @app.route("/accounting/accounting/remove_attachment_<transaction_id>_<attachment_id>", methods=['GET', 'POST'])
@@ -325,5 +324,3 @@ def accounting_cashbook():
         return redirect(url_for('accounting_cashbook', **args))
 
     return render_template('accounting/cashbook.html', log=log, form=form)
-
-

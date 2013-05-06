@@ -6,7 +6,7 @@
 {% block content %}
     <form method="post" class="cf" id="filter">
         {{ form.hidden_tag() }}
-        {{ form.amount }}
+        {{ form.is_revenue }}
         {{ form.bank_id }}
         {{ form.category_id }}
         {{ form.submit }}
