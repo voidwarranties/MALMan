@@ -41,10 +41,7 @@ def accounting_log(page):
         field = request.args.get(item)
         if field:
             setattr(form[item], 'data', field)
-            if item == 'is_revenue':
-                log = log.filter(DB.Transaction.category.has(is_revenue=field))
-            else:
-                log = log.filter(getattr(DB.Transaction, item) == field)
+            log = log.filter(getattr(DB.Transaction, item) == field)
 
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
