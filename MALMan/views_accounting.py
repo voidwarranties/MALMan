@@ -37,19 +37,14 @@ def accounting_log(page):
     form.category_id.choices = [("","filter by category")]
     form.category_id.choices.extend(accounting_categories())
 
-    args = {} 
     for item in ['is_revenue', 'bank_id', 'category_id']:
         field = request.args.get(item)
         if field:
             setattr(form[item], 'data', field)
             if item == 'is_revenue':
-                if field == 'True':
-                    log = log.filter(DB.Transaction.amount > 0)
-                else:
-                    log = log.filter(DB.Transaction.amount < 0)
+                log = log.filter(DB.Transaction.category.has(is_revenue=field))
             else:
-                args[item] = field
-    log = log.filter_by(**args)
+                log = log.filter(getattr(DB.Transaction, item) == field)
 
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items

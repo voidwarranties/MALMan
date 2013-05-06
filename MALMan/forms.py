@@ -209,7 +209,7 @@ class ApproveReimbursement(AddTransaction):
 
 class FilterTransaction(Form):
     is_revenue = SelectField('type', 
-        choices = [("","filter by type"), ("True", "revenues"), ("False", "expenses")])
+        choices = [("","filter by type"), ("1", "revenues"), ("0", "expenses")])
     category_id = SelectField('category_id')
     bank_id = SelectField('bank')
     submit = SubmitField('filter')
