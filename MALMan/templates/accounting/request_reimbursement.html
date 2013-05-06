@@ -6,7 +6,7 @@
 {% block content %}
     <form method="post" class="cf" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        {{ render_field_with_errors(form.date) }}
+        {{ render_field_with_errors(form.advance_date) }}
         {{ render_field_with_errors(form.amount) }}
         {{ render_field_with_errors(form.description) }}
         
@@ -17,5 +17,5 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {{ pikaday('date') }}
+    {{ pikaday('advance_date') }}
 {% endblock %}

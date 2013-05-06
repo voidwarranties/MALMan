@@ -102,11 +102,10 @@ def accounting_cashlog(page):
 @membership_required()
 def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
-    del form.bank_id, form.to_from, form.category_id
    
     if form.validate_on_submit():
         transaction = DB.Transaction(
-            date = request.form["date"], 
+            advance_date = request.form["advance_date"], 
             amount = "-" + request.form["amount"],
             description = request.form["description"],
             to_from = current_user.name)
@@ -142,7 +141,8 @@ def accounting_approve_reimbursement(transaction_id):
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories(IN=False)
     if form.validate_on_submit():
-        transaction.reimbursement_date = request.form["reimbursement_date"] or "0001-01-01"
+        transaction.date = request.form["date"]
+        transaction.facturation_date = request.form["date"]
         transaction.amount = request.form["amount"]
         transaction.to_from = request.form["to_from"]
         transaction.description = request.form["description"]

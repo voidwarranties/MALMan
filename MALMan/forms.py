@@ -190,13 +190,15 @@ class EditTransaction(AddTransaction):
     submit = SubmitField('edit transaction')
 
 
-class RequestReimbursement(AddTransaction):
-    date = DateField('date of advance (yyyy-mm-dd)', 
+class RequestReimbursement(Form):
+    advance_date = DateField('date of advance (yyyy-mm-dd)',
         [validators.Required(
             message='please enter a date using the specified formatting')])
     amount = DecimalField('amount advanced (e.g. 1.52)', 
         [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
-
+    description = TextField('description', [validators.Required()])
+    attachment = FileField("add attachment", 
+        [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('request reimbursement')
 
 
@@ -206,7 +208,9 @@ class Remove_Attachment(Form):
 
 
 class ApproveReimbursement(AddTransaction):
-    reimbursement_date = DateField('date of reimbursement (yyyy-mm-dd), (optional)', [validators.Optional()]) 
+    date = DateField('date of reimbursement (yyyy-mm-dd)',
+        [validators.Required(
+            message='please enter a date using the specified formatting')])
 
 
 class FilterTransaction(Form):

@@ -15,8 +15,8 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Facturation date</th>
-                <th>Reimbursement date</th>
+                <th>Transaction_date</th>
+                <th>Advance date</th>
                 <th>Amount</th>
                 <th>to/from</th>
                 <th>Description</th>
@@ -37,8 +37,8 @@
                 <td>{{ transaction.id }}</td>
                 <td>{{ transaction.date }}</td>
                 <td>
-                    {%- if transaction.reimbursement_date -%}
-                    {{ transaction.reimbursement_date }}
+                    {%- if transaction.advance_date -%}
+                    {{ transaction.advance_date }}
                     {%- else -%}
                     NA
                     {%- endif -%}

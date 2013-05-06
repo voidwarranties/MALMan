@@ -201,11 +201,11 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
         # Could be used to tag (paper, or scanned) receipts to transactions.
     date = db.Column(db.DateTime())
-        # date the transaction took place.
-    reimbursement_date = db.Column(db.DateTime())
-        # only applicable if it is a reimbursement request; the date the money was reimbursed
+        # date the bank transaction took place 
+    advance_date = db.Column(db.DateTime())
+        # only applicable if the money was advanced
     facturation_date = db.Column(db.DateTime())
-        # only applicable if we received an invoice
+        # same as 'date' if there is no invoice 
     amount = db.Column(db.Integer)
         # positive is it is a revenue, negative if it's an expense
     to_from = db.Column(db.String)
