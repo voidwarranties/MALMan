@@ -290,7 +290,7 @@ def accounting_membershipfees(page):
 def file_membershipfee(transaction_id):
     users = DB.User.query
     form = forms.FileMembershipFee()
-    form.user_id.choices = [(user.id, user.name) for user in users.all()]
+    form.user_id.choices = [(user.id, user.name) for user in users.order_by('name').all()]
     transaction = DB.Transaction.query.get(transaction_id)
 
     if form.validate_on_submit():
