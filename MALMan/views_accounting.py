@@ -180,6 +180,7 @@ def accounting_add_transaction():
             description = request.form["description"],
             category_id = request.form["category_id"],
             bank_id = request.form["bank_id"],
+            bank_statement_number = request.form["bank_statement_number"],
             date_filed = date.today(),
             filed_by_id = current_user.id
             )
@@ -229,7 +230,7 @@ def accounting_edit_transaction(transaction_id):
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         atributes = ['date', 'facturation_date', 'is_revenue', 'amount', 'to_from', 'description', 
-            'category_id', 'bank_id']
+            'category_id', 'bank_id', 'bank_statement_number']
         for atribute in atributes:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
