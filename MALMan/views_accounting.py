@@ -263,7 +263,7 @@ def accounting_membershipfees(page):
 
     form = forms.FilterMembershipFees()
     form.user.choices = [("","filter by user")]
-    form.user.choices.extend([(str(user.id), user.name) for user in users])
+    form.user.choices.extend([(str(user.id), user.name) for user in users.order_by('name')])
 
     user = request.args.get('user')
     if user:
