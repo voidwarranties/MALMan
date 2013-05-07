@@ -28,7 +28,7 @@ def accounting():
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @membership_required()
 def accounting_log(page):
-    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.id.desc())
+    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.date.desc())
     banks = DB.Bank.query.all()
 
     form = forms.FilterTransaction()
@@ -205,7 +205,7 @@ def accounting_add_transaction():
 def topup_bar_account(transaction_id):
     users = DB.User.query
     form = forms.TopUpBarAccount()
-    form.user_id.choices = [(user.id, user.name) for user in users.all()]
+    form.user_id.choices = [(user.id, user.name) for user in users.order_by('name').all()]
     transaction = DB.Transaction.query.get(transaction_id)
     if form.validate_on_submit():
         item = DB.BarAccountLog(
