@@ -73,6 +73,13 @@ class User(db.Model, UserMixin):
             else:
                 total += item.transaction.amount
         return total
+        
+    @property
+    def membership_due(self):
+    	for item in self.Membership_Fee:
+    	    #This will only be excecuted once, but this replaces a complicated if-construction
+            return item.until
+        return "no membership fees payed yet"
 
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
@@ -83,7 +90,7 @@ class MembershipFee(db.Model):
     __tablename__ = 'members_fees'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('members.id'))
-    user = db.relationship('User')
+    user = db.relationship('User', backref=db.backref("Membership_Fee", order_by="desc(MembershipFee.until)"), lazy="joined")
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
     transaction = db.relationship('Transaction')
     until = db.Column(db.DateTime())
