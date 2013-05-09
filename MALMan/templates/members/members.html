@@ -15,12 +15,13 @@
                 <th>member since</th>
                 <th>roles</th>
                 <th>dues</th>
-                {% if 'finances' in current_user.roles %}<th>bar account balance</th>{% endif %}
+                {% if 'finances' in current_user.roles %}<th>bar account balance</th>
+                <th>payed until</p>{% endif %}
                 {% if 'members' in current_user.roles %}<th>modify</th>{% endif %}
             </tr>
         </thead>
         <tbody>
-        {%- for user in users %}
+        {%- for user in users.order_by('name') %}
             <tr>
                 <td>{{ user.name }}</td>
                 {% if 'members' in current_user.roles %}<td>{{ user.date_of_birth }}</td>{% endif %}
@@ -32,7 +33,7 @@
                     {%- if user.show_telephone or 'members' in current_user.roles -%}{{- user.telephone -}}{%- else -%} hidden {%- endif -%}
                     {%- if not user.show_telephone and 'members' in current_user.roles %} (hidden){%- endif -%}
                 </td>
-                {% if 'members' in current_user.roles %}<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %}, {{ user.postalcode }} {{ user.city }}</td>{% endif %}
+                {% if 'members' in current_user.roles %}<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %} <br /> {{ user.postalcode }} {{ user.city }}</td>{% endif %}
                 <td>{{ user.member_since }}</td>
                 <td>
                     {%- set i = user.roles|length -%}
@@ -43,7 +44,8 @@
                     {%- endfor -%}
                 </td>
                 <td>€{{ user.membership_dues }}</td>
-                {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
+                {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>
+                <td>{{ user.membership_due}}</td>{% endif %}
                 {% if 'members' in current_user.roles%}<td><a href="{{ url_for('members_edit_member', userid=user.id)}}"><img src="static/edit.gif" alt="edit user settings" /></a></td>{% endif %}
             </tr>
         {% endfor %}

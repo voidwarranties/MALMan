@@ -51,7 +51,7 @@ class User(db.Model, UserMixin):
     telephone = db.Column(db.String(255))
     active_member = db.Column(db.Boolean(), default=False)
     member_since = db.Column(db.DateTime(), default="0000-00-00")
-    membership_dues = db.Column(db.Integer, default=0)
+    membership_dues = db.Column(db.Numeric(5, 2), default=0)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
@@ -79,7 +79,7 @@ class User(db.Model, UserMixin):
     	for item in self.Membership_Fee:
     	    #This will only be excecuted once, but this replaces a complicated if-construction
             return item.until
-        return "no membership fees payed yet"
+        return "0000-00-00"
 
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
