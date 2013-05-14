@@ -1,78 +1,33 @@
--- phpMyAdmin SQL Dump
--- version 3.3.7deb7
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: May 04, 2013 at 12:50 PM
--- Server version: 5.1.66
--- PHP Version: 5.3.3-7+squeeze15
-
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
---
--- Database: `MALMan`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_attachments`
---
 
 CREATE TABLE IF NOT EXISTS `accounting_attachments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `extention` text NOT NULL,
+  `extension` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
-
---
--- Dumping data for table `accounting_attachments`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_attachments_transactions`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `accounting_attachments_transactions` (
   `attachment_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `accounting_attachments_transactions`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_banks`
---
-
 CREATE TABLE IF NOT EXISTS `accounting_banks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
-
---
--- Dumping data for table `accounting_banks`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `accounting_banks` (`id`, `name`) VALUES
-(1, 'Argenta'),
-(2, 'ING'),
+(2, 'Bank 2'),
+(1, 'Bank 1'),
 (99, 'cash');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_cashregister`
---
 
 CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -81,18 +36,7 @@ CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `description` text NOT NULL,
   `datetime` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
-
---
--- Dumping data for table `accounting_cashregister`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_categories`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `accounting_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -100,57 +44,40 @@ CREATE TABLE IF NOT EXISTS `accounting_categories` (
   `legal_category` varchar(255) NOT NULL,
   `is_revenue` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
-
---
--- Dumping data for table `accounting_categories`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `accounting_categories` (`id`, `name`, `legal_category`, `is_revenue`) VALUES
-(1, 'rent', 'Diverse Goederen en Diensten', 0),
-(2, 'purchase of various supplies', 'Diverse Goederen en Diensten', 0),
-(3, 'investments', 'Diverse Goederen en Diensten', 0),
-(4, 'purchases of stock for the bar', 'Goederen en Diensten', 0),
-(5, 'sale of food and drinks', 'Verkopen Handelsgoederen', 1),
-(6, 'bar account', 'Verkopen Handelsgoederen', 1),
-(7, 'cash deposit', 'Transfer', 1),
-(8, 'membership dues', 'Bijdragen', 1),
-(9, 'workshop partipation', 'Giften', 1),
+(1, 'huur / vaste kosten', 'Diverse Goederen en Diensten', 0),
+(2, 'Aankopen diverse goederen en diensten', 'Diverse Goederen en Diensten', 0),
+(3, 'investeringen', 'Diverse Goederen en Diensten', 0),
+(4, 'aankopen verbruiksgoederen', 'Goederen en Diensten', 0),
+(5, 'verkoop verbruiksgoederen', 'Verkopen Handelsgoederen', 1),
+(6, 'Aanvullen drankrekening', 'Verkopen Handelsgoederen', 1),
+(7, 'Transfer', 'Transfer', 1),
+(8, 'Lidgelden', 'Bijdragen', 1),
+(9, 'Deelname workshops', 'Giften', 1),
 (10, 'feed the hackers', 'Giften', 1),
-(11, 'misc. donation', 'Gift', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `accounting_transactions`
---
+(11, 'Geld donaties', 'Gift', 1),
+(12, 'Bankkosten', 'Overige', 0),
+(13, 'Transfer', 'Transfer', 0);
 
 CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
+  `facturation_date` date DEFAULT NULL,
+  `advance_date` date DEFAULT NULL,
+  `is_revenue` tinyint(1) NOT NULL,
   `amount` decimal(11,2) NOT NULL,
   `description` text NOT NULL,
   `bank_id` tinyint(4) DEFAULT NULL,
   `bank_statement_number` int(11) DEFAULT NULL,
   `to_from` text NOT NULL,
   `category_id` tinyint(4) DEFAULT NULL,
-  `advance_date` date DEFAULT NULL,
   `date_filed` date DEFAULT NULL,
   `filed_by_id` tinyint(4) DEFAULT NULL,
   `reimbursement_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=140 ;
-
---
--- Dumping data for table `accounting_transactions`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bar_accounts_log`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bar_accounts_log` (
   `id` tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -160,40 +87,19 @@ CREATE TABLE IF NOT EXISTS `bar_accounts_log` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_id` (`transaction_id`),
   UNIQUE KEY `purchase_id` (`purchase_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
-
---
--- Dumping data for table `bar_accounts_log`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bar_categories`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bar_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `beschrijving` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `bar_categories`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 INSERT INTO `bar_categories` (`id`, `name`) VALUES
 (1, 'food'),
 (2, 'alcoholic drink'),
 (3, 'non-alcoholic drink');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bar_items`
---
 
 CREATE TABLE IF NOT EXISTS `bar_items` (
   `id` int(50) NOT NULL AUTO_INCREMENT,
@@ -207,21 +113,7 @@ CREATE TABLE IF NOT EXISTS `bar_items` (
   UNIQUE KEY `Naam` (`name`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=32 ;
-
---
--- Dumping data for table `bar_items`
---
-
-INSERT INTO `bar_items` (`id`, `name`, `stock_max`, `price`, `category_id`, `josto`, `active`) VALUES
-(31, 'fanta', 5, '1.20', 3, 1, 1),
-(28, 'club mate', 50, '1.50', 3, 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `bar_log`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `bar_log` (
   `id` int(50) NOT NULL AUTO_INCREMENT,
@@ -232,18 +124,7 @@ CREATE TABLE IF NOT EXISTS `bar_log` (
   `user_id` int(50) DEFAULT NULL,
   `transaction_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=308 ;
-
---
--- Dumping data for table `bar_log`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `members`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -260,27 +141,17 @@ CREATE TABLE IF NOT EXISTS `members` (
   `date_of_birth` date NOT NULL,
   `telephone` varchar(255) NOT NULL,
   `active_member` tinyint(1) NOT NULL,
-  `membership_dues` int(10) NOT NULL,
+  `membership_dues` decimal(5,2) NOT NULL,
   `member_since` date NOT NULL,
   `show_telephone` tinyint(1) NOT NULL,
   `show_email` tinyint(1) NOT NULL,
   `motivation` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=104 ;
-
---
--- Dumping data for table `members`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `members` (`id`, `email`, `password`, `active`, `confirmed_at`, `name`, `street`, `number`, `bus`, `postalcode`, `city`, `date_of_birth`, `telephone`, `active_member`, `membership_dues`, `member_since`, `show_telephone`, `show_email`, `motivation`) VALUES
-(103, 'root@vw.be', '$6$rounds=60000$eDbL726ahcRn5LhM$riPxJb2BVbN5JRFAlQMrp8F1HP86R0wn10CqNs/oH5wXIq/jaKRFUra0FV.ogx0J9EM5MV8DtoLuxeIqAovB61', 1, '2013-01-15 00:00:00', 'name', 'street', 10, '', 2000, 'city', '2000-05-28', '04865245851', 1, 10, '2013-01-09', 0, 0, 'Meh.');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `members_fees`
---
+(99, 'root@example.org', '$6$rounds=60000$YfZ2q37ELrC2grYP$n53T1tQ4HVyv6x1m3T7qh021twJp87rMR69S5a408rNDArb7t.sJpmyg5CHsdsMTbdUQ2j4GyvsimWGpAyj34/', 1, '2013-05-13 11:27:52', 'root', 'a', 1, '', 2, 'a', '1983-03-02', '111111111111111111', 1, 0.00, '0000-00-00', 0, 0, 'the foo is strong in this one');
 
 CREATE TABLE IF NOT EXISTS `members_fees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -288,18 +159,7 @@ CREATE TABLE IF NOT EXISTS `members_fees` (
   `transaction_id` int(11) NOT NULL,
   `until` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
---
--- Dumping data for table `members_fees`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `members_roles`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `members_roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -307,23 +167,12 @@ CREATE TABLE IF NOT EXISTS `members_roles` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
---
--- Dumping data for table `members_roles`
---
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 INSERT INTO `members_roles` (`id`, `name`, `description`) VALUES
 (1, 'bar', 'stock beheer van de bar'),
 (2, 'members', 'ledenbeheer'),
-(3, 'membership', 'is an active member of the hackerspace'),
-(4, 'finances', 'edit accounting information');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `members_roles_users`
---
+(3, 'finances', 'edit accounting information');
 
 CREATE TABLE IF NOT EXISTS `members_roles_users` (
   `user_id` int(11) DEFAULT NULL,
@@ -332,13 +181,11 @@ CREATE TABLE IF NOT EXISTS `members_roles_users` (
   KEY `role_id` (`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `members_roles_users`
---
-
 INSERT INTO `members_roles_users` (`user_id`, `role_id`) VALUES
-(103, 2),
-(103, 3),
-(103, 4),
-(103, 1);
+(99, 2),
+(99, 3),
+(99, 1);
 
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
