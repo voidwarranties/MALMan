@@ -4,7 +4,8 @@ flask-principal
 flask-security
 flask-uploads
 flask-sqlalchemy
-MySQL-python
+flask-basicauth
+mysql-python
 flup
 requests
 

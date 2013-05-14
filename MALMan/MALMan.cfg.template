@@ -20,3 +20,7 @@ SECURITY_EMAIL_SENDER = "MALMan", "no-reply@example.com"
 # security keys
 SECURITY_PASSWORD_SALT = 'super secret'
 SECRET_KEY = 'other secret'
+
+# API security
+BASIC_AUTH_USERNAME = 'api_user'
+BASIC_AUTH_PASSWORD = 'api_password'
