@@ -5,6 +5,9 @@ from os import path
 activate_this = path.join(path.dirname(path.abspath( __file__ )), 'env/bin/activate_this.py')
 execfile(activate_this, dict(__file__=activate_this))
 
+import thread
+thread.stack_size(524288)
+
 from flup.server.fcgi import WSGIServer
 
 sys.path.insert(0, path.dirname(path.abspath( __file__ )))
