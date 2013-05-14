@@ -55,7 +55,7 @@ You can now run MALMan in dev mode:
 	$ env/bin/python2.7 run.py 
 MALMan should be running on 0.0.0.0:5000
 you can log in with the following credentials: 
-	user: root@vw.be
+	user: root@example.org
 	password: password
 
 running as a WSGI app

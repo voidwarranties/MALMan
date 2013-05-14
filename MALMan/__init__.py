@@ -28,4 +28,6 @@ from MALMan import logs
 
 from MALMan import security
 
+from MALMan import api
+
 from MALMan import views_my_account, views_members, views_bar, views_accounting, views_errors

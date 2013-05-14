@@ -178,6 +178,7 @@ class CashTransaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
     purchase = db.relationship("BarLog")
+    is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
     description = db.Column(db.String())
     datetime = db.Column(db.DateTime())
@@ -265,3 +266,4 @@ class BarAccountLog(db.Model):
 # create missing tables in db
 # should only be run once, remove this when db is stable
 #db.create_all()
+
