@@ -32,6 +32,7 @@ INSERT INTO `accounting_banks` (`id`, `name`) VALUES
 CREATE TABLE IF NOT EXISTS `accounting_cashregister` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `purchase_id` int(11) DEFAULT NULL,
+  `is_revenue` tinyint(1) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `description` text NOT NULL,
   `datetime` datetime NOT NULL,
