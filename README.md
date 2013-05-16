@@ -1,94 +1,74 @@
 MALMan is a WSGI app
 
-installing MALMan
-=================
+Installation
+============
 
-In this guide we will set up MALMan at /srv/MALMan on Arch Linux, using Apache 
-as a webserver and MariaDB for the database. The example commands reflect this. 
-The needed commands will varry accondingly if using an other distibution, 
-webserver, database server or path.
-
-getting the code
+Getting the code
 ----------------
-create a directory to contain the whole program:
-    mkdir -p /usr/local/share/webapps
-    cd /usr/local/share/webapps
-get the source code:
-    git clone git://github.com/voidwarranties/MALMan.git
+Create a directory to contain the program and get the source code:
 
-setting up the virtualenv and getting dependencies
+    mkdir -p /usr/local/share/webapps/MALMan
+    git clone git://github.com/voidwarranties/MALMan.git /usr/local/share/webapps/MALMan
+
+From here on on I will asume you are located in the directory you installed MALMan in, so move into this directory.
+
+    cd /usr/local/share/webapps/MALMan
+
+Setting up the virtualenv and getting dependencies
 --------------------------------------------------
-install version 2 of python, pip and python2-virtualenv:
-    pacman -S python2 python2-pip python2-virtualenv
-create a virtualenv:
+You will need to have version 2 of python, pip and virtualenv installed on your system. On debian-based systems these are provided by the packages python, python-pip and python-virtualenv. If installing on Arch linux you will need the packages python2, python2-pip and python2-virtualenv and will have to substitute 'virtualenv-2' for 'virtualenv' in the following command.
+
+This will set up a isolated Python environment in the directory 'env' and install the python packages MALMan depends upon in this enviroment.
+
     virtualenv-2.7 env
-have pip install all required python packages from the python repos:
     env/bin/pip install -r requirements.txt
 
-setting up the database
+Setting up the database
 -----------------------
-install, configure and start MariaDB:
-    pacman -S mariadb libmariadbclient mariadb-clients
-    systemctl start mysqld
-    mysql_secure_installation
-    systemctl start mysqld
-log in to the MySQL server:
+You need to have a database server running on your system, such as MariaDB or MySQL. The following can also be done through a gui such as phpMyAdmin.
+
+Start a MySQL shell and create a database called 'MALMan'. Then create a user which we will also call MALMan and give him access to the database we just made. Substitute a secure password for 'password'. Close the shell and import the contents of database.sql into the MALMan database.
+
     mysql -p -u root
-create the MALMan database:
     > CREATE DATABASE MALMan;
-create a new user (replace 'password'):
     > CREATE USER MALMan@localhost IDENTIFIED BY 'password';
-grant our new user full access to the MALMan database:
     > GRANT ALL PRIVILEGES ON MALMan.* TO MALMan@localhost;
-close the MySQL shell:
     > EXIT
-import the MALMan database content into the empty MALMan database:
     mysql -u MALMan -p -h localhost MALMan < database.sql
 
-configuration
+Configuration
 -------------
-copy MALMan.cfg.template to MALMan.cfg 
+Copy MALMan.cfg.template to MALMan.cfg and fill in the apropriate MySQL, SMTP and security parameters.
+
     cp MALMan/MALMan.cfg{.template,}
-adapt the file to fit your setup, so MALMan can acces the MySQL server and SMTP server
 
-running in debug mode
+Running in debug mode
 ---------------------
-You can now run MALMan in dev mode:
-    env/bin/python2.7 run.py 
-MALMan should be running on 0.0.0.0:5000
-you can log in with the following credentials: 
-    user: root@example.org
-    password: password
+You should now be able to run MALMan in development mode. This isn't suitable for production use.
 
-running as a WSGI app
----------------------
-first disable the DEBUG mode in MALMan/MALMan.cfg.
+    env/bin/python run.py
 
-then add the following the following to /etc/httpd/conf/httpd.conf:
+MALMan should be running locally on 0.0.0.0:5000. There is a default account provided with username 'root@example.org' and password 'password'
+
+Running in production mode
+--------------------------
+Be sure to disable the DEBUG mode in MALMan/MALMan.cfg when running in production.
+
+MALMan can run as a WSGI app under Apache or as a fastcgi app under various other web servers. A runner is provided for both (MALMan.wsgi and MALMan.fcgi).
+
+To serve MALMan under apache, include this in /etc/httpd/conf/httpd.conf:
 
     LoadModule wsgi_module modules/mod_wsgi.so
-    WSGIScriptAlias /MALMan /srv/MALMan/MALMan.wsgi
-    <Directory /srv/MALMan>
+    WSGIScriptAlias /MALMan /usr/local/share/webapps/MALMan/MALMan.wsgi
+    <Directory /usr/local/share/webapps/MALMan>
         Order deny,allow
         Allow from all
         WSGIScriptReloading On
     </Directory>
 
-The last snippet tells apache to load the wsgi module and serve MALMan 
-(situated at /srv/MALMan) when the /MALMan directory is requested. 
-For example: http://0.0.0.0/MALMan
+This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MALMan.wsgi and serve it under /MALMan.
 
-Now restart apache to load the new config:
-    systemctl restart httpd
-
-MALMan should now be running on your server you can log in with the following 
-credentials: 
-    user: root@vw.be
-    password: password
-
-Running as a fastCGI app
-------------------------
-add this to your lighttpd config:
+Include this snippet in your config to serve MALMan under lighttpd:
 
     fastcgi.server = (
         "/MALMan" =>
@@ -100,5 +80,25 @@ add this to your lighttpd config:
         ))
     )
 
-Now restart lighttpd to load the new config:
-    systemctl restart lighttpd
+Beware that you can only run one fastcgi.server instance, so if you are already running a fastcgi app you have to append MALMan to the fastcgi.server instance:
+
+    fastcgi.server = (
+        [...]
+        ".php" =>
+        (( "host" => "127.0.0.1",
+            "port" => 1026,
+            "bin-path" => "/usr/local/bin/php"
+        )),
+        "/MALMan" =>
+        ((
+            "socket" => "/tmp/MALMan-fcgi.sock",
+               "bin-path" => "/usr/local/share/webapps/MALMan/MALMan.fcgi",
+            "check-local" => "disable",
+            "max-procs" => 1
+        )),
+        ".php4" =>
+        (( "host" => "127.0.0.1",
+            "port" => 1026
+         ))
+         [...]
+     )
