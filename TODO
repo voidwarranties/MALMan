@@ -1,3 +1,6 @@
+GIT:
+    add gitignore file
+
 Functionality
     add filtering to tables that need it
         bar log
