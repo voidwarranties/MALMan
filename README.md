@@ -20,7 +20,7 @@ You will need to have version 2 of python, pip and virtualenv installed on your 
 
 This will set up a isolated Python environment in the directory 'env' and install the python packages MALMan depends upon in this enviroment.
 
-    virtualenv-2.7 env
+    virtualenv env
     env/bin/pip install -r requirements.txt
 
 Setting up the database
