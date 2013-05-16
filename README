@@ -9,10 +9,10 @@ webserver, database server or path.
 getting the code
 ----------------
 create a directory to contain the whole program:
-	# mkdir -p /usr/local/share/webapps/MALMan
-	# cd /usr/local/share/webapps/MALMan
+	# mkdir -p /usr/local/share/webapps
+	# cd /usr/local/share/webapps
 get the source code:
-	# svn checkout http://discuss.voidwarranties.be/svn/MALMan/trunk/web/ .
+	# git clone git://github.com/voidwarranties/MALMan.git
 
 setting up the virtualenv and getting dependencies
 --------------------------------------------------
