@@ -124,7 +124,7 @@ class BarEditItem(wtforms_Form):
 
 class BarEdit(Form):
     # the view adds a BarEditItem form for each stock item
-    submit = SubmitField('add stock item')
+    submit = SubmitField('edit stock items')
 
 
 # this is not used, check views.py for more info
