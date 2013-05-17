@@ -56,8 +56,8 @@
 {% endmacro %}
 
 {% macro lightbox() %}
-    <script type="text/javascript" src="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Fancybox/source/jquery.fancybox.css') }}" media="screen" />
+    <script type="text/javascript" src="{{ url_for('static', filename='Fancybox/jquery.fancybox.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Fancybox/jquery.fancybox.css') }}" media="screen" />
     <script type="text/javascript">
         $(document).ready(function() {
             $(".lightbox").fancybox({
