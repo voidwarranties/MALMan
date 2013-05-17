@@ -1,3 +1,6 @@
+*.pyc
+
 env/
 /MALMan.log
-*.pyc
+/MALMan/MALMan.cfg
+/MALMan/attachments/*
