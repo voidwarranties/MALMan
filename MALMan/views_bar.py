@@ -11,7 +11,7 @@ from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
 @app.route("/bar")
 @membership_required()
 def bar():
-    items = DB.StockItem.query.filter_by(active=True).all()
+    items = DB.StockItem.query.filter_by(active=True).order_by(DB.StockItem.name.asc()).all()
     return render_template('bar/list_items.html', items=items)
 
 @app.route("/bar/activate_stockitems", methods=['GET', 'POST'])
@@ -54,7 +54,7 @@ def bar_remove_item(item_id):
 @app.route("/bar/edit_item_amounts", methods=['GET', 'POST'])
 @permission_required('bar')
 def bar_edit_item_amounts():
-    items = DB.StockItem.query.all()
+    items = DB.StockItem.query.order_by(DB.StockItem.name.asc()).all()
     for item in items:
         setattr(forms.BarEditAmounts, 'amount_' + str(item.id), 
             IntegerField(item.name, [validators.NumberRange(min=0, 
@@ -83,7 +83,7 @@ def bar_edit_item_amounts():
 @app.route("/bar/edit_items", methods=['GET', 'POST'])
 @permission_required('bar')
 def bar_edit_items():
-    items = DB.StockItem.query.all()
+    items = DB.StockItem.query.order_by(DB.StockItem.name.asc()).all()
     categories = DB.StockCategory.query.all()
     for item in items:
         setattr(forms.BarEdit, str(item.id), 
@@ -128,7 +128,7 @@ def bar_edit_items():
 @permission_required('bar')
 def bar_stockup():
     # get all stock items from josto
-    items = DB.StockItem.query.filter_by(josto=True).all()
+    items = DB.StockItem.query.filter_by(josto=True).order_by(DB.StockItem.name.asc()).all()
     # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
     class StockupForm(Form):
         submit = SubmitField('ok!')
