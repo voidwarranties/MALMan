@@ -5,7 +5,7 @@
 {% block content %}
 {%- from "_macros.html" import render_field_with_errors %}
     <form method="post" class="cf">
-        {%- for field in form|reverse -%}
+        {%- for field in form -%}
             {%- if field.name != 'csrf_token' and field.name != 'submit' -%}
                 {%- if field.name|truncate(length=6, killwords=True, end='') == "check_" %}
                     <p>
