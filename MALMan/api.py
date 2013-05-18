@@ -18,7 +18,7 @@ def list_stock():
         'id': str(item.id),
         'name': str(item.name),
         'price': str(item.price),
-        'category': str(item.category.name)} for item in stock ]
+        'category': str(item.category.name)} for item in stock if item.stock > 0 ]
     return Response(json.dumps(items), mimetype='application/json')
 
 
