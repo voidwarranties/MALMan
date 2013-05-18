@@ -25,10 +25,10 @@ def list_stock():
 @app.route("/api/user")
 @api_auth.required
 def list_users():
-    users = DB.User.query.filter(DB.User.bar_account_balance > 0 and DB.User.active_member == 1).order_by(DB.User.name).all()
+    users = DB.User.query.filter_by(active_member=1).order_by(DB.User.name).all()
     userlist = [ {
         'id': str(user.id),
-        'name': str(user.name)} for user in users ]
+        'name': str(user.name)} for user in users if user.bar_account_balance > 0 ]
     return Response(json.dumps(userlist), mimetype='application/json')
 
 
