@@ -1,6 +1,11 @@
+#compiled python files
 *.pyc
 
+#settings, logs, ...
 env/
 /MALMan.log
 /MALMan/MALMan.cfg
 /MALMan/attachments/*
+
+#gedit temp files
+*.*~
