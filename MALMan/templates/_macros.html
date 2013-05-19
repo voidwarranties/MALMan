@@ -49,7 +49,7 @@
 {% endmacro %}
 
 {% macro tablesorter(element)%}
-    <script type="text/javascript" src="{{ url_for('static', filename='jquery.tablesorter.js') }}"></script> 
+    <script type="text/javascript" src="//cdn.jsdelivr.net/tablesorter/2.0.5b/jquery.tablesorter.js"></script>
     <script type="text/javascript">
         $(function() { $("{{element}}").tablesorter(); } ); 
     </script>
