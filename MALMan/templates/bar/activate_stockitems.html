@@ -4,7 +4,7 @@
 {% block title %}Activate stock items{% endblock %}
 {% block content %}
     {% if stockitems|list|count > 0 %}
-    <form method="POST" class="cf">
+    <form method="post" class="cf">
         {{ form.hidden_tag() }}
         {%- for stockitem in stockitems %}
         <dl>

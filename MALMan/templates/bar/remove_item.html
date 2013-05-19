@@ -5,7 +5,7 @@
 {% block content %}
     {% if stockitem %}
     <p>Are you sure you want to delete {{ stockitem.name }}?</p>
-    <form method="POST" class="cf">
+    <form method="post" class="cf">
         {{ form.hidden_tag() }}
         {{ form.submit }}
     </form>

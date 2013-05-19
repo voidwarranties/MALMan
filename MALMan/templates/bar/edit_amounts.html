@@ -4,7 +4,7 @@
 
 {% block title %}Edit stock amount{% endblock %}
 {%- block content %}
-    <form method="POST" class="cf">
+    <form method="post" class="cf">
     {{ form.hidden_tag() }}
     {%- for item in form -%}
         {% if item.name != 'csrf_token' and item.name != 'submit'  %}

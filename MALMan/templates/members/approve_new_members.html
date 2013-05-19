@@ -4,7 +4,7 @@
 {% block title %}New members{% endblock %}
 {% block content %}
     {% if new_members|list|count > 0 %}
-    <form method="POST" class="cf">
+    <form method="post" class="cf">
         {{ form.hidden_tag() }}
         {%- for user in new_members %}
         <dl>

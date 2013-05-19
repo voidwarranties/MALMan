@@ -4,7 +4,7 @@
 
 {% block title %}Edit my account{% endblock %}
 {% block content %}
-    <form method="POST" class="cf">
+    <form method="post" class="cf">
         {{ form.hidden_tag() }}
         <h2>Login info</h2>
         {{ render_field_with_errors(form.email) }}
