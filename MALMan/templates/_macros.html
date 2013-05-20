@@ -12,7 +12,7 @@
   <p>{{ field(**kwargs)|safe }}</p>
 {% endmacro %}
 
-{% macro render_pagination(pagination) %}
+{%- macro render_pagination(pagination) -%}
     {% if pagination.iter_pages()|list|count > 1 %}
     <div class=pagination>
     {%- for page in pagination.iter_pages() %}
@@ -31,9 +31,9 @@
     {% endif %}
     </div>
     {% endif %}
-{% endmacro %}
+{%- endmacro -%}
 
-{% macro pikaday(element) %}
+{%- macro pikaday(element) -%}
     <script src="{{ url_for('static', filename='Pikaday/moment.js') }}"></script>
     <script src="{{ url_for('static', filename='Pikaday/pikaday.js') }}"></script>
     <script>
@@ -46,16 +46,16 @@
             }
         });
     </script>
-{% endmacro %}
+{%- endmacro -%}
 
-{% macro tablesorter(element)%}
+{%- macro tablesorter(element) -%}
     <script type="text/javascript" src="//cdn.jsdelivr.net/tablesorter/2.0.5b/jquery.tablesorter.js"></script>
     <script type="text/javascript">
         $(function() { $("{{element}}").tablesorter(); } ); 
     </script>
-{% endmacro %}
+{%- endmacro -%}
 
-{% macro lightbox() %}
+{%- macro lightbox() -%}
     <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.4/jquery.fancybox.js"></script>
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fancybox/2.1.4/jquery.fancybox.css" media="screen" />
     <script type="text/javascript">
@@ -67,7 +67,6 @@
                     },
                 }
             });
-
         });
     </script>
-{% endmacro %}
+{%- endmacro -%}
