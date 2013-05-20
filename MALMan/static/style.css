@@ -20,23 +20,23 @@ a[href^="#"] {
 }
 
 /* tables */
-table {
+.broadtable {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
-table th {
+.broadtable th {
     background-color: #DDD;
     margin: 4px;
     padding:4px;
 }
-td {
+.broadtable td {
     padding: 4px;
 }
-tr {
+.broadtable tr {
     border-bottom: 1px solid #DDD;
 }
-tr:hover {
+.broadtable tr:hover {
     background-color: #F7F7F7;
 }
 .headerSortUp {
