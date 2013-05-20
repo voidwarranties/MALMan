@@ -7,7 +7,6 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Pikaday/pikaday.css') }}" />
         <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         {%- endblock -%}
     </head>
     <body>
@@ -92,6 +91,7 @@
 {%- endwith -%}
 {%- block content -%}{%- endblock -%}
         </div>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {%- block scripts -%}{%- endblock -%}
     </body>
 </html>
