@@ -1,4 +1,4 @@
-{% from "_macros.html" import render_field_with_errors, pikaday %}
+{% from "_macros.html" import render_field_with_errors, datepicker %}
 {% extends "base.html" %}
 {% set category = "leden" %}
 
@@ -32,5 +32,5 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {{ pikaday('date_of_birth') }}
+    {{ datepicker('date_of_birth') }}
 {% endblock %}

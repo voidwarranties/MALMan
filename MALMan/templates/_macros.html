@@ -33,18 +33,14 @@
     {% endif %}
 {%- endmacro -%}
 
-{%- macro pikaday(element) -%}
-    <script src="{{ url_for('static', filename='Pikaday/moment.js') }}"></script>
-    <script src="{{ url_for('static', filename='Pikaday/pikaday.js') }}"></script>
+{%- macro datepicker(element) -%}
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.datepicker/0.1/js/bootstrap-datepicker.js"></script>
     <script>
-        var picker = new Pikaday({
-            field: document.getElementById("{{element}}"),
-            format: 'YYYY-MM-DD',
-            yearRange: [1900,2020],
-            onSelect: function() {
-                console.log(this.getMoment().format('YYYY-MM-DD'));
-            }
-        });
+        $(document).ready(function() {
+            $('#{{element}}').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        })
     </script>
 {%- endmacro -%}
 

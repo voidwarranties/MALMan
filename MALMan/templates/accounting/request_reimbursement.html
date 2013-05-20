@@ -1,4 +1,4 @@
-{% from "_macros.html" import render_field_with_errors, pikaday %}
+{% from "_macros.html" import render_field_with_errors, datepicker %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
 
@@ -17,5 +17,5 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {{ pikaday('advance_date') }}
+    {{ datepicker('advance_date') }}
 {% endblock %}

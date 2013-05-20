@@ -4,9 +4,10 @@
         {%- block head %}
         <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
         <title>MALMan -- {% block title -%}{%- endblock -%}</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Pikaday/pikaday.css') }}" />
         <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap-minimal.css') }}" />
+        <link type="text/css" rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.datepicker/0.1/css/datepicker.css" />
         <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/fancybox/2.1.4/jquery.fancybox.css" media="screen" />
         {%- endblock -%}
     </head>
