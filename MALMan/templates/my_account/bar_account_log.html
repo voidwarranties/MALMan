@@ -18,10 +18,10 @@
                 <td>{{ item.datetime|replace(' 00:00:00', '') }}</td>
                 {% if item.transaction %}
                     <td>Topped up account, transaction # {{ item.transaction.id }}
-                    <td><span class="green">+ €{{ item.transaction.amount }}</td>
+                    <td><span class="green">+ €{{ item.transaction.amount }}</span></td>
                 {% else %}
                     <td>bought a {{ item.purchase.item.name }}</td>
-                    <td><span class="red">- €{{ item.purchase.price }}</td>
+                    <td><span class="red">- €{{ item.purchase.price }}</span></td>
                 {% endif %}
             </tr>
         {% endfor %}
