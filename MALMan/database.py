@@ -261,9 +261,3 @@ class BarAccountLog(db.Model):
             return self.purchase.datetime
         else:
             return _date_to_datetime(self.transaction.date)
-        
-
-# create missing tables in db
-# should only be run once, remove this when db is stable
-#db.create_all()
-
