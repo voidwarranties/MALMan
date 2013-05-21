@@ -133,10 +133,6 @@ class BarStockup(Form):
     submit = SubmitField('ok!')
 
 
-class BarLog(Form):
-    revert = SubmitField('revert')
-
-
 class BarAddItem(Form):
     name = TextField('Name', [validators.Required()])
     price = DecimalField('Price (e.g. 1.52)', 

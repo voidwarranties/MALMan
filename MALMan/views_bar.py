@@ -162,8 +162,8 @@ def bar_stockup():
     return render_template('bar/stockup.html', form=form)
 
 
-@app.route("/bar/log", defaults={'page': 1}, methods=['GET', 'POST'])
-@app.route("/bar/log/page/<int:page>", methods=['GET', 'POST'])
+@app.route("/bar/log", defaults={'page': 1})
+@app.route("/bar/log/page/<int:page>")
 @permission_required('bar')
 def bar_log(page):
     log = DB.BarLog.query.order_by(DB.BarLog.datetime.desc())
@@ -172,13 +172,19 @@ def bar_log(page):
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
-    form = forms.BarLog()
-    if form.validate_on_submit():
-        changes = DB.BarLog.query.get(request.form["revert"])
-        DB.BarLog.remove(changes)
-        flash('The change was reverted', 'confirmation')
-        return redirect(request.url)
-    return render_template('bar/log.html', log=log, pagination=pagination, form=form)
+    return render_template('bar/log.html', log=log, pagination=pagination)
+
+
+@app.route("/bar/reverse_<int:item_id>", methods=['GET'])
+@permission_required('bar')
+def bar_reverse(item_id):
+    barlog_entry = DB.BarLog.query.get(item_id)
+    DB.BarLog.remove(barlog_entry)
+    flash('The change was reverted', 'confirmation')
+    prev = request.args.get('prev')
+    if prev:
+        return redirect(prev)
+    return redirect(url_for('bar_log'))
 
 
 @app.route("/bar/add_item", methods=['GET', 'POST'])

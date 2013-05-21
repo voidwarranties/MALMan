@@ -4,8 +4,6 @@
 
 {% block title %}Stock log{% endblock %}
 {% block content %}
-    <form class="empty" method="post">
-        {{ form.hidden_tag() }}
         <table id="stock_log" class="broadtable">
             <thead>
                 <tr>
@@ -31,12 +29,15 @@
                     <td>{% if entry.price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.price }}</span></td>
                     {% endif %}
                     <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
-                    <td>{{ form.revert(class_='revert',value=entry.id) }}</td>
+                    <td>
+                        <a href='{{ url_for('bar_reverse', item_id=entry.id, prev=request.url) }}'>
+                            <img src="{{ url_for('static', filename='revert.png') }}" class="revert" alt="reverse this log entry">
+                        </a>
+                    </td>
                 </tr>
             {%- endfor -%}
             </tbody>
         </table>
-    </form>
     {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}
