@@ -20,7 +20,7 @@
             <label style="width=100%">current attachments</label>
             <span style="float: right;text-align: right;">
                 {% for attachment in transaction.attachments -%}
-                <a style="text-align: right" class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">{{ attachment.filename }}</a>
+                <a style="text-align: right" class="lightbox" data-fancybox-group="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">{{ attachment.filename }}</a>
                 <a href="{{ url_for('accounting_remove_attachment', transaction_id= transaction.id, attachment_id=attachment.id) }}">delete</a> 
                 <br>
                 {% endfor %}

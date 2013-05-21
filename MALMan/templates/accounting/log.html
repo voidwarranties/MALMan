@@ -50,7 +50,7 @@
                 <td>{{ transaction.bank.name }}</td>
                 <td>
                     {% for attachment in transaction.attachments -%}
-                    <a class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
+                    <a class="lightbox" data-fancybox-group="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
                     {% endfor %}
                 </td>
                 {%- if 'finances' in current_user.roles %}
