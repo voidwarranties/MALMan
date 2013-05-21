@@ -7,7 +7,7 @@
     <form method="post" class="cf">
         {{ form.hidden_tag() }}
         {%- for user in new_members %}
-        <dl>
+        <dl class="cf">
             <dt>name: </dt><dd>{{ user.name }}</dd>
             <dt>date of birth: </dt><dd>{{ user.date_of_birth }}</dd>
             <dt>email: </dt><dd>{{- user.email -}}</dd>
@@ -16,7 +16,6 @@
             <dt>registration date: </dt><dd>{{ user.member_since }}</dd>
             <dt>motivation: </dt><dd>{{ user.motivation|striptags }}</dd>
             <dt>{{ form['activate_' ~ user.id].label }}: </dt><dd>{{ form['activate_' ~ user.id] }}</dd>
-            <p></p>
         </dl>
         {% endfor %}
         {{ form.submit }}

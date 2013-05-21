@@ -101,7 +101,7 @@ form {
     border: 1px solid #AAA;
     padding: 5px;
 }
-form p {
+form p, form dl {
     border-bottom: 1px solid #CCC;
     padding-bottom: 5px;
     margin-bottom: 3px;
