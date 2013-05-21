@@ -36,7 +36,7 @@ def bar_activate_stockitems():
 
     return render_template('bar/activate_stockitems.html', stockitems=stockitems, form=form)
 
-@app.route("/bar_remove_<int:item_id>", methods=['GET', 'POST'])
+@app.route("/bar/remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('bar')
 def bar_remove_item(item_id):
     stockitem = DB.StockItem.query.get(item_id)
