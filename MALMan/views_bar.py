@@ -180,7 +180,7 @@ def bar_log(page):
 def bar_reverse(item_id):
     barlog_entry = DB.BarLog.query.get(item_id)
     # barlog_entry.bar_account_entry and barlog_entry.cash_transaction are lists, not elements
-    [DB.db.session.delete(transaction) for transaction in barlog_entry.bar_account_entry]
+    [DB.db.session.delete(transaction) for transaction in barlog_entry.bar_account_transaction]
     [DB.db.session.delete(transaction) for transaction in barlog_entry.cash_transaction]
     DB.db.session.delete(barlog_entry)
     DB.db.session.commit()
