@@ -179,7 +179,11 @@ def bar_log(page):
 @permission_required('bar')
 def bar_reverse(item_id):
     barlog_entry = DB.BarLog.query.get(item_id)
-    DB.BarLog.remove(barlog_entry)
+    # barlog_entry.bar_account_entry and barlog_entry.cash_transaction are lists, not elements
+    [DB.db.session.delete(transaction) for transaction in barlog_entry.bar_account_entry]
+    [DB.db.session.delete(transaction) for transaction in barlog_entry.cash_transaction]
+    DB.db.session.delete(barlog_entry)
+    DB.db.session.commit()
     flash('The change was reverted', 'confirmation')
     prev = request.args.get('prev')
     if prev:

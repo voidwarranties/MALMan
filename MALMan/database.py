@@ -148,11 +148,6 @@ class BarLog(db.Model):
     def __repr__(self):
         return '<id %r>' % self.id
 
-    def remove(entry):
-        """remove entry from BarLog table"""
-        db.session.delete(entry)
-        db.session.commit()
-
 
 class Bank(db.Model):
     """Define the acounting_banks database table"""
@@ -177,7 +172,7 @@ class CashTransaction(db.Model):
     __tablename__ = 'accounting_cashregister'
     id = db.Column(db.Integer, primary_key=True)
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
-    purchase = db.relationship("BarLog")
+    purchase = db.relationship('BarLog', backref="cash_transaction", lazy="joined")
     is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
     description = db.Column(db.String())
@@ -250,7 +245,7 @@ class BarAccountLog(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('members.id'))
     user = db.relationship('User', backref="bar_account_log", lazy="joined")
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
-    purchase = db.relationship('BarLog')
+    purchase = db.relationship('BarLog', backref="bar_account_transaction", lazy="joined")
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
     transaction = db.relationship('Transaction')
 
