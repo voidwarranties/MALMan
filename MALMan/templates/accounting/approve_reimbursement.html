@@ -22,7 +22,7 @@
                 {% for attachment in transaction.attachments -%}
                 <a style="text-align: right" class="lightbox" rel="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">{{ attachment.filename }}</a>
                 <a href="{{ url_for('accounting_remove_attachment', transaction_id=transaction.id, attachment_id=attachment.id) }}">delete</a> 
-                <br \>
+                <br>
                 {% endfor %}
             </span>
         <p></p>
