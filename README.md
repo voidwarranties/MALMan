@@ -68,9 +68,13 @@ To serve MALMan under apache, include this in /etc/httpd/conf/httpd.conf:
 
 This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MALMan.wsgi and serve it under /MALMan.
 
-Include this snippet in your config to serve MALMan under lighttpd:
+To serve with Lighttpd:
 
-    fastcgi.server = (
+1. enable fastcgi: # lighttpd-enable-mod fastcgi
+2. make a new file /etc/lighttpd/conf-available/15-fastcgi-MALMan.conf with this content:
+    
+
+    fastcgi.server += (
         "/MALMan" =>
         ((
             "socket" => "/tmp/MALMan-fcgi.sock",
@@ -79,6 +83,25 @@ Include this snippet in your config to serve MALMan under lighttpd:
             "max-procs" => 1
         ))
     )
+    
+OR FOR DEBIAN:
+
+    fastcgi.server += (
+        "/MALMan" =>
+    	((
+    	    "socket" => "/tmp/MALMan-fcgi.sock",
+       		"bin-path" => "/usr/local/share/webapps/MALMan/MALMan.debian6.fcgi",
+        	"check-local" => "disable",
+        	"max-procs" => 1
+
+    	))
+	)
+
+    
+3. enable the new config: lighttpd-enable-mod fastcgi-MALMan
+4. change owner of the files to www-data: chown www-data:www-data /usr/local/share/webapps/MALMan -R
+4. restart lighttpd: service lighttpd restart
+5. you can find your website at http://localhost/MALMan.fcgi (or using the ip / a linked domain if hosted remotely)
 
 Beware that you can only run one fastcgi.server instance, so if you are already running a fastcgi app you have to append MALMan to the fastcgi.server instance:
 
