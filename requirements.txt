@@ -1,11 +1,11 @@
-flask
-flask-login
-flask-principal
-flask-security
-flask-uploads
-flask-sqlalchemy
-flask-basicauth
-mysql-python
+Flask
+Flask-Login
+Flask-Principal
+Flask-Security
+Flask-Uploads
+Flask-SQLAlchemy
+Flask-BasicAuth
+MySQL-python
 flup
 requests
 
