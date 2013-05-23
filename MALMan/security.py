@@ -36,13 +36,3 @@ def before_request():
         user = DB.User.query.get(current_user.id)
         session['email'] = user.email
         session['roles'] = [role.name for role in user.roles]
-
-## I don't think we need this bit, the function is already defined by flask_security/core.py
-# @identity_loaded.connect_via(app)
-# def on_identity_loaded(sender, identity):
-#     # Update the roles that a user can provide
-#     if hasattr(identity, 'id'):
-#         account = DB.User.query.filter_by(id=identity.id).first()
-#         if account:
-#             for role in account.roles:
-#                 identity.provides.add(RoleNeed(role))
