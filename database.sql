@@ -151,9 +151,6 @@ CREATE TABLE IF NOT EXISTS `members` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-INSERT INTO `members` (`id`, `email`, `password`, `active`, `confirmed_at`, `name`, `street`, `number`, `bus`, `postalcode`, `city`, `date_of_birth`, `telephone`, `active_member`, `membership_dues`, `member_since`, `show_telephone`, `show_email`, `motivation`) VALUES
-(99, 'root@example.org', '$6$rounds=60000$YfZ2q37ELrC2grYP$n53T1tQ4HVyv6x1m3T7qh021twJp87rMR69S5a408rNDArb7t.sJpmyg5CHsdsMTbdUQ2j4GyvsimWGpAyj34/', 1, '2013-05-13 11:27:52', 'root', 'a', 1, '', 2, 'a', '1983-03-02', '111111111111111111', 1, 0.00, '0000-00-00', 0, 0, 'the foo is strong in this one');
-
 CREATE TABLE IF NOT EXISTS `members_fees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,

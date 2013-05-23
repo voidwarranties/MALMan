@@ -48,7 +48,20 @@ You should now be able to run MALMan in development mode. This isn't suitable fo
 
     env/bin/python run.py
 
-MALMan should be running locally on 0.0.0.0:5000. There is a default account provided with username 'root@example.org' and password 'password'
+MALMan should be running locally on 0.0.0.0:5000.
+
+Activating the first account
+----------------------------
+After registering a user's membership request will have to be accepted by an
+active member with member management permissions. With no one to activate the
+first user we will have to do this outside of MALMan:
+
+    env/bin/python commands.py activate_member user@example.org
+    env/bin/python commands.py give_perm user@example.org members
+
+This will accept the membership request of your first user and grant her
+membership managment permissions, so further request can be handled through
+MALMan.
 
 Running in production mode
 --------------------------

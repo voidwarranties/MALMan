@@ -5,7 +5,7 @@ Flask-Security
 Flask-Uploads
 Flask-SQLAlchemy
 Flask-BasicAuth
+Flask-Script
 MySQL-python
 flup
 requests
-
