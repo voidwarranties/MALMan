@@ -46,9 +46,13 @@ Running in debug mode
 ---------------------
 You should now be able to run MALMan in development mode. This isn't suitable for production use.
 
-    env/bin/python run.py
+    env/bin/python commands.py runserver
 
 MALMan should be running locally on 0.0.0.0:5000.
+
+Specify a host to make it accessible to other devices on the network:
+
+    env/bin/python commands.py runserver --host ::
 
 Activating the first account
 ----------------------------
