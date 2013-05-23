@@ -25,7 +25,7 @@
         <tbody>
             {%- for transaction in log %}
             <tr>
-                <td>{{ transaction.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>
                     {{ transaction.facturation_date }}
                 </td>
