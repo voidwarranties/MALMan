@@ -317,7 +317,7 @@ def accounting_cashbook():
 
     form = forms.FilterCashbook()
     form.bank_id.choices = [(str(bank.id), bank.name) for bank in banks]
-    form.year.choices = [(str(year), year) for year in years]
+    form.year.choices = [(year, year) for year in years]
 
     # filter by bank and year
     bank_id = request.args.get('bank_id') or banks[0].id
@@ -326,7 +326,7 @@ def accounting_cashbook():
     if years:
         year = int(request.args.get('year') or years[0])
         log = [transaction for transaction in log if transaction.date.year == year]
-        form.year.data = str(year)
+        form.year.data = year
 
     if form.validate_on_submit():
         args = request.view_args.copy()
