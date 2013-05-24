@@ -75,7 +75,11 @@
                 {%- if not membership or current_user.active_member -%}
                 {% if role == '' or role in current_user.roles %}
                     <li>
-                        <a href="{% if category == "login" %}url_for_security(ref){% else %}url_for(ref){% endif %}}}">{{ caption }}</a>
+                        {%- if category == 'login' -%}
+                        <a href="{{url_for_security(ref)}}">{{ caption }}</a>
+                        {%- else -%}
+                        <a href="{{url_for(ref)}}">{{ caption }}</a>
+                        {%- endif -%}
                     </li>
                 {%- endif -%}
                 {%- endif -%}
