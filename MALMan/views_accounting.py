@@ -316,13 +316,13 @@ def accounting_cashbook():
     years = list(set(years)) # remove duplicates
 
     form = forms.FilterCashbook()
-    form.bank_id.choices = [(str(bank.id), bank.name) for bank in banks]
+    form.bank.choices = [(bank.name, bank.name) for bank in banks]
     form.year.choices = [(year, year) for year in years]
 
     # filter by bank and year
-    bank_id = request.args.get('bank_id') or banks[0].id
-    log = log.filter_by(bank_id=bank_id)
-    form.bank_id.data = str(bank_id)
+    bank_name = request.args.get('bank') or banks[0].name
+    log = log.filter(DB.Transaction.bank.has(name=bank_name))
+    form.bank.data = bank_name
     if years:
         year = int(request.args.get('year') or years[0])
         log = [transaction for transaction in log if transaction.date.year == year]
@@ -330,7 +330,7 @@ def accounting_cashbook():
 
     if form.validate_on_submit():
         args = request.view_args.copy()
-        args['bank_id'] = request.form['bank_id']
+        args['bank'] = request.form['bank']
         args['year'] = request.form['year']
         return redirect(url_for('accounting_cashbook', **args))
 

@@ -226,6 +226,6 @@ class FilterMembershipFees(Form):
 
 
 class FilterCashbook(Form):
-    bank_id = SelectField('bank')
     year = SelectField('year', coerce=int)
+    bank = SelectField('bank')
     submit = SubmitField('go')
