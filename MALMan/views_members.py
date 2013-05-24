@@ -20,7 +20,7 @@ def members():
 def members_approve_new_members():
     new_members = DB.User.query.filter_by(active_member='0')
     for user in new_members:
-        setattr(forms.NewMembers, 'activate_' + str(user.id), 
+        setattr(forms.NewMembers, 'activate_' + str(user.id),
             BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
@@ -31,11 +31,11 @@ def members_approve_new_members():
                 setattr(user, 'active_member', True)
                 setattr(user, 'member_since', date.today())
                 DB.db.session.commit()
-                confirmation = add_confirmation(confirmation, 
+                confirmation = add_confirmation(confirmation,
                     user.email + " was made an active member")
         return_flash(confirmation)
         return redirect(request.url)
-    return render_template('members/approve_new_members.html', new_members=new_members, 
+    return render_template('members/approve_new_members.html', new_members=new_members,
         form=form)
 
 
@@ -48,17 +48,17 @@ def members_edit_member(userid):
     for role in roles:
         # check the checkbox if the user has the role
         if role in userdata.roles:
-            setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
+            setattr(forms.MembersEditAccount, 'perm_' + str(role.name),
                 BooleanField(role.name, default='y'))
         else:
-            setattr(forms.MembersEditAccount, 'perm_' + str(role.name), 
+            setattr(forms.MembersEditAccount, 'perm_' + str(role.name),
                 BooleanField(role.name))
     form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['name', 'date_of_birth', 'telephone', 'city', 
-            'postalcode', 'bus', 'number', 'street', 'show_telephone', 
+        atributes = ['name', 'date_of_birth', 'telephone', 'city',
+            'postalcode', 'bus', 'number', 'street', 'show_telephone',
             'show_email', 'active_member', 'membership_dues']
         atributes.extend([role for role in roles])
         for atribute in atributes:
@@ -80,7 +80,7 @@ def members_edit_member(userid):
                 else:
                     user = DB.User.query.get(userid)
                     setattr(user, atribute, new_value)
-                confirmation = add_confirmation(confirmation, str(atribute) + 
+                confirmation = add_confirmation(confirmation, str(atribute) +
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
                 DB.db.session.commit()
         return_flash(confirmation)

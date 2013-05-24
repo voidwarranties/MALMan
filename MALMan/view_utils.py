@@ -20,7 +20,7 @@ def add_confirmation(var, confirmation):
 
 
 def return_flash (confirmation):
-    """return a confirmation if something changed or an error if there are
+    """return a confirmation if sometshing changed or an error if there are
     no changes
     """
     if confirmation == app.config['CHANGE_MSG']:
@@ -35,10 +35,10 @@ def accounting_categories(IN=True, OUT=True):
     choices = []
     if IN:
         IN = [(str(category.id), category.name + " (IN)") for category in categories if category.is_revenue]
-        choices.extend(IN) 
+        choices.extend(IN)
     if OUT:
         OUT = [(str(category.id), category.name + " (OUT)") for category in categories if not category.is_revenue]
-        choices.extend(OUT) 
+        choices.extend(OUT)
     return choices
 
 
@@ -50,7 +50,7 @@ def membership_required():
             if not current_user.is_authenticated():
                 return current_app.login_manager.unauthorized()
             if not current_user.active_member:
-                flash ('You need to be aproved as a member to access this resource', 'error') 
+                flash ('You need to be aproved as a member to access this resource', 'error')
                 abort(403)
             return fn(*args, **kwargs)
         return decorated_view
@@ -65,11 +65,11 @@ def permission_required(*roles):
             if not current_user.is_authenticated():
                 return current_app.login_manager.unauthorized()
             if not current_user.active_member:
-                flash ('You need to be aproved as a member to access this resource', 'error') 
+                flash ('You need to be aproved as a member to access this resource', 'error')
                 abort(403)
             for role in roles:
                 if not Permission(RoleNeed(role)).can():
-                    flash('You need the permission \'' + str(role) + 
+                    flash('You need the permission \'' + str(role) +
                         '\' to access this resource.', 'error')
                     abort(403)
             return fn(*args, **kwargs)
@@ -122,7 +122,7 @@ app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 def upload_attachments(request, attachments, transaction, DB):
     confirmation = ""
     for uploaded_attachment in request.files.getlist('attachment'):
-        if uploaded_attachment.filename == '': 
+        if uploaded_attachment.filename == '':
             break
         # add the attachment to the accounting_attachments DB table
         extension = uploaded_attachment.filename.rsplit('.', 1)[1]

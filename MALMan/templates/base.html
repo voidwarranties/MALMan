@@ -24,7 +24,7 @@
 {%-    if category != "login" %}
             <ul class="menu cf">
                 <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="{{ url_for('index')}}">my account</a></li>
-            {% if current_user.active_member %}            
+            {% if current_user.active_member %}
                 <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="{{ url_for('members')}}">members</a></li>
                 <li class="{%- if category == "stock" -%}bold{%- endif -%}"><a href="{{ url_for('bar')}}">stock bar</a></li>
                 <li class="{%- if category == "accounting" -%}bold{%- endif -%}"><a href="{{ url_for('accounting')}}">accounting</a></li>
@@ -40,7 +40,7 @@
                 <li><a href="{{ url_for('account_edit_own_account') }}">edit my profile information</a></li>
                 <li><a href="{{ url_for('account_edit_own_password') }}">edit my password</a></li>
             </ul>
-{%- elif category == "leden" -%}            
+{%- elif category == "leden" -%}
             <ul class="menu cf">
                 <li><a href="{{ url_for('members') }}">memberlist</a></li>
                 {% if 'members' in current_user.roles %}

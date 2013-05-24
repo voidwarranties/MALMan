@@ -89,7 +89,7 @@ To serve with Lighttpd:
 
 1. enable fastcgi: # lighttpd-enable-mod fastcgi
 2. make a new file /etc/lighttpd/conf-available/15-fastcgi-MALMan.conf with this content:
-    
+
 
     fastcgi.server += (
         "/MALMan" =>
@@ -100,7 +100,7 @@ To serve with Lighttpd:
             "max-procs" => 1
         ))
     )
-    
+
 OR FOR DEBIAN:
 
     fastcgi.server += (
@@ -114,7 +114,7 @@ OR FOR DEBIAN:
     	))
 	)
 
-    
+
 3. enable the new config: lighttpd-enable-mod fastcgi-MALMan
 4. change owner of the files to www-data: chown www-data:www-data /usr/local/share/webapps/MALMan -R
 4. restart lighttpd: service lighttpd restart

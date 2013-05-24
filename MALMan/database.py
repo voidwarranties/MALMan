@@ -14,7 +14,7 @@ def _date_to_datetime(date):
 
     The time is set to 00:00:00
     '''
-    midnight = time(0, 0, 0) 
+    midnight = time(0, 0, 0)
     return datetime.combine(date, midnight)
 
 
@@ -58,7 +58,7 @@ class User(db.Model, UserMixin):
     show_email = db.Column(db.Boolean())
     motivation = db.Column(db.String())
     confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users, 
+    roles = db.relationship('Role', secondary=roles_users,
         backref=db.backref('Roleusers', lazy='dynamic'))
 
     def __str__(self):
@@ -73,7 +73,7 @@ class User(db.Model, UserMixin):
             else:
                 total += item.transaction.amount
         return total
-        
+
     @property
     def membership_due(self):
     	for item in self.Membership_Fee:
@@ -112,7 +112,7 @@ class StockItem(db.Model):
     @property
     def stock(self):
         # this might be improved
-        return sum(item.amount for item in self.purchases) 
+        return sum(item.amount for item in self.purchases)
 
     @property
     def stockup(self):
@@ -210,11 +210,11 @@ class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
         # Could be used to tag (paper, or scanned) receipts to transactions.
     date = db.Column(db.DateTime())
-        # date the bank transaction took place 
+        # date the bank transaction took place
     advance_date = db.Column(db.DateTime())
         # only applicable if the money was advanced
     facturation_date = db.Column(db.DateTime())
-        # same as 'date' if there is no invoice 
+        # same as 'date' if there is no invoice
     is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
         # positive is it is a revenue, negative if it's an expense
@@ -228,13 +228,13 @@ class Transaction(db.Model):
         # the bankaccount involved. cash transactions are considered an account too (id=99)
     bank = db.relationship("Bank", backref="Transaction", lazy="joined")
     bank_statement_number = db.Column(db.Integer)
-        # number in the bank's account statements 
+        # number in the bank's account statements
     date_filed = db.Column(db.DateTime())
         # if it is a reimbursement this is the date the request was approved
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
-    attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions, 
+    attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions,
         backref=db.backref('transactions', lazy='dynamic'))
 
 

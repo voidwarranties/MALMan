@@ -43,7 +43,7 @@ def authenticate_user(user_id):
         return str(user.bar_account_balance)
     return str(False)
 
-        
+
 @app.route("/api/purchase", methods=['POST'])
 @api_auth.required
 def purchase():
@@ -60,11 +60,11 @@ def purchase():
     if 'user_id' in request.form:
         user_id = int(request.form['user_id'])
         user = DB.User.query.get(user_id)
-        if not user: 
+        if not user:
             return str(False)
-    else: 
+    else:
         user_id = None
-         
+
     purchase = DB.BarLog(
         item_id = item.id,
         amount = -1,
@@ -89,6 +89,6 @@ def purchase():
             datetime = datetime.now())
         DB.db.session.add(transaction)
         DB.db.session.commit()
-    
+
     return str(True)
 

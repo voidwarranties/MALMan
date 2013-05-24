@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-import sys    
+import sys
 from os import path
 
 activate_this = path.join(path.dirname(path.abspath( __file__ )), 'env/bin/activate_this.py')

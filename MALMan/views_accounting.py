@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import (add_confirmation, return_flash, accounting_categories, 
+from MALMan.view_utils import (add_confirmation, return_flash, accounting_categories,
     permission_required, membership_required, Pagination, upload_attachments)
 
 from flask import render_template, request, redirect, flash, abort, url_for, send_file
@@ -63,10 +63,10 @@ def accounting_remove_attachment(transaction_id, attachment_id):
     if 'cancel' in request.form:
         flash("removing the attachment was canceled", "confirmation")
         return redirect(url_for('accounting_log'))
-    
+
     transaction = DB.Transaction.query.get(transaction_id)
     form = forms.Remove_Attachment()
-    
+
     if form.validate_on_submit():
         new_attachments = []
         for attachment in transaction.attachments:
@@ -76,7 +76,7 @@ def accounting_remove_attachment(transaction_id, attachment_id):
         DB.db.session.commit()
         flash("the attachment was removed", "confirmation")
         return redirect(url_for('accounting_edit_transaction', transaction_id=transaction.id))
-    
+
     return render_template('accounting/remove_attachment.html', form=form)
 
 
@@ -85,13 +85,13 @@ def accounting_remove_attachment(transaction_id, attachment_id):
 @permission_required('finances')
 def accounting_cashlog(page):
     log = DB.CashTransaction.query.order_by(DB.CashTransaction.id.desc())
-    
+
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
         abort(404)
     pagination = Pagination(page, app.config['ITEMS_PER_PAGE'], item_count)
-   
+
     return render_template('accounting/cashlog.html', log=log, pagination=pagination)
 
 
@@ -99,10 +99,10 @@ def accounting_cashlog(page):
 @membership_required()
 def accounting_request_reimbursement():
     form = forms.RequestReimbursement()
-   
+
     if form.validate_on_submit():
         transaction = DB.Transaction(
-            advance_date = request.form["advance_date"], 
+            advance_date = request.form["advance_date"],
             is_revenue = False,
             amount = request.form["amount"],
             description = request.form["description"],
@@ -176,7 +176,7 @@ def accounting_add_transaction():
             facturation_date = facturation_date,
             is_revenue = request.form["is_revenue"],
             amount = request.form["amount"],
-            to_from = request.form["to_from"], 
+            to_from = request.form["to_from"],
             description = request.form["description"],
             category_id = request.form["category_id"],
             bank_id = request.form["bank_id"],
@@ -188,7 +188,7 @@ def accounting_add_transaction():
         DB.db.session.commit()
 
         upload_attachments(request, attachments, transaction, DB)
-        
+
         if request.form["category_id"] == '6':
             id = DB.Transaction.query.order_by(DB.Transaction.id.desc()).first()
             return redirect(url_for('topup_bar_account', transaction_id=id.id))
@@ -229,27 +229,27 @@ def accounting_edit_transaction(transaction_id):
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['date', 'facturation_date', 'is_revenue', 'amount', 'to_from', 'description', 
+        atributes = ['date', 'facturation_date', 'is_revenue', 'amount', 'to_from', 'description',
             'category_id', 'bank_id', 'bank_statement_number']
         for atribute in atributes:
             old_value = getattr(transaction, str(atribute))
             new_value = request.form.get(atribute)
             if atribute == 'is_revenue':
-                if new_value == '1': 
-                    new_value = True 
-                elif new_value == '0': 
+                if new_value == '1':
+                    new_value = True
+                elif new_value == '0':
                     new_value = False
             if str(new_value) != str(old_value):
                 if atribute == 'facturation_date' and new_value == '':
                     new_value = request.form.get('date')
                 setattr(transaction, atribute, new_value)
-                confirmation = add_confirmation(confirmation, str(atribute) + 
+                confirmation = add_confirmation(confirmation, str(atribute) +
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
             transaction.date_filed
         DB.db.session.commit()
 
         uploadconfirmation = upload_attachments(request, attachments, transaction, DB)
-        
+
         confirmation = add_confirmation(confirmation, uploadconfirmation)
         return_flash(confirmation)
         return redirect(request.url)
@@ -270,7 +270,7 @@ def accounting_membershipfees(page):
     if user:
         log = log.filter_by(user_id=user)
         setattr(form.user, 'data', user)
-    
+
     item_count = len(log.all())
     log = log.paginate(page, app.config['ITEMS_PER_PAGE'], False).items
     if not log and page != 1:
@@ -304,7 +304,7 @@ def file_membershipfee(transaction_id):
         user = users.get(request.form["user_id"])
         flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
         return redirect(url_for('accounting_log'))
-    
+
     return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)
 
 @app.route("/accounting/cashbook", methods=['GET', 'POST'])

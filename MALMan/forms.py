@@ -2,8 +2,8 @@
 
 from MALMan import app
 from wtforms import Form as wtforms_Form
-from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField, 
-    DateField, IntegerField, SubmitField, SelectField, DecimalField, 
+from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField,
+    DateField, IntegerField, SubmitField, SelectField, DecimalField,
     TextAreaField, FileField, validators, EqualTo)
 from flask.ext.uploads import UploadSet, configure_uploads
 
@@ -19,25 +19,25 @@ class MembersEditOwnAccount(Form):
     email = TextField('Email', [
         validators.Email(message='please enter a valid email address')])
     name = TextField('Name', [validators.Required()])
-    date_of_birth = DateField('Date of birth (yyyy-mm-dd)', 
+    date_of_birth = DateField('Date of birth (yyyy-mm-dd)',
         [validators.Required(
             message='please enter a date using the specified formatting')])
     street = TextField('Street', [
         validators.Required()])
-    number = IntegerField('Number', 
-        [validators.NumberRange(min=0, 
+    number = IntegerField('Number',
+        [validators.NumberRange(min=0,
             message='please enter a positive number')])
     bus = TextField('Bus (optional)', [
         validators.Optional()])
-    postalcode = TextField('Postal code', 
-        [validators.NumberRange(min=0, 
-            message='please enter a positive number'), 
+    postalcode = TextField('Postal code',
+        [validators.NumberRange(min=0,
+            message='please enter a positive number'),
         validators.Required()])
     city = TextField('City', [
         validators.Required()])
-    telephone = TextField('Telephone (0xx.xxx.xxx)', 
-        [validators.Length(min=8, 
-            message='entry is not long enough to be a valid phone number'), 
+    telephone = TextField('Telephone (0xx.xxx.xxx)',
+        [validators.Length(min=8,
+            message='entry is not long enough to be a valid phone number'),
         validators.Required()])
     show_email = BooleanField('Display email address to other members')
     show_telephone = BooleanField('Display phone number to other members')
@@ -48,8 +48,8 @@ class MembersEditAccount(MembersEditOwnAccount):
     # some fields are added by the view
     active_member = BooleanField('Is an active member')
     membership_dues = DecimalField('Monthly dues (&euro;)', [
-        validators.NumberRange(min=0, 
-            message='please enter a positive number')]) 
+        validators.NumberRange(min=0,
+            message='please enter a positive number')])
     submit = SubmitField("edit account information")
 
 
@@ -65,9 +65,9 @@ class MembersEditPassword(Form):
 from flask_security.forms import ConfirmRegisterForm, unique_user_email
 class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
     '''The register form'''
-    motivation = TextAreaField('My motivation to become a member:', 
+    motivation = TextAreaField('My motivation to become a member:',
         [validators.Required()])
-    email = TextField('Email', [unique_user_email, 
+    email = TextField('Email', [unique_user_email,
         validators.Email(message='please enter a valid email address')])
     submit = SubmitField("create my account")
 
@@ -112,11 +112,11 @@ class BarEditAmounts(Form):
 class BarEditItem(wtforms_Form):
     # some fields are added by the view
     name = TextField('name', [validators.Required()])
-    price = DecimalField('price (e.g. 1.52)', 
-        [validators.NumberRange(min=0, 
+    price = DecimalField('price (e.g. 1.52)',
+        [validators.NumberRange(min=0,
             message='please enter a positive number')], places=2)
-    stock_max = IntegerField('Maximum stock', 
-        [validators.NumberRange(min=0, 
+    stock_max = IntegerField('Maximum stock',
+        [validators.NumberRange(min=0,
             message='please enter a positive number')])
     category_id = SelectField('category', coerce=int)
     josto = BooleanField('josto')
@@ -135,12 +135,12 @@ class BarStockup(Form):
 
 class BarAddItem(Form):
     name = TextField('Name', [validators.Required()])
-    price = DecimalField('Price (e.g. 1.52)', 
-        [validators.NumberRange(min=0, 
+    price = DecimalField('Price (e.g. 1.52)',
+        [validators.NumberRange(min=0,
             message='please enter a positive number')],
         places=2)
-    stock_max = IntegerField('Stock maximum', 
-        [validators.NumberRange(min=0, 
+    stock_max = IntegerField('Stock maximum',
+        [validators.NumberRange(min=0,
             message='please enter a positive number')])
     category_id = SelectField('Category', coerce=int)
     josto = BooleanField('Josto')
@@ -148,23 +148,23 @@ class BarAddItem(Form):
 
 
 class AddTransaction(Form):
-    date = DateField('date (yyyy-mm-dd)', 
+    date = DateField('date (yyyy-mm-dd)',
         [validators.Required(
             message='please enter a date using the specified formatting')])
-    facturation_date = DateField('facturation date (optional, yyyy-mm-dd)', 
+    facturation_date = DateField('facturation date (optional, yyyy-mm-dd)',
         [validators.Optional()])
-    is_revenue = SelectField('type', 
+    is_revenue = SelectField('type',
         choices = [(1, "revenue"), (0, "expense")], coerce=int)
-    amount = DecimalField('amount (e.g. 1.52)', 
+    amount = DecimalField('amount (e.g. 1.52)',
         [validators.NumberRange(message='please enter a positive or negative number')], places=2)
     description = TextField('description', [validators.Required()])
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
     category_id = SelectField('category')
-    bank_statement_number = IntegerField('bank statement number (optional)', 
-        [validators.Optional(), validators.NumberRange(min=0, 
+    bank_statement_number = IntegerField('bank statement number (optional)',
+        [validators.Optional(), validators.NumberRange(min=0,
             message='please enter a positive number')])
-    attachment = FileField("add attachment", 
+    attachment = FileField("add attachment",
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('file transaction')
 
@@ -176,14 +176,14 @@ class TopUpBarAccount(Form):
 
 class FileMembershipFee(Form):
     user_id = SelectField('Member', coerce=int)
-    until = DateField("This settles this member's membership dues until (yyyy-mm-dd)", 
+    until = DateField("This settles this member's membership dues until (yyyy-mm-dd)",
         [validators.Required(
             message='please enter a date using the specified formatting')])
     submit = SubmitField('file payment of membership fee')
 
 
 class EditTransaction(AddTransaction):
-    attachment = FileField("add attachment", 
+    attachment = FileField("add attachment",
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('edit transaction')
 
@@ -192,10 +192,10 @@ class RequestReimbursement(Form):
     advance_date = DateField('date of advance (yyyy-mm-dd)',
         [validators.Required(
             message='please enter a date using the specified formatting')])
-    amount = DecimalField('amount advanced (e.g. 1.52)', 
+    amount = DecimalField('amount advanced (e.g. 1.52)',
         [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
     description = TextField('description', [validators.Required()])
-    attachment = FileField("add attachment", 
+    attachment = FileField("add attachment",
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('request reimbursement')
 
@@ -212,7 +212,7 @@ class ApproveReimbursement(AddTransaction):
 
 
 class FilterTransaction(Form):
-    is_revenue = SelectField('type', 
+    is_revenue = SelectField('type',
         choices = [("","filter by type"), ("1", "revenues"), ("0", "expenses")])
     category_id = SelectField('category_id')
     bank_id = SelectField('bank')

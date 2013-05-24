@@ -39,8 +39,8 @@ def account_edit_own_account():
     form = forms.MembersEditOwnAccount(obj=userdata)
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city', 
-            'postalcode', 'bus', 'number', 'street', 'show_telephone', 
+        atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city',
+            'postalcode', 'bus', 'number', 'street', 'show_telephone',
             'show_email']
         for atribute in atributes:
             old_value = getattr(userdata, atribute)
@@ -52,11 +52,11 @@ def account_edit_own_account():
                 user = DB.User.query.get(current_user.id)
                 setattr(user, atribute, new_value)
                 DB.db.session.commit()
-                confirmation = add_confirmation(confirmation, atribute + 
+                confirmation = add_confirmation(confirmation, atribute +
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.url)
-    return render_template('my_account/edit_own_account.html', userdata=userdata, 
+    return render_template('my_account/edit_own_account.html', userdata=userdata,
         form=form)
 
 
