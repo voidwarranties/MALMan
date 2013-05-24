@@ -316,7 +316,7 @@ def accounting_cashbook():
     years = list(set(years)) # remove duplicates
 
     form = forms.FilterCashbook()
-    form.bank_id.choices = [(str(bank.id), bank.name) for bank in banks if bank.name != 'cash']
+    form.bank_id.choices = [(str(bank.id), bank.name) for bank in banks]
     form.year.choices = [(str(year), year) for year in years]
 
     # filter by bank and year
