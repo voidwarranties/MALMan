@@ -21,67 +21,67 @@
                 <span>you are not logged in (<a href="{{ url_for_security('login') }}">log in</a>)</span>
 {%- endif %}
             </div>
+            {%- set navigation = [
+                ('index', 'account', 'my account', '', ''),
+                ('members', 'leden', 'members', True, ''),
+                ('bar', 'stock', 'stock bar', True, ''),
+                ('accounting', 'accounting', 'accounting', True, '')
+            ] -%}
+            {%- set subnavigation = [
+                ('index', 'account', 'overview', '', ''),
+                ('account_bar_account', 'account', 'my bar account', True, ''),
+                ('account_edit_own_account', 'account', 'edit my profile information', '', ''),
+                ('account_edit_own_password', 'account', 'edit my password', True, ''),
+
+                ('members', 'leden', 'memberlist', True, ''),
+                ('members_approve_new_members', 'leden', 'new members', True, 'members'),
+
+                ('bar', 'stock', 'list stock', True, ''),
+                ('bar_edit_item_amounts', 'stock', 'edit stock amounts', True, 'bar'),
+                ('bar_edit_items', 'stock', 'edit stock items', True, 'bar'),
+                ('bar_activate_stockitems', 'stock', 'activate stock items', True, 'bar'),
+                ('bar_stockup', 'stock', 'stock up (Josto)', True, 'bar'),
+                ('bar_log', 'stock', 'stock log', True, 'bar'),
+                ('bar_add_item', 'stock', 'add stock item', True, 'bar'),
+
+                ('accounting', 'accounting', 'balance', True, ''),
+                ('accounting_log', 'accounting', 'transaction log', True, ''),
+                ('accounting_cashbook', 'accounting', 'cashbook', True, ''),
+                ('accounting_cashlog', 'accounting', 'running account log', True, 'finances'),
+                ('accounting_request_reimbursement', 'accounting', 'request reimbursement', True, ''),
+                ('accounting_approve_reimbursements', 'accounting', 'approve reimbursements', True, 'finances'),
+                ('accounting_add_transaction', 'accounting', 'add transaction', True, 'finances'),
+                ('accounting_membershipfees', 'accounting', 'membership fees', True, 'finances'),
+
+                ('login', 'login', 'login', '', ''),
+                ('register', 'login', 'register', '', ''),
+                ('forgot_password', 'login', 'forgot password', '', ''),
+                ('send_confirmation', 'login', 'confirm account', '', ''),
+            ] -%}
 {%-    if category != "login" %}
             <ul class="menu cf">
-                <li class="{%- if category == "account" -%}bold{%- endif -%}"><a href="{{ url_for('index')}}">my account</a></li>
-            {% if current_user.active_member %}
-                <li class="{%- if category == "leden" -%}bold{%- endif -%}"><a href="{{ url_for('members')}}">members</a></li>
-                <li class="{%- if category == "stock" -%}bold{%- endif -%}"><a href="{{ url_for('bar')}}">stock bar</a></li>
-                <li class="{%- if category == "accounting" -%}bold{%- endif -%}"><a href="{{ url_for('accounting')}}">accounting</a></li>
-            {%- endif -%}
+                {%- for ref, item_category, caption, membership, role in navigation -%}
+                {%- if not membership or current_user.active_member -%}
+                    <li{% if category == item_category %} class="bold"{% endif %}>
+                        <a href="{{ url_for(ref)}}">{{ caption }}</a>
+                    </li>
+                {%- endif -%}
+                {%- endfor -%}
             </ul>
 {%- endif -%}
-{%- if category == "account" -%}
             <ul class="menu cf">
-                <li><a href="{{ url_for('index')}}">overview</a></li>
-                {% if current_user.active_member %}
-                    <li><a href="{{ url_for('account_bar_account') }}">my bar account</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('account_edit_own_account') }}">edit my profile information</a></li>
-                <li><a href="{{ url_for('account_edit_own_password') }}">edit my password</a></li>
+            {%- for ref, item_category, caption, membership, role in subnavigation -%}
+                {%- if category == item_category -%}
+                {%- if not membership or current_user.active_member -%}
+                {% if role == '' or role in current_user.roles %}
+                    <li>
+                        <a href="{% if category == "login" %}url_for_security(ref){% else %}url_for(ref){% endif %}}}">{{ caption }}</a>
+                    </li>
+                {%- endif -%}
+                {%- endif -%}
+                {%- endif -%}
+            {%- endfor -%}
             </ul>
-{%- elif category == "leden" -%}
-            <ul class="menu cf">
-                <li><a href="{{ url_for('members') }}">memberlist</a></li>
-                {% if 'members' in current_user.roles %}
-                <li><a href="{{ url_for('members_approve_new_members')}}">new members</a></li>
-                {% endif %}
-            </ul>
-{%- elif category == "stock" -%}
-            <ul class="menu cf">
-                <li><a href="{{ url_for('bar') }}">list stock</a></li>
-                {% if 'bar' in current_user.roles %}
-                <li><a href="{{ url_for('bar_edit_item_amounts') }}">edit stock amounts</a></li>
-                <li><a href="{{ url_for('bar_edit_items') }}">edit stock items</a></li>
-                <li><a href="{{ url_for('bar_activate_stockitems') }}">activate stock items</a></li>
-                <li><a href="{{ url_for('bar_stockup') }}">stock up (Josto)</a></li>
-                <li><a href="{{ url_for('bar_log') }}">stock log</a></li>
-                <li><a href="{{ url_for('bar_add_item') }}">add stock item</a></li>
-                {% endif %}
-            </ul>
-{%- elif category == "accounting" -%}
-            <ul class="menu cf">
-                <li><a href="{{ url_for('accounting') }}">balance</a></li>
-                <li><a href="{{ url_for('accounting_log') }}">transaction log</a></li>
-                <li><a href="{{ url_for('accounting_cashbook') }}">cashbook</a></li>
-                {% if 'finances' in current_user.roles %}
-                <li><a href="{{ url_for('accounting_cashlog') }}">running account log</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('accounting_request_reimbursement') }}">request reimbursement</a></li>
-                {% if 'finances' in current_user.roles %}
-                <li><a href="{{ url_for('accounting_approve_reimbursements') }}">approve reimbursements</a></li>
-                <li><a href="{{ url_for('accounting_add_transaction') }}">add transaction</a></li>
-                <li><a href="{{ url_for('accounting_membershipfees') }}">membership fees</a></li>
-                {% endif %}
-            </ul>
-{%-    elif category == "login" -%}
-            <ul class="menu cf">
-                <li><a href="{{ url_for_security('login') }}">login</a></li>
-                <li><a href="{{ url_for_security('register') }}">register</a></li>
-                <li><a href="{{ url_for_security('forgot_password') }}">forgot password</a></li>
-                <li><a href="{{ url_for_security('send_confirmation') }}">confirm account</a></li>
-            </ul>
-{%- endif %}
 {%- with messages = get_flashed_messages(with_categories=true) -%}
       {%- if messages -%}
             <ul>
