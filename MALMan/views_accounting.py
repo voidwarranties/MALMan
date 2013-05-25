@@ -29,7 +29,7 @@ def accounting():
 @membership_required()
 def accounting_log(page):
     log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.date.desc())
-    banks = DB.Bank.query.all()
+    banks = DB.Bank.query.order_by(DB.Bank.id).all()
 
     form = forms.FilterTransaction()
     form.bank_id.choices = [("","filter by bank")]
@@ -133,7 +133,7 @@ def accounting_approve_reimbursements():
 @app.route("/accounting/approve_<int:transaction_id>", methods=['GET', 'POST'])
 @permission_required('finances')
 def accounting_approve_reimbursement(transaction_id):
-    banks = DB.Bank.query.all()
+    banks = DB.Bank.query.order_by(DB.Bank.id).all()
     transaction = DB.Transaction.query.get(transaction_id)
     form = forms.ApproveReimbursement(obj=transaction)
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
@@ -162,7 +162,7 @@ def accounting_approve_reimbursement(transaction_id):
 @app.route("/accounting/add_transaction", methods=['GET', 'POST'])
 @permission_required('finances')
 def accounting_add_transaction():
-    banks = DB.Bank.query.all()
+    banks = DB.Bank.query.order_by(DB.Bank.id).all()
     form = forms.AddTransaction()
     form.bank_id.choices = [(bank.id, bank.name) for bank in banks]
     form.category_id.choices = accounting_categories()
@@ -311,7 +311,7 @@ def file_membershipfee(transaction_id):
 @membership_required()
 def accounting_cashbook():
     log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.desc())
-    banks = DB.Bank.query.all()
+    banks = DB.Bank.query.order_by(DB.Bank.id).all()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
 
