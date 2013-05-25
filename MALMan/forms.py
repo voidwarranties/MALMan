@@ -7,6 +7,8 @@ from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField,
     TextAreaField, FileField, validators, EqualTo)
 from flask.ext.uploads import UploadSet, configure_uploads
 
+from flask_security.forms import ConfirmRegisterForm, unique_user_email
+
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
 
@@ -62,7 +64,6 @@ class MembersEditPassword(Form):
     submit = SubmitField("change my password")
 
 
-from flask_security.forms import ConfirmRegisterForm, unique_user_email
 class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
     '''The register form'''
     motivation = TextAreaField('My motivation to become a member:',
