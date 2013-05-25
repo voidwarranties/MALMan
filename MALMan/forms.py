@@ -1,16 +1,29 @@
 """Define the various forms used in MALMan"""
 
 from MALMan import app
+import MALMan.database as DB
+
 from wtforms import Form as wtforms_Form
 from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField,
     DateField, IntegerField, SubmitField, SelectField, DecimalField,
-    TextAreaField, FileField, validators, EqualTo)
+    TextAreaField, FileField, validators, EqualTo, ValidationError)
 from flask.ext.uploads import UploadSet, configure_uploads
 
 from flask_security.forms import ConfirmRegisterForm, unique_user_email
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
+
+def check_category(form, field):
+    """Checks if the category type matches the is_revenue field"""
+    is_revenue = form['is_revenue'].data
+    categories = DB.AccountingCategory.query.all()
+    revenue_categories = [str(category.id) for category in categories if category.is_revenue]
+    if field.data in revenue_categories and not is_revenue:
+        raise ValidationError('This is a revenue, please pick a corresponding category')
+    if field.data not in revenue_categories and is_revenue:
+        raise ValidationError('This is an expense, please pick a corresponding category')
+
 
 class NewMembers(Form):
     #some fields are added by the view
@@ -161,7 +174,7 @@ class AddTransaction(Form):
     description = TextField('description', [validators.Required()])
     bank_id = SelectField('bank', coerce=int)
     to_from = TextField('to/from', [validators.Required()])
-    category_id = SelectField('category')
+    category_id = SelectField('category', [check_category])
     bank_statement_number = IntegerField('bank statement number (optional)',
         [validators.Optional(), validators.NumberRange(min=0,
             message='please enter a positive number')])
