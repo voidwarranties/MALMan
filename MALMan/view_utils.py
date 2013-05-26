@@ -31,7 +31,7 @@ def return_flash (confirmation):
 
 def accounting_categories(IN=True, OUT=True):
     """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
-    categories = DB.AccountingCategory.query.all()
+    categories = DB.AccountingCategory.query.order_by(DB.AccountingCategory.id).all()
     choices = []
     if IN:
         IN = [(str(category.id), category.name + " (IN)") for category in categories if category.is_revenue]
