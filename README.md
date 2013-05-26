@@ -90,7 +90,6 @@ To serve with Lighttpd:
 1. enable fastcgi: # lighttpd-enable-mod fastcgi
 2. make a new file /etc/lighttpd/conf-available/15-fastcgi-MALMan.conf with this content:
 
-
     fastcgi.server += (
         "/MALMan" =>
         ((
@@ -119,26 +118,3 @@ OR FOR DEBIAN:
 4. change owner of the files to www-data: chown www-data:www-data /usr/local/share/webapps/MALMan -R
 4. restart lighttpd: service lighttpd restart
 5. you can find your website at http://localhost/MALMan.fcgi (or using the ip / a linked domain if hosted remotely)
-
-Beware that you can only run one fastcgi.server instance, so if you are already running a fastcgi app you have to append MALMan to the fastcgi.server instance:
-
-    fastcgi.server = (
-        [...]
-        ".php" =>
-        (( "host" => "127.0.0.1",
-            "port" => 1026,
-            "bin-path" => "/usr/local/bin/php"
-        )),
-        "/MALMan" =>
-        ((
-            "socket" => "/tmp/MALMan-fcgi.sock",
-               "bin-path" => "/usr/local/share/webapps/MALMan/MALMan.fcgi",
-            "check-local" => "disable",
-            "max-procs" => 1
-        )),
-        ".php4" =>
-        (( "host" => "127.0.0.1",
-            "port" => 1026
-         ))
-         [...]
-     )
