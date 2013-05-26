@@ -138,6 +138,9 @@ input[type="submit"] {
     text-align: center;
     padding: 1px 5px;
 }
+select option[disabled] {
+    display: none;
+}
 .empty {
     border: none;
     padding: 0;
