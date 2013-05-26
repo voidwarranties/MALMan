@@ -220,6 +220,7 @@ class Remove_Attachment(Form):
 
 
 class ApproveReimbursement(AddTransaction):
+    category_id = SelectField('category')
     date = DateField('date of reimbursement (yyyy-mm-dd)',
         [validators.Required(
             message='please enter a date using the specified formatting')])
