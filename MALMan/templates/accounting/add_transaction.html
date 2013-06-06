@@ -26,6 +26,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
+    window.onload = filtercategories;
     var is_revenue_field=document.getElementById("is_revenue");
     var category_id=document.getElementById("category_id");
     function swapoptions(revenues){
