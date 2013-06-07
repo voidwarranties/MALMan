@@ -307,15 +307,15 @@ def file_membershipfee(transaction_id):
 
     return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)
 
-@app.route("/accounting/cashbook", methods=['GET', 'POST'])
+@app.route("/accounting/kasboek", methods=['GET', 'POST'])
 @membership_required()
-def accounting_cashbook():
+def accounting_kasboek():
     log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.desc())
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
 
-    form = forms.FilterCashbook()
+    form = forms.FilterKasboek()
     form.bank.choices = [(bank.name, bank.name) for bank in banks]
     form.year.choices = [(year, year) for year in years]
 
@@ -332,6 +332,6 @@ def accounting_cashbook():
         args = request.view_args.copy()
         args['bank'] = request.form['bank']
         args['year'] = request.form['year']
-        return redirect(url_for('accounting_cashbook', **args))
+        return redirect(url_for('accounting_kasboek', **args))
 
-    return render_template('accounting/cashbook.html', log=log, form=form)
+    return render_template('accounting/kasboek.html', log=log, banks=banks, form=form)
