@@ -240,10 +240,11 @@ class FilterMembershipFees(Form):
     submit = SubmitField('filter')
 
 
-class FilterKasBoek(Form):
+class FilterKasboek(Form):
     year = SelectField('year', coerce=int)
     bank = SelectField('bank')
     submit = SubmitField('go')
+
 
 class FilterDagboek(Form):
     year = SelectField('year', coerce=int)
