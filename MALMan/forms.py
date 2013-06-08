@@ -244,3 +244,9 @@ class FilterKasBoek(Form):
     year = SelectField('year', coerce=int)
     bank = SelectField('bank')
     submit = SubmitField('go')
+
+class FilterDagboek(Form):
+    year = SelectField('year', coerce=int)
+    is_revenue = SelectField('type',
+        choices = [("revenues", "revenues"), ("expenses", "expenses")])
+    submit = SubmitField('go')

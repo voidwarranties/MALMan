@@ -1,0 +1,64 @@
+{% from "_macros.html" import tablesorter, render_pagination, lightbox %}
+{% extends "base.html" %}
+{% set category = "accounting" %}
+
+{% block title %}Dagboek{% endblock %}
+{% block content %}
+    <form method="post" class="cf" id="filter">
+        {{ form.hidden_tag() }}
+        <label style="float: left; width: auto; padding-right: 5px;">Type</label> {{ form.is_revenue }}
+        <label style="float: left; width: auto; padding-right: 5px;">Year</label> {{ form.year }}
+        {{ form.submit }}
+    </form>
+    <table id="transactions" class="broadtable">
+        <thead>
+            <tr>
+                <th>Nr</th>
+                <th>Datum</th>
+                <th>Omschrijving</th>
+                {%- for bank in banks %}
+                <th colspan="2">{{ bank }}</th>
+                {%- endfor %}
+                <th>Totaal</th>
+                {%- for category in legal_categories %}
+                <th>{{ category }}</th>
+                {%- endfor %}
+                <th colspan=2>Andere</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                {%- for bank in banks %}
+                <th>Nr</th>
+                <th>Bedrag</th>
+                {%- endfor %}
+                <th></th>
+                {%- for category in legal_categories %}
+                <th></th>
+                {%- endfor %}
+                <th>Bedrag</th>
+                <th>Omschrijving</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%- for transaction in transactions %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td>{{transaction.facturation_date}}</td>
+                <td>{{transaction.description}}</td>
+                {%- for bank in banks %}
+                <td>{{transaction['number_' + bank]}}</td>
+                <td>{{transaction['bank_' + bank]}}</td>
+                {%- endfor %}
+                <td><b>{{transaction.amount}}</b></td>
+                {%- for category in legal_categories %}
+                <td>{{transaction['category_' + category]}}</td>
+                {%- endfor %}
+                <td></td>
+                <td></td>
+            </tr>
+            {%- endfor %}
+        </tbody>
+    </table>
+{% endblock %}

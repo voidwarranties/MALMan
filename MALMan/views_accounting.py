@@ -335,3 +335,65 @@ def accounting_kasboek():
         return redirect(url_for('accounting_kasboek', **args))
 
     return render_template('accounting/kasboek.html', log=log, banks=banks, form=form)
+
+
+@app.route("/accounting/dagboek", methods=['GET', 'POST'])
+@membership_required()
+def accounting_dagboek():
+    log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.asc())
+    banks = DB.Bank.query.order_by(DB.Bank.id).all()
+    categories = DB.AccountingCategory.query.order_by(DB.AccountingCategory.id).all()
+    legal_categories = [category.legal_category for category in categories]
+    legal_categories = list(set(legal_categories)) # remove duplicates
+    legal_categories.sort()
+    years = [transaction.facturation_date.year for transaction in log]
+    years = list(set(years)) # remove duplicates
+
+    form = forms.FilterDagboek()
+    form.year.choices = [(year, year) for year in years]
+
+    # filter by type and year
+    type = request.args.get('type') or "revenues"
+    if type == "revenues":
+        is_revenue = True
+    else:
+        is_revenue = False
+    log = log.filter_by(is_revenue = is_revenue)
+    form.is_revenue.data = type
+
+    year = int(request.args.get('year') or years[0])
+    log = [transaction for transaction in log if transaction.date.year == year]
+    form.year.data = year
+
+    transactions=[]
+    used_banks=[]
+    for entry in log:
+        transaction = {}
+        transaction['id'] = entry.id
+        transaction['facturation_date'] = entry.facturation_date
+        transaction['description'] = entry.description
+        transaction['amount'] = entry.amount
+        for bank in banks:
+            if entry.bank_id == bank.id:
+                # transactions from the same bank
+                same_bank = [item for item in log if item.bank_id == bank.id]
+                newlist = sorted(same_bank, key=lambda k: k.facturation_date)
+                for position, item in enumerate(newlist):
+                    if item.id == entry.id:
+                        count = position + 1
+                transaction['number_' + str(bank.name)] = count
+                transaction['bank_' + str(bank.name)] = entry.amount
+                used_banks.append(bank.name)
+        for category in legal_categories:
+            if entry.category.legal_category == category:
+                transaction['category_' + category] = entry.amount
+        transactions.append(transaction)
+    used_banks = set(used_banks)
+
+    if form.validate_on_submit():
+        args = request.view_args.copy()
+        args['type'] = request.form['is_revenue']
+        args['year'] = request.form['year']
+        return redirect(url_for('accounting_dagboek', **args))
+
+    return render_template('accounting/dagboek.html', transactions=transactions, form=form, banks=used_banks, legal_categories=legal_categories)
