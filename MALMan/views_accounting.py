@@ -359,8 +359,8 @@ def accounting_dagboek():
         is_revenue = True
     else:
         is_revenue = False
-    log = log.filter_by(is_revenue = is_revenue)
     form.is_revenue.data = type
+    # we don't remove transactions yet because we need all of them for the count below
 
     # filter by year
     year = int(request.args.get('year') or years[0])
@@ -392,7 +392,8 @@ def accounting_dagboek():
         for category in legal_categories:
             if entry.category.legal_category == category:
                 transaction['category_' + category] = entry.amount
-        transactions.append(transaction)
+        if entry.is_revenue == is_revenue:
+            transactions.append(transaction)
     used_banks = set(used_banks)
 
     if form.validate_on_submit():
