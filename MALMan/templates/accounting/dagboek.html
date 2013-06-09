@@ -64,7 +64,7 @@
                 <th></th>
                 <th>{{ transactions|map(attribute='bank_' + bank)|reject('undefined')|sum }}</th>
                 {%- endfor %}
-                <th>{{ transactions|map(attribute=amount)|reject('undefined')|sum }}</th>
+                <th>{{ transactions|map(attribute='amount')|reject('undefined')|sum }}</th>
                 {%- for category in categories %}
                 <th>{{ transactions|map(attribute='category_' + category)|reject('undefined')|sum }}</th>
                 {%- endfor %}
