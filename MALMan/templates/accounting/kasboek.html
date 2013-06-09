@@ -26,18 +26,16 @@
             {%- for transaction in log %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>
-                    {{ transaction.facturation_date }}
-                </td>
+                <td>{{ transaction.facturation_date }}</td>
                 <td>{{ transaction.description }}</td>
                 <td></td>
-                {% if transaction.is_revenue %}
+                {%- if transaction.is_revenue %}
                 <td>{{ transaction.amount }}</td>
                 <td></td>
-                {% else %}
+                {%- else %}
                 <td></td>
                 <td>{{ transaction.amount }}</td>
-                {% endif%}
+                {%- endif %}
                 <td>{% if not transaction.is_revenue %}-{% endif %}{{ transaction.amount }}</td>
             </tr>
             {%- endfor %}
