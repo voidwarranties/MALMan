@@ -60,5 +60,22 @@
             </tr>
             {%- endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                {%- for bank in banks %}
+                <th></th>
+                <th>{{ transactions|map(attribute='bank_' + bank)|reject('undefined')|sum }}</th>
+                {%- endfor %}
+                <th>{{ transactions|map(attribute=amount)|reject('undefined')|sum }}</th>
+                {%- for category in legal_categories %}
+                <th>{{ transactions|map(attribute='category_' + category)|reject('undefined')|sum }}</th>
+                {%- endfor %}
+                <th></th>
+                <th></th>
+            </tr>
+        </tfoot>
     </table>
 {% endblock %}

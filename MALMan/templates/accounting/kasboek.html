@@ -40,5 +40,27 @@
             </tr>
             {%- endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                {%- set total_revenue = 0 %}
+                {%- set total_expense = 0 %}
+                {%- for transaction in log %}
+                    {%- if transaction.is_revenue %}
+                        {%- set total_revenue = total_revenue + transaction.amount %}
+                    {%- else %}
+                        {%- set total_expense = total_expense + transaction.amount %}
+                    {%- endif %}
+                {%- if loop.last %}
+                <th>{{ total_revenue }}</th>
+                <th>{{ total_expense }}</th>
+                <th>{{ total_revenue - total_expense }}</th>
+                {%- endif %}
+                {%- endfor %}
+            </tr>
+        </tfoot>
     </table>
 {% endblock %}
