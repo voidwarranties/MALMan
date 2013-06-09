@@ -23,7 +23,6 @@
                 {%- for category in legal_categories %}
                 <th>{{ category }}</th>
                 {%- endfor %}
-                <th colspan=2>Andere</th>
             </tr>
             <tr>
                 <th></th>
@@ -37,8 +36,6 @@
                 {%- for category in legal_categories %}
                 <th></th>
                 {%- endfor %}
-                <th>Bedrag</th>
-                <th>Omschrijving</th>
             </tr>
         </thead>
         <tbody>
@@ -55,8 +52,6 @@
                 {%- for category in legal_categories %}
                 <td>{{transaction['category_' + category]}}</td>
                 {%- endfor %}
-                <td></td>
-                <td></td>
             </tr>
             {%- endfor %}
         </tbody>
@@ -73,8 +68,6 @@
                 {%- for category in legal_categories %}
                 <th>{{ transactions|map(attribute='category_' + category)|reject('undefined')|sum }}</th>
                 {%- endfor %}
-                <th></th>
-                <th></th>
             </tr>
         </tfoot>
     </table>
