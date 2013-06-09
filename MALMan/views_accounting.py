@@ -106,6 +106,7 @@ def accounting_request_reimbursement():
             is_revenue = False,
             amount = request.form["amount"],
             description = request.form["description"],
+            reimbursement_comments = request.form["comments"],
             to_from = current_user.name)
         DB.db.session.add(transaction)
         DB.db.session.commit()

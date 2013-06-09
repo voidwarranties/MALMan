@@ -13,6 +13,7 @@
                 <th>Member</th>
                 <th>Description</th>
                 <th>Attachments</th>
+                <th>Comments</th>
                 <th>Approve</th>
             </tr>
         </thead>
@@ -28,6 +29,7 @@
                     <a class="lightbox" data-fancybox-group="{{ request.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
                 {% endfor %}
                 </td>
+                <td>{{ request.reimbursement_comments }}</td>
                 <td><a href="{{ url_for('accounting_approve_reimbursement', transaction_id=request.id)}}">approve!</a></td>
             </tr>
             {% endfor %}

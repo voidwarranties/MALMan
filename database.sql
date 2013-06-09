@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `category_id` tinyint(4) DEFAULT NULL,
   `date_filed` date DEFAULT NULL,
   `filed_by_id` tinyint(4) DEFAULT NULL,
+  `reimbursement_comments` text NOT NULL,
   `reimbursement_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

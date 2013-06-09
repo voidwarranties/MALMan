@@ -209,6 +209,7 @@ class RequestReimbursement(Form):
     amount = DecimalField('amount advanced (e.g. 1.52)',
         [validators.NumberRange(min=0, message='please enter a positive number')], places=2)
     description = TextField('description', [validators.Required()])
+    comments = TextField('comments (optional, e.g. how you prefer to be reimbursed)', [validators.Optional()])
     attachment = FileField("add attachment",
         [validators.file_allowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('request reimbursement')

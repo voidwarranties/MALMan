@@ -234,6 +234,7 @@ class Transaction(db.Model):
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
+    reimbursement_comments = db.Column(db.String)
     attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions,
         backref=db.backref('transactions', lazy='dynamic'))
 
