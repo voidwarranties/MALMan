@@ -389,9 +389,7 @@ def accounting_dagboek():
                 transaction['number_' + str(bank.name)] = count
                 transaction['bank_' + str(bank.name)] = entry.amount
                 used_banks.append(bank.name)
-        for category in legal_categories:
-            if entry.category.legal_category == category:
-                transaction['category_' + category] = entry.amount
+        transaction['category_' + entry.category.legal_category] = entry.amount
         if entry.is_revenue == is_revenue:
             transactions.append(transaction)
     used_banks = set(used_banks)
