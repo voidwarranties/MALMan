@@ -343,10 +343,6 @@ def accounting_kasboek():
 def accounting_dagboek():
     log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.asc())
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
-    categories = DB.AccountingCategory.query.order_by(DB.AccountingCategory.id).all()
-    legal_categories = [category.legal_category for category in categories]
-    legal_categories = list(set(legal_categories)) # remove duplicates
-    legal_categories.sort()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
 
@@ -370,6 +366,7 @@ def accounting_dagboek():
     # We build the list over here instead of in the template because the numbering is too complex
     transactions=[]
     used_banks=[]
+    used_categories=[]
     for entry in log:
         transaction = {}
         transaction['id'] = entry.id
@@ -392,7 +389,10 @@ def accounting_dagboek():
         transaction['category_' + entry.category.legal_category] = entry.amount
         if entry.is_revenue == is_revenue:
             transactions.append(transaction)
+            used_categories.append(entry.category.legal_category)
     used_banks = set(used_banks)
+    used_categories = list(set(used_categories))
+    used_categories.sort()
 
     if form.validate_on_submit():
         args = request.view_args.copy()
@@ -400,4 +400,4 @@ def accounting_dagboek():
         args['year'] = request.form['year']
         return redirect(url_for('accounting_dagboek', **args))
 
-    return render_template('accounting/dagboek.html', transactions=transactions, form=form, banks=used_banks, categories=legal_categories)
+    return render_template('accounting/dagboek.html', transactions=transactions, form=form, banks=used_banks, categories=used_categories)
