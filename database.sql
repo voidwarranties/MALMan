@@ -58,7 +58,7 @@ INSERT INTO `accounting_categories` (`id`, `name`, `legal_category`, `is_revenue
 (8, 'Lidgelden', 'Bijdragen', 1),
 (9, 'Deelname workshops', 'Giften', 1),
 (10, 'feed the hackers', 'Giften', 1),
-(11, 'Geld donaties', 'Gift', 1),
+(11, 'Geld donaties', 'Giften', 1),
 (12, 'Bankkosten', 'Overige', 0),
 (13, 'Transfer', 'Transfer', 0);
 
@@ -178,11 +178,6 @@ CREATE TABLE IF NOT EXISTS `members_roles_users` (
   KEY `user_id` (`user_id`),
   KEY `role_id` (`role_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-INSERT INTO `members_roles_users` (`user_id`, `role_id`) VALUES
-(99, 2),
-(99, 3),
-(99, 1);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
