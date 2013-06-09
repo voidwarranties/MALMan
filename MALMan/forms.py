@@ -24,6 +24,11 @@ def check_category(form, field):
     if field.data not in revenue_categories and is_revenue:
         raise ValidationError('This is an expense, please pick a corresponding category')
 
+def check_unique_stock_name(form, field):
+    """Checks if the stock item's name is unique"""
+    exists = DB.StockItem.query.filter_by(name=field.data).all()
+    if exists:
+        raise ValidationError('There is already a stockitem with this name')
 
 class NewMembers(Form):
     #some fields are added by the view
@@ -148,7 +153,7 @@ class BarStockup(Form):
 
 
 class BarAddItem(Form):
-    name = TextField('Name', [validators.Required()])
+    name = TextField('Name', [validators.Required(), check_unique_stock_name])
     price = DecimalField('Price (e.g. 1.52)',
         [validators.NumberRange(min=0,
             message='please enter a positive number')],
