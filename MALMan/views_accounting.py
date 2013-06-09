@@ -353,7 +353,7 @@ def accounting_dagboek():
     form = forms.FilterDagboek()
     form.year.choices = [(year, year) for year in years]
 
-    # filter by type and year
+    # filter by type
     type = request.args.get('type') or "revenues"
     if type == "revenues":
         is_revenue = True
@@ -362,10 +362,12 @@ def accounting_dagboek():
     log = log.filter_by(is_revenue = is_revenue)
     form.is_revenue.data = type
 
+    # filter by year
     year = int(request.args.get('year') or years[0])
     log = [transaction for transaction in log if transaction.date.year == year]
     form.year.data = year
 
+    # We build the list over here instead of in the template because the numbering is too complex
     transactions=[]
     used_banks=[]
     for entry in log:
@@ -376,10 +378,12 @@ def accounting_dagboek():
         transaction['amount'] = entry.amount
         for bank in banks:
             if entry.bank_id == bank.id:
-                # transactions from the same bank
-                same_bank = [item for item in log if item.bank_id == bank.id]
-                newlist = sorted(same_bank, key=lambda k: k.facturation_date)
-                for position, item in enumerate(newlist):
+                # get the transactions with the same bank, sort them by
+                # facturation date and find out how many transactions precede
+                # the current transaction
+                transactions_same_bank = [item for item in log if item.bank_id == bank.id]
+                transactions_same_bank.sort(key=lambda k: k.facturation_date)
+                for position, item in enumerate(transactions_same_bank):
                     if item.id == entry.id:
                         count = position + 1
                 transaction['number_' + str(bank.name)] = count
