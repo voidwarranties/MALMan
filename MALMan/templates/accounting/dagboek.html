@@ -20,7 +20,7 @@
                 <th colspan="2">{{ bank }}</th>
                 {%- endfor %}
                 <th>Totaal</th>
-                {%- for category in legal_categories %}
+                {%- for category in categories %}
                 <th>{{ category }}</th>
                 {%- endfor %}
             </tr>
@@ -33,7 +33,7 @@
                 <th>Bedrag</th>
                 {%- endfor %}
                 <th></th>
-                {%- for category in legal_categories %}
+                {%- for category in categories %}
                 <th></th>
                 {%- endfor %}
             </tr>
@@ -49,7 +49,7 @@
                 <td>{{transaction['bank_' + bank]}}</td>
                 {%- endfor %}
                 <td><b>{{transaction.amount}}</b></td>
-                {%- for category in legal_categories %}
+                {%- for category in categories %}
                 <td>{{transaction['category_' + category]}}</td>
                 {%- endfor %}
             </tr>
@@ -65,7 +65,7 @@
                 <th>{{ transactions|map(attribute='bank_' + bank)|reject('undefined')|sum }}</th>
                 {%- endfor %}
                 <th>{{ transactions|map(attribute=amount)|reject('undefined')|sum }}</th>
-                {%- for category in legal_categories %}
+                {%- for category in categories %}
                 <th>{{ transactions|map(attribute='category_' + category)|reject('undefined')|sum }}</th>
                 {%- endfor %}
             </tr>

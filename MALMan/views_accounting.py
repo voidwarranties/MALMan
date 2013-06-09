@@ -401,4 +401,4 @@ def accounting_dagboek():
         args['year'] = request.form['year']
         return redirect(url_for('accounting_dagboek', **args))
 
-    return render_template('accounting/dagboek.html', transactions=transactions, form=form, banks=used_banks, legal_categories=legal_categories)
+    return render_template('accounting/dagboek.html', transactions=transactions, form=form, banks=used_banks, categories=legal_categories)
