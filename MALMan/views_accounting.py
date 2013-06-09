@@ -310,12 +310,13 @@ def file_membershipfee(transaction_id):
 @app.route("/accounting/kasboek", methods=['GET', 'POST'])
 @membership_required()
 def accounting_kasboek():
-    log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.desc())
+    log = DB.Transaction.query.filter(DB.Transaction.facturation_date != None).order_by(DB.Transaction.facturation_date.asc())
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
 
     form = forms.FilterKasboek()
+
     form.bank.choices = [(bank.name, bank.name) for bank in banks]
     form.year.choices = [(year, year) for year in years]
 
