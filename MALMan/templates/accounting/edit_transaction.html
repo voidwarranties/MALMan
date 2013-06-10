@@ -1,4 +1,4 @@
-{% from "_macros.html" import render_field_with_errors, datepicker, lightbox, filtercategories %}
+{% from "_macros.html" import render_field_with_errors, datepicker, lightbox %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
 
@@ -32,7 +32,6 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {{ filtercategories() }}
     {{ lightbox() }}
     {{ datepicker('date') }}
     {{ datepicker('facturation_date') }}
