@@ -8,7 +8,7 @@
         {{ form.hidden_tag() }}
         {{ render_field_with_errors(form.date) }}
         {{ render_field_with_errors(form.facturation_date) }}
-        {{ render_field_with_errors(form.is_revenue, onchange="filtercategories()") }}
+        {{ render_field_with_errors(form.is_revenue, onchange="filtercategories('true')") }}
         {{ render_field_with_errors(form.amount) }}
         {{ render_field_with_errors(form.to_from) }}
         {{ render_field_with_errors(form.description) }}
@@ -25,7 +25,7 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {{ filtercategories() }}    
+    {{ filtercategories() }}
     {{ datepicker('date') }}
     {{ datepicker('facturation_date') }}
 {% endblock %}

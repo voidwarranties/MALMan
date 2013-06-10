@@ -84,13 +84,16 @@
         };
         return first;
     }
-    function filtercategories() {
+    function filtercategories(change_selected) {
         var is_revenue = is_revenue_field.options[is_revenue_field.selectedIndex].value;
         if (is_revenue === '1') {
-            category_id.selectedIndex = swapoptions(false);
+            first = swapoptions(false);
         } else if (is_revenue === '0') {
-            category_id.selectedIndex = swapoptions(true);
+            first = swapoptions(true);
         };
+        if (change_selected == 'true') {
+            category_id.selectedIndex = first;
+        }
     };
     </script>
 {%- endmacro -%}
