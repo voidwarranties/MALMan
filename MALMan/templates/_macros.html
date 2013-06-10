@@ -65,3 +65,33 @@
         });
     </script>
 {%- endmacro -%}
+
+{%- macro filtercategories() -%}
+    <script>
+    window.onload = filtercategories;
+    var is_revenue_field=document.getElementById("is_revenue");
+    var category_id=document.getElementById("category_id");
+    function swapoptions(revenues){
+        var first = ''
+        for (var i=0; i<category_id.length; i++){
+            if (category_id.options[i].text.indexOf('(IN)') >= 0) {
+                category_id.options[i].disabled = revenues;
+                if (first === '' && !revenues){ first = i };
+            } else {
+                category_id.options[i].disabled = !revenues;
+                if (first === '' && revenues){ first = i };
+            }
+        };
+        return first;
+    }
+    function filtercategories() {
+        var is_revenue = is_revenue_field.options[is_revenue_field.selectedIndex].value;
+        if (is_revenue === '1') {
+            category_id.selectedIndex = swapoptions(false);
+        } else if (is_revenue === '0') {
+            category_id.selectedIndex = swapoptions(true);
+        };
+    };
+    </script>
+{%- endmacro -%}
+
