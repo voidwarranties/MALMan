@@ -119,6 +119,7 @@ def accounting_request_reimbursement():
 
 
 @app.route('/accounting/attachments/<filename>')
+@membership_required()
 def accounting_attachment(filename):
     url= app.config['UPLOADED_ATTACHMENTS_DEST'] + '/' + filename
     return send_file(url, filename)
