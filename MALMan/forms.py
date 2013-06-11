@@ -107,12 +107,6 @@ class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
             motivation = self.motivation)
 
 
-## check if a name is alreasy in use
-# from MALMan.database import StockItem
-# def _unique_item_name(form, field):
-#    if StockItem.query.filter_by(name=field.data) is not None:
-#        raise ValidationError(field.data + ' is already a stock item')
-
 class BarRemoveItem(Form):
     submit = SubmitField('remove stock item')
 
