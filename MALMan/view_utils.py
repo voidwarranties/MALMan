@@ -56,13 +56,11 @@ def membership_required():
                 if start:
                     if start > datetime.date.today():
                         flash ("You will become a member in the future, but at the moment you're not. Odd.", 'error')
-                        abort(403)
                     if end and end > start:
                        flash ('You are no longer a member. Only members can access this resource', 'error')
-                       abort(403)
                 else:
                     flash ('You need to be aproved as a member to access this resource', 'error')
-                    abort(403)
+                abort(403)
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
