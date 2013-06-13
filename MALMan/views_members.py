@@ -6,7 +6,7 @@ from MALMan.view_utils import add_confirmation, return_flash, permission_require
 from flask import render_template, request, redirect
 from flask.ext.wtf import BooleanField
 
-from datetime import date
+import datetime
 
 @app.route("/members")
 @membership_required()
@@ -29,7 +29,7 @@ def members_approve_new_members():
             new_value = 'activate_' + str(user.id) in request.form
             if new_value != user.active_member:
                 setattr(user, 'active_member', True)
-                setattr(user, 'member_since', date.today())
+                setattr(user, 'member_since', datetime.date.today())
                 DB.db.session.commit()
                 confirmation = add_confirmation(confirmation,
                     user.email + " was made an active member")

@@ -6,7 +6,7 @@ try:
     from flask.ext.sqlalchemy import SQLAlchemy
 except ImportError:
     from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, time
+import datetime
 
 
 def _date_to_datetime(date):
@@ -15,7 +15,7 @@ def _date_to_datetime(date):
     The time is set to 00:00:00
     '''
     midnight = time(0, 0, 0)
-    return datetime.combine(date, midnight)
+    return datetime.datetime.combine(date, midnight)
 
 
 db = SQLAlchemy(app)
