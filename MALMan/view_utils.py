@@ -10,6 +10,7 @@ from functools import wraps
 from urlparse import urlparse
 from math import ceil
 from werkzeug import secure_filename
+import datetime
 
 def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
@@ -50,8 +51,18 @@ def membership_required():
             if not current_user.is_authenticated():
                 return current_app.login_manager.unauthorized()
             if not current_user.active_member:
-                flash ('You need to be aproved as a member to access this resource', 'error')
-                abort(403)
+                start = current_user.membership_start
+                end = current_user.membership_end
+                if start:
+                    if start > datetime.date.today():
+                        flash ("You will become a member in the future, but at the moment you're not. Odd.", 'error')
+                        abort(403)
+                    if end and end > start:
+                       flash ('You are no longer a member. Only members can access this resource', 'error')
+                       abort(403)
+                else:
+                    flash ('You need to be aproved as a member to access this resource', 'error')
+                    abort(403)
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
