@@ -11,14 +11,14 @@ import datetime
 @app.route("/members")
 @membership_required()
 def members():
-    users = DB.User.query.filter_by(active_member='1')
+    users = DB.User.query.filter_by(active_member=True)
     return render_template('members/members.html', users=users)
 
 
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('members')
 def members_approve_new_members():
-    new_members = DB.User.query.filter_by(active_member='0')
+    new_members = DB.User.query.filter_by(active_member=False)
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id),
             BooleanField('activate user'))

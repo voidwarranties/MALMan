@@ -12,7 +12,7 @@ from werkzeug.local import LocalProxy
 
 @app.route("/")
 def index():
-    if current_user and current_user.is_active() and DB.User.query.get(current_user.id).active_member:
+    if current_user and current_user.is_active() and current_user.active_member:
         # is an aproved member
         user = DB.User.query.get(current_user.id)
         return render_template('my_account/overview.html', user=user)
