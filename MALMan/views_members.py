@@ -18,7 +18,7 @@ def members():
 @app.route("/members/approve_new_members", methods=['GET', 'POST'])
 @permission_required('members')
 def members_approve_new_members():
-    new_members = DB.User.query.filter_by(active_member=False)
+    new_members = DB.User.query.filter_by(membership_start=None)
     for user in new_members:
         setattr(forms.NewMembers, 'activate_' + str(user.id),
             BooleanField('activate user'))
@@ -28,8 +28,7 @@ def members_approve_new_members():
         for user in new_members:
             new_value = 'activate_' + str(user.id) in request.form
             if new_value != user.active_member:
-                setattr(user, 'active_member', True)
-                setattr(user, 'member_since', datetime.date.today())
+                user.membership_start = datetime.date.today()
                 DB.db.session.commit()
                 confirmation = add_confirmation(confirmation,
                     user.email + " was made an active member")

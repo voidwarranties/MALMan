@@ -8,6 +8,8 @@ except ImportError:
     from flask_sqlalchemy import SQLAlchemy
 import datetime
 
+from sqlalchemy import and_, or_
+from sqlalchemy.ext.hybrid import hybrid_property
 
 def _date_to_datetime(date):
     '''Convert a date object to a datetime object
@@ -49,8 +51,8 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(255))
     date_of_birth = db.Column(db.DateTime())
     telephone = db.Column(db.String(255))
-    active_member = db.Column(db.Boolean(), default=False)
-    member_since = db.Column(db.DateTime(), default="0000-00-00")
+    membership_start = db.Column(db.DateTime())
+    membership_end = db.Column(db.DateTime())
     membership_dues = db.Column(db.Numeric(5, 2), default=0)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
@@ -81,6 +83,34 @@ class User(db.Model, UserMixin):
             return item.until
         return "0000-00-00"
 
+    @hybrid_property
+    def active_member(self):
+        '''Whether the user is a member at the moment.
+        This function is used when the propery is called through User.active_member'''
+        start = self.membership_start
+        end = self.membership_end
+        if start:
+            if end and start < end:
+                return False
+            if start <= datetime.date.today():
+                return True
+        return False
+
+    @active_member.expression
+    def active_member_sql(member):
+        '''Whether the user is a member at the moment.
+        This function is used when the propery is called by sqlalchemy functions such as filter()'''
+        start = member.membership_start
+        end = member.membership_end
+        is_member = and_(
+            start != None,
+            start <= datetime.date.today(),
+            or_(
+                end == None,
+                end < start
+            )
+        )
+        return is_member
 
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 
