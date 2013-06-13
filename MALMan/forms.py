@@ -66,7 +66,6 @@ class MembersEditOwnAccount(Form):
 
 class MembersEditAccount(MembersEditOwnAccount):
     # some fields are added by the view
-    active_member = BooleanField('Is an active member')
     membership_dues = DecimalField('Monthly dues (&euro;)', [
         validators.NumberRange(min=0,
             message='please enter a positive number')])

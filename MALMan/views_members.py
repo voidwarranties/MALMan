@@ -59,13 +59,13 @@ def members_edit_member(userid):
         confirmation = app.config['CHANGE_MSG']
         atributes = ['name', 'date_of_birth', 'telephone', 'city',
             'postalcode', 'bus', 'number', 'street', 'show_telephone',
-            'show_email', 'active_member', 'membership_dues']
+            'show_email', 'membership_dues']
         atributes.extend([role for role in roles])
         for atribute in atributes:
             if atribute in roles:
                 old_value = atribute in userdata.roles
                 new_value = 'perm_' + atribute.name in request.form
-            elif atribute in ['show_telephone', 'show_email', 'active_member']:
+            elif atribute in ['show_telephone', 'show_email']:
                 old_value = getattr(userdata, atribute)
                 new_value = atribute in request.form
             else:
