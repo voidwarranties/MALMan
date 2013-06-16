@@ -156,12 +156,6 @@ select option[disabled] {
     width: 50px !important;
     color: transparent;
 }
-.modify {
-    background: url(/static/edit.gif) 0px 0px no-repeat;
-    height: 20px;
-    width: 20px !important;
-    color: transparent;
-}
 
 /*new members*/
 dt, dd {
