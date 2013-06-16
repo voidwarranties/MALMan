@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% set category = "members" %}
+
+{% block title %}Remove member{% endblock %}
+{% block content %}
+    <p>Are you sure you want to delete {{ user.name }}?</p>
+    <form method="post" class="cf">
+        {{ form.hidden_tag() }}
+        {{ form.submit }}
+    </form>
+{% endblock %}

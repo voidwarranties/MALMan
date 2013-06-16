@@ -106,6 +106,10 @@ class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
             motivation = self.motivation)
 
 
+class MembersRemoveMember(Form):
+    submit = SubmitField('remove member')
+
+
 class BarRemoveItem(Form):
     submit = SubmitField('remove stock item')
 

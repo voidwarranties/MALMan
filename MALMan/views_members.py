@@ -1,9 +1,10 @@
+
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required
 
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.wtf import BooleanField
 
 import datetime
@@ -38,10 +39,31 @@ def members_approve_new_members():
         form=form)
 
 
-@app.route('/members/edit_<int:userid>', methods=['GET', 'POST'])
+@app.route("/members/remove_<int:user_id>", methods=['GET', 'POST'])
 @permission_required('members')
-def members_edit_member(userid):
-    userdata = DB.User.query.get(userid)
+def members_remove_member(user_id):
+    user = DB.User.query.get(user_id)
+    if not user:
+        flash("There is no user with this user id.","error")
+        abort(404)
+    if user.membership_end or not user.membership_start:
+        flash("This user is not a member.","error")
+        abort(404)
+    form = forms.MembersRemoveMember()
+    if form.validate_on_submit():
+        confirmation = app.config['CHANGE_MSG']
+        user.membership_end = datetime.date.today()
+        DB.db.session.commit()
+        confirmation = add_confirmation(confirmation,
+            user.email + " is no longer a member.")
+        return redirect(url_for('members'))
+    return render_template('members/remove_member.html', user=user, form=form)
+
+
+@app.route('/members/edit_<int:user_id>', methods=['GET', 'POST'])
+@permission_required('members')
+def members_edit_member(user_id):
+    userdata = DB.User.query.get(user_id)
     roles = DB.Role.query.all()
     # add roles to form
     for role in roles:

@@ -52,6 +52,11 @@
                         <span class="iconic pen_alt_fill"></span>
                         edit
                     </a>
+                    <br>
+                    <a href="{{ url_for('members_remove_member', user_id=user.id)}}">
+                        <span class="iconic x"></span>
+                        remove
+                    </a>
                     </td>
                 {% endif %}
             </tr>
