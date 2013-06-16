@@ -16,7 +16,7 @@ def _date_to_datetime(date):
 
     The time is set to 00:00:00
     '''
-    midnight = time(0, 0, 0)
+    midnight = datetime.time(0, 0, 0)
     return datetime.datetime.combine(date, midnight)
 
 
