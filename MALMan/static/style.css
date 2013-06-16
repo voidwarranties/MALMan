@@ -15,6 +15,11 @@
 .cf:after {
     clear: both;
 }
+a{
+    color: #000099;
+    text-decoration:none;
+}
+
 a[href^="#"] {
     color: #F00;
 }
