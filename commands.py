@@ -17,8 +17,7 @@ def activate_member(email):
         return 'There is no registered user with this email adress'
     if user.active_member:
         return "%s is already an active member" % email
-    setattr(user, 'active_member', True)
-    setattr(user, 'member_since', date.today())
+    setattr(user, 'membership_start', date.today())
     DB.db.session.commit()
     return "%s was made an active member" % email
 
