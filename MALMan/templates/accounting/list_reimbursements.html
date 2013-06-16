@@ -26,11 +26,20 @@
                 <td>{{ request.description }}</td>
                 <td>
                 {% for attachment in request.attachments %}
-                    <a class="lightbox" data-fancybox-group="{{ request.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
+                    <a class="lightbox" data-fancybox-group="{{ request.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">
+                        <span class="iconic paperclip"></span>
+                        attachment {{ loop.index }}
+                    </a>
+                    <br>
                 {% endfor %}
                 </td>
                 <td>{{ request.reimbursement_comments }}</td>
-                <td><a href="{{ url_for('accounting_approve_reimbursement', transaction_id=request.id)}}">approve!</a></td>
+                <td>
+                    <a href="{{ url_for('accounting_approve_reimbursement', transaction_id=request.id)}}">
+                        <span class="iconic check"></span>
+                        approve
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

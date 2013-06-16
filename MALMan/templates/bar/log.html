@@ -31,7 +31,8 @@
                     <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
                     <td>
                         <a href='{{ url_for('bar_reverse', item_id=entry.id, prev=request.url) }}'>
-                            <img src="{{ url_for('static', filename='revert.png') }}" class="revert" alt="reverse this log entry">
+                            <span class="iconic undo"></span>
+                            revert
                         </a>
                     </td>
                 </tr>

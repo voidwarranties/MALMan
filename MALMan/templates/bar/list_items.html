@@ -28,7 +28,12 @@
                 <td>{{ item.category.name }}</td>
                 <td>{{ item.josto }}</td>
                 {% if 'bar' in current_user.roles %}
-                <td><a href="{{ url_for('bar_remove_item', item_id=item.id) }}">remove item</a></td>
+                <td>
+                    <a href="{{ url_for('bar_remove_item', item_id=item.id) }}">
+                        <span class="iconic x"></span>
+                        remove
+                    </a>
+                </td>
                 {% endif %}
             </tr>
     {% endfor %}

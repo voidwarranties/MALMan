@@ -50,7 +50,11 @@
                 <td>{{ transaction.bank.name }}</td>
                 <td>
                     {% for attachment in transaction.attachments -%}
-                    <a class="lightbox" data-fancybox-group="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">attachment</a>
+                    <a class="lightbox" data-fancybox-group="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">
+                        <span class="iconic paperclip"></span>
+                        attachment {{ loop.index }}
+                    </a>
+                    <br>
                     {% endfor %}
                 </td>
                 {%- if 'finances' in current_user.roles %}
@@ -58,7 +62,10 @@
                 <td>{{ transaction.date_filed }}</td>
                 <td>{{ transaction.filed_by.name }}</td>
                 <td>
-                    <a href="{{ url_for('accounting_edit_transaction', transaction_id=transaction.id)}}"><img src="{{ url_for('static', filename='edit.gif') }}" alt="edit transaction" /></a>
+                    <a href="{{ url_for('accounting_edit_transaction', transaction_id=transaction.id)}}">
+                        <span class="iconic pen_alt_fill"></span>
+                        edit
+                    </a>
                 </td>
                 {%- endif %}
             </tr>
