@@ -1,15 +1,21 @@
+
 {% from "_macros.html" import tablesorter, render_pagination, lightbox %}
 {% extends "base.html" %}
 {% set category = "accounting" %}
 
 {% block title %}Dagboek{% endblock %}
 {% block content %}
+    {% if form.year.choices %}
     <form method="post" class="cf" id="filter">
         {{ form.hidden_tag() }}
         <label style="float: left; width: auto; padding-right: 5px;">Type</label> {{ form.is_revenue }}
         <label style="float: left; width: auto; padding-right: 5px;">Year</label> {{ form.year }}
         {{ form.submit }}
     </form>
+    {% endif %}
+    {% if not transactions %}
+    <p>There are no transactions here.</p>
+    {% else %}
     <table id="transactions" class="broadtable">
         <thead>
             <tr>
@@ -71,4 +77,5 @@
             </tr>
         </tfoot>
     </table>
+    {% endif %}
 {% endblock %}

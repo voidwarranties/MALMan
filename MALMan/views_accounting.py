@@ -324,7 +324,7 @@ def accounting_kasboek():
 
     # filter by bank and year
     bank_name = request.args.get('bank') or banks[0].name
-    log = log.filter(DB.Transaction.bank.has(name=bank_name))
+    log = log.filter(DB.Transaction.bank.has(name=bank_name)).all()
     form.bank.data = bank_name
     if years:
         year = int(request.args.get('year') or years[0])
@@ -361,9 +361,10 @@ def accounting_dagboek():
     # we don't remove transactions yet because we need all of them for the count below
 
     # filter by year
-    year = int(request.args.get('year') or years[0])
-    log = [transaction for transaction in log if transaction.date.year == year]
-    form.year.data = year
+    if years:
+        year = int(request.args.get('year') or years[0])
+        log = [transaction for transaction in log if transaction.date.year == year]
+        form.year.data = year
 
     # We build the list over here instead of in the template because the numbering is too complex
     transactions=[]

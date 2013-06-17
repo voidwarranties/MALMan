@@ -11,6 +11,9 @@
         {{ form.category_id }}
         {{ form.submit }}
     </form>
+    {% if not log %}
+    <p>There are no transactions here.</p>
+    {% else %}
     <table id="transactions" class="broadtable">
         <thead>
             <tr>
@@ -72,6 +75,7 @@
             {%- endfor %}
         </tbody>
     </table>
+    {% endif %}
     {{ render_pagination(pagination) }}
 {% endblock %}
 {% block scripts %}

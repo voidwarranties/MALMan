@@ -4,12 +4,17 @@
 
 {% block title %}Kasboek{% endblock %}
 {% block content %}
+    {% if form.year.choices %}
     <form method="post" class="cf" id="filter">
         {{ form.hidden_tag() }}
         <label style="float: left; width: auto; padding-right: 5px;">Bank</label> {{ form.bank }}
         <label style="float: left; width: auto; padding-right: 5px;">Year</label> {{ form.year }}
         {{ form.submit }}
     </form>
+    {% endif %}
+    {% if not log %}
+    <p>There are no transactions here.</p>
+    {% else %}
     <table id="transactions" class="broadtable">
         <thead>
             <tr>
@@ -63,4 +68,5 @@
             </tr>
         </tfoot>
     </table>
+    {% endif %}
 {% endblock %}
