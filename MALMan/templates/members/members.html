@@ -47,7 +47,7 @@
                 {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>
                 <td>{{ user.membership_due}}</td>{% endif %}
                 {% if 'members' in current_user.roles%}
-                <td>
+                <td class="actions">
                     <a href="{{ url_for('members_edit_member', user_id=user.id)}}">
                         <span class="iconic pen_alt_fill"></span>
                         edit

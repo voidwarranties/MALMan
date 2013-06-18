@@ -28,7 +28,7 @@
                 <td>{{ item.category.name }}</td>
                 <td>{{ item.josto }}</td>
                 {% if 'bar' in current_user.roles %}
-                <td>
+                <td class="actions">
                     <a href="{{ url_for('bar_remove_item', item_id=item.id) }}">
                         <span class="iconic x"></span>
                         remove

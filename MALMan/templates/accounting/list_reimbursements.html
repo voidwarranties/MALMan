@@ -24,7 +24,7 @@
                 <td>€{{ request.amount }}</td>
                 <td>{{ request.to_from }}</td>
                 <td>{{ request.description }}</td>
-                <td>
+                <td class="actions">
                 {% for attachment in request.attachments %}
                     <a class="lightbox" data-fancybox-group="{{ request.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">
                         <span class="iconic paperclip"></span>
@@ -34,7 +34,7 @@
                 {% endfor %}
                 </td>
                 <td>{{ request.reimbursement_comments }}</td>
-                <td>
+                <td class="actions">
                     <a href="{{ url_for('accounting_approve_reimbursement', transaction_id=request.id)}}">
                         <span class="iconic check"></span>
                         approve

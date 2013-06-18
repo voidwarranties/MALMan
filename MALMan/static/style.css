@@ -38,6 +38,9 @@ a[href^="#"] {
 .broadtable td {
     padding: 4px;
 }
+.broadtable td .actions {
+    white-space:nowrap;
+}
 .broadtable tr {
     border-bottom: 1px solid #DDD;
 }

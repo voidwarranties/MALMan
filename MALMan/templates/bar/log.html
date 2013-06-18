@@ -29,7 +29,7 @@
                     <td>{% if entry.price > 0 %}<span class="green">+{% else %}<span class="red">{% endif%}€{{ entry.price }}</span></td>
                     {% endif %}
                     <td>{% if entry.user %}{{ entry.user.name }}{% else %}cash{% endif %}</td>
-                    <td>
+                    <td class="actions">
                         <a href='{{ url_for('bar_reverse', item_id=entry.id, prev=request.url) }}'>
                             <span class="iconic undo"></span>
                             revert

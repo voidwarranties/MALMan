@@ -51,7 +51,7 @@
                 <td>{{ transaction.description }}</td>
                 <td>{{ transaction.category.name }}</td>
                 <td>{{ transaction.bank.name }}</td>
-                <td>
+                <td class="actions">
                     {% for attachment in transaction.attachments -%}
                     <a class="lightbox" data-fancybox-group="{{ transaction.id }}" href="{{ url_for('accounting_attachment', filename=attachment.filename) }}" target="_blank">
                         <span class="iconic paperclip"></span>
@@ -64,7 +64,7 @@
                 <td>{% if transaction.bank_statement_number%}{{transaction.bank_statement_number}}{% endif %}</td>
                 <td>{{ transaction.date_filed }}</td>
                 <td>{{ transaction.filed_by.name }}</td>
-                <td>
+                <td class="actions">
                     <a href="{{ url_for('accounting_edit_transaction', transaction_id=transaction.id)}}">
                         <span class="iconic pen_alt_fill"></span>
                         edit
