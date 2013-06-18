@@ -38,7 +38,7 @@ a[href^="#"] {
 .broadtable td {
     padding: 4px;
 }
-.broadtable td .actions {
+.broadtable .actions * {
     white-space:nowrap;
 }
 .broadtable tr {
