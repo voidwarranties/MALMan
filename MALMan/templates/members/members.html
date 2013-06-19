@@ -34,7 +34,7 @@
                     {%- if not user.show_telephone and 'members' in current_user.roles %} (hidden){%- endif -%}
                 </td>
                 {% if 'members' in current_user.roles %}<td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %} <br /> {{ user.postalcode }} {{ user.city }}</td>{% endif %}
-                <td>{{ user.member_since }}</td>
+                <td>{{ user.membership_start }}</td>
                 <td>
                     {%- set i = user.roles|length -%}
                     {%- for perm in user.roles|sort -%}
