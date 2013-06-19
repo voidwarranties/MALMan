@@ -106,7 +106,7 @@ def members_edit_member(user_id):
                     else:
                         DB.user_datastore.remove_role_from_user(userdata, atribute)
                 else:
-                    user = DB.User.query.get(userid)
+                    user = DB.User.query.get(user_id)
                     setattr(user, atribute, new_value)
                 confirmation = add_confirmation(confirmation, str(atribute) +
                     " = " + str(new_value) + " (was " + str(old_value) + ")")
