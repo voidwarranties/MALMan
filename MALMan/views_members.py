@@ -39,6 +39,13 @@ def members_approve_new_members():
         form=form)
 
 
+@app.route("/members/former_members")
+@permission_required('members')
+def members_former_members():
+    former_members = DB.User.query.filter(DB.User.membership_start <= DB.User.membership_end)
+    return render_template('members/former_members.html', users=former_members)
+
+
 @app.route("/members/remove_<int:user_id>", methods=['GET', 'POST'])
 @permission_required('members')
 def members_remove_member(user_id):

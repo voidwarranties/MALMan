@@ -1,0 +1,38 @@
+{% from "_macros.html" import tablesorter %}
+{% extends "base.html" %}
+{% set category = "leden" %}
+
+{% block title %}Former members{% endblock %}
+{% block content %}
+    <table id="former_members" class="broadtable">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>date of birth</th>
+                <th>email</th>
+                <th>telephone</th>
+                <th>address</th>
+                <th>membership start</th>
+                <th>membership end</th>
+                {% if 'finances' in current_user.roles %}<th>bar account balance</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {%- for user in users.order_by('name') %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.date_of_birth }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.telephone }}</td>
+                <td>{{ user.street }} {{ user.number }}{% if user.bus %} {{ user.bus }}{% endif %} <br /> {{ user.postalcode }} {{ user.city }}</td>
+                <td>{{ user.membership_start }}</td>
+                <td>{{ user.membership_end }}</td>
+                {% if 'finances' in current_user.roles %}<td>{{ user.bar_account_balance}}</td>{% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block scripts %}
+    {{ tablesorter('#former_members') }}
+{% endblock %}
