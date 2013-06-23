@@ -3,34 +3,30 @@
 
 {% block title %}Stock up{% endblock %}
 {% block content %}
-{%- from "_macros.html" import render_field_with_errors %}
-    <form method="post" class="cf">
-        {%- for field in form|reverse -%}
-            {%- if field.name != 'csrf_token' and field.name != 'submit' -%}
-                {%- if field.name|truncate(length=6, killwords=True, end='') == "check_" %}
-                    <p>
-                        {{ field.label }}
-                        {{ field }}
-                        {%- if field.errors -%}
-                              <ul>
-                                  {%- for error in field.errors -%}
-                                    <li style="color: red; display: block;">{{ error }}</li>
-                                  {%- endfor -%}
-                              </ul>
-                        {%- endif -%}
-                {%- else %}
-                        {{ field }}
-                    </p>
-                {%- endif -%}
-            {%- endif -%}
-            {% if loop.last %}
-            {%- endif -%}
-        {% endfor %}
-        {% if form|list|count > 3 %}
-            {{ form.hidden_tag() }}
-            {{ form.submit }}
-        {% else %}
+    {%- from "_macros.html" import render_field_with_errors %}
+    {%- if form|list|count < 3 %}
             <p>All stock items are already at maximum capacity!</p>
-        {%- endif %}
-    </form>
+    {%- else %}
+        <form method="post" class="cf">
+            {%- for item in form -%}
+                {%- if item.name != 'csrf_token' and item.name != 'submit' %}
+                <p>
+                    {{ item.label }}
+                    {%- for field in item|reverse %}
+                        {{ field }}
+                    {%- endfor -%}
+                    {%- for field in item -%}
+                        {%- for error in field.errors -%}
+                            <span style="color: red; display: block;">{{ error }}</span>
+                        {%- endfor -%}
+                    {%- endfor %}
+                </p>
+                {%- endif -%}
+                {% if loop.last %}
+                    {{ form.hidden_tag() }}
+                    {{ form.submit }}
+                {%- endif -%}
+            {% endfor %}
+         </form>
+    {%- endif -%}
 {% endblock %}

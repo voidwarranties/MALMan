@@ -127,36 +127,38 @@ def bar_edit_items():
 @app.route("/bar/stockup", methods=['GET', 'POST'])
 @permission_required('bar')
 def bar_stockup():
-    # get all stock items from josto
+    # get all active stock items from josto that need stocking up
     items = DB.StockItem.query.filter_by(active=True, josto=True).order_by(DB.StockItem.name.asc()).all()
-    # we need to redefine this everytime the view gets called, otherwise the setattr's are caried over
+    items = [item for item in items if item.stockup > 0]
+
+    # we need to redefine this form everytime the view gets called,
+    # otherwise the setattr's are caried over
     class StockupForm(Form):
-        submit = SubmitField('ok!')
+        submit = SubmitField('stockup!')
     for item in items:
-        if item.stockup > 0:
-            setattr(StockupForm, 'amount_' + str(item.id),
-                IntegerField(item.name, [validators.NumberRange(min=0,
-                    message='please enter a positive number')],
-                default=item.stockup))
-            setattr(StockupForm, 'check_' + str(item.id),
-                BooleanField(item.name))
+        setattr(StockupForm,
+                str(item.id),
+                FormField(forms.StockupFormMixin,
+                          label=item.name,
+                          default={'amount':item.stockup}))
     form = StockupForm()
+
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for item in items:
-            checked = 'check_' + str(item.id) in request.form
+            checked = str(item.id) + '-check'  in request.form
             if checked:
-                if int(request.form["amount_" + str(item.id)]) != 0:
+                amount = int(request.form[str(item.id) + "-amount" ])
+                if amount != 0:
                     changes = DB.BarLog(
                         item_id = item.id,
-                        amount = request.form["amount_" + str(item.id)],
+                        amount = amount,
                         user_id = current_user.id,
                         transaction_type = "stock up")
                     DB.db.session.add(changes)
                     DB.db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " +
-                        item.name + " = +" +
-                        request.form["amount_" + str(item.id)])
+                        item.name + " = +" + str(amount))
         return_flash(confirmation)
         return redirect(request.url)
     return render_template('bar/stockup.html', form=form)

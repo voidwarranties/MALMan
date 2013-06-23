@@ -143,10 +143,9 @@ class BarEdit(Form):
     submit = SubmitField('edit stock items')
 
 
-# this is not used, check views.py for more info
-class BarStockup(Form):
-    # some fields are added by the view
-    submit = SubmitField('ok!')
+class StockupFormMixin(wtforms_Form):
+    amount = IntegerField([validators.NumberRange(min=0, message='please enter a positive number')])
+    check = BooleanField()
 
 
 class BarAddItem(Form):
