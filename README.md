@@ -22,6 +22,11 @@ This will set up a isolated Python environment in the directory 'env' and instal
 
     virtualenv env
     env/bin/pip install -r requirements.txt
+    
+If you get an error message telling you that distribute is not available, you should update it to a newer version using the command:
+
+    env/bin/pip install distribute --upgrade
+
 
 Setting up the database
 -----------------------
@@ -88,9 +93,9 @@ This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MAL
 To serve with Lighttpd:
 
 1. enable fastcgi: # lighttpd-enable-mod fastcgi
-2. make a new file /etc/lighttpd/conf-available/15-fastcgi-MALMan.conf with this content:
+2. make a new file /etc/lighttpd/conf-available/15-fastcgi-MALMan.conf with this content: 
 
-    fastcgi.server += (
+	fastcgi.server += (
         "/MALMan" =>
         ((
             "socket" => "/tmp/MALMan-fcgi.sock",
@@ -102,7 +107,7 @@ To serve with Lighttpd:
 
 OR FOR DEBIAN:
 
-    fastcgi.server += (
+	fastcgi.server += (
         "/MALMan" =>
     	((
     	    "socket" => "/tmp/MALMan-fcgi.sock",
