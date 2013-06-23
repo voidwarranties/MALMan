@@ -33,12 +33,14 @@
     {% endif %}
 {%- endmacro -%}
 
-{%- macro datepicker(element) -%}
+{%- macro datepicker(element, options) -%}
     <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.datepicker/0.1/js/bootstrap-datepicker.js"></script>
     <script>
         $(document).ready(function() {
             $('#{{element}}').datepicker({
-                format: 'yyyy-mm-dd'
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                {{ options|safe }}
             });
         })
     </script>
