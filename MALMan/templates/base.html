@@ -65,14 +65,12 @@
 {%-    if category != "login" %}
             <ul class="menu cf">
                 {%- for ref, item_category, caption, membership, role in navigation -%}
-                {%- if not membership or current_user.active_member -%}
-                    <li{% if category == item_category %} class="bold"{% endif %}>
-                        <a href="{{ url_for(ref)}}">{{ caption }}</a>
-                    </li>
+                {%- if not membership or current_user.active_member %}
+                <li{% if category == item_category %} class="bold"{% endif %}><a href="{{ url_for(ref)}}">{{ caption }}</a></li>
                 {%- endif -%}
-                {%- endfor -%}
+                {%- endfor %}
             </ul>
-{%- endif -%}
+{%- endif %}
             <ul class="menu cf">
             {%- for ref, item_category, caption, membership, role in subnavigation -%}
                 {%- if category == item_category -%}
@@ -88,7 +86,7 @@
                 {%- endif -%}
                 {%- endif -%}
                 {%- endif -%}
-            {%- endfor -%}
+            {%- endfor %}
             </ul>
 {%- with messages = get_flashed_messages(with_categories=true) -%}
       {%- if messages -%}
@@ -99,7 +97,7 @@
             </ul>
     {%- endif -%}
 {%- endwith -%}
-            {%- block content -%}{%- endblock -%}
+            {%- block content -%}{%- endblock %}
         </div>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 {%- block scripts -%}{%- endblock %}
