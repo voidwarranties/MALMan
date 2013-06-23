@@ -192,7 +192,7 @@ class TopUpBarAccount(Form):
 
 class FileMembershipFee(Form):
     user_id = SelectField('Member', coerce=int)
-    until = DateField("This settles this member's membership dues until (yyyy-mm-dd)",
+    until = DateField("This settles this member's membership dues up until and including (yyyy-mm-dd)",
         [validators.Required(
             message='please enter a date using the specified formatting')])
     submit = SubmitField('file payment of membership fee')
