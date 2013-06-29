@@ -124,9 +124,9 @@ def bar_edit_items():
     return render_template('bar/edit_items.html', form=form)
 
 
-@app.route("/bar/stockup", methods=['GET', 'POST'])
+@app.route("/bar/stockup_josto", methods=['GET', 'POST'])
 @permission_required('bar')
-def bar_stockup():
+def bar_stockup_josto():
     # get all active stock items from josto that need stocking up
     items = DB.StockItem.query.filter_by(active=True, josto=True).order_by(DB.StockItem.name.asc()).all()
     items = [item for item in items if item.stockup > 0]
@@ -138,7 +138,7 @@ def bar_stockup():
     for item in items:
         setattr(StockupForm,
                 str(item.id),
-                FormField(forms.StockupFormMixin,
+                FormField(forms.StockupJostoFormMixin,
                           label=item.name,
                           default={'amount':item.stockup}))
     form = StockupForm()
@@ -161,7 +161,50 @@ def bar_stockup():
                         item.name + " = +" + str(amount))
         return_flash(confirmation)
         return redirect(request.url)
-    return render_template('bar/stockup.html', form=form)
+    return render_template('bar/stockup_josto.html', form=form)
+
+
+@app.route("/bar/stockup_own", methods=['GET', 'POST'])
+@permission_required('bar')
+def bar_stockup_own():
+    # get all active stock items that are not from josto
+    items = DB.StockItem.query.filter_by(active=True, josto=False).order_by(DB.StockItem.name.asc()).all()
+
+    # we need to redefine this form everytime the view gets called,
+    # otherwise the setattr's are caried over
+    class StockupForm(Form):
+        submit = SubmitField('stockup!')
+    for item in items:
+        setattr(StockupForm,
+                "amount-" + str(item.id),
+                IntegerField(item.name,
+                             [validators.NumberRange(min=0, message='Please enter a positive number.')],
+                             default=0))
+    form = StockupForm()
+
+    if form.validate_on_submit():
+        item_confirmation = []
+        confirmation = "These stockitems were stocked up: "
+        for item in items:
+            amount = int(request.form["amount-" + str(item.id)])
+            if amount != 0:
+                changes = DB.BarLog(
+                    item_id = item.id,
+                    amount = amount,
+                    user_id = current_user.id,
+                    transaction_type = "stock up")
+                DB.db.session.add(changes)
+                confirmation_string = "%s (+%i)" % (item.name, amount)
+                item_confirmation.append(confirmation_string)
+        DB.db.session.commit()
+        if item_confirmation:
+            confirmation = "These stockitems were stocked up: "
+            confirmation += ", ".join(item_confirmation)
+            flash(confirmation, 'confirmation')
+        else:
+            flash("No items to stock up.", "error")
+        return redirect(request.url)
+    return render_template('bar/stockup_own.html', form=form)
 
 
 @app.route("/bar/log", defaults={'page': 1})

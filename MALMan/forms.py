@@ -143,7 +143,7 @@ class BarEdit(Form):
     submit = SubmitField('edit stock items')
 
 
-class StockupFormMixin(wtforms_Form):
+class StockupJostoFormMixin(wtforms_Form):
     amount = IntegerField([validators.NumberRange(min=0, message='please enter a positive number')])
     check = BooleanField()
 
