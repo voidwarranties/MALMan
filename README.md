@@ -10,7 +10,8 @@ Create a directory to contain the program and get the source code:
     mkdir -p /usr/local/share/webapps
     git clone git://github.com/voidwarranties/MALMan.git /usr/local/share/webapps/MALMan
 
-From here on on I will asume you are located in the directory you installed MALMan in, so move into this directory.
+From here on on I will asume you are located in the directory you installed MALMan in,
+so move into this directory.
 
     cd /usr/local/share/webapps/MALMan
 
@@ -18,7 +19,8 @@ Setting up the virtualenv and getting dependencies
 --------------------------------------------------
 You will need to have version 2 of python, pip and virtualenv installed on your system.
 On debian-based systems these are provided by the packages python, python-pip and python-virtualenv.
-If installing on Arch linux you will need the packages python2, python2-pip and python2-virtualenv and will have to substitute 'virtualenv-2' for 'virtualenv' in the following command.
+If installing on Arch linux you will need the packages python2, python2-pip and python2-virtualenv
+and will have to substitute 'virtualenv-2' for 'virtualenv' in the following command.
 
 Set up a isolated Python environment in the directory 'env'.
 
@@ -95,7 +97,7 @@ Be sure to disable the DEBUG mode in MALMan/MALMan.cfg when running in productio
 MALMan can run as a WSGI app under Apache or as a fastcgi app under various other web servers.
 A runner is provided for both (MALMan.wsgi and MALMan.fcgi).
 
-=== Serve under apache ===
+### Serve under apache
 
 Include this in /etc/httpd/conf/httpd.conf:
 
@@ -107,9 +109,10 @@ Include this in /etc/httpd/conf/httpd.conf:
         WSGIScriptReloading On
     </Directory>
 
-This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MALMan.wsgi and serve it under /MALMan.
+This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MALMan.wsgi
+and serve it under /MALMan.
 
-=== Serve with Lighttpd ===
+### Serve with Lighttpd
 
 1. enable fastcgi:
 
@@ -139,4 +142,5 @@ This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MAL
 
     service lighttpd restart
 
-5. you can find your website at http://localhost/MALMan.fcgi (or using the ip / a linked domain if hosted remotely)
+5. you can find your website at http://localhost/MALMan.fcgi
+(or using the ip / a linked domain if hosted remotely)
