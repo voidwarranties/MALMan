@@ -25,10 +25,11 @@ def list_stock():
 @app.route("/api/user")
 @api_auth.required
 def list_users():
+    minimalprice = DB.StockItem.query.order_by(DB.StockItem.price).first()
     users = DB.User.query.order_by(DB.User.name).all()
     userlist = [ {
         'id': str(user.id),
-        'name': str(user.name)} for user in users if user.bar_account_balance > 0 ]
+        'name': str(user.name)} for user in users if user.bar_account_balance > minimalprice.price ]
     return Response(json.dumps(userlist), mimetype='application/json')
 
 
