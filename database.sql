@@ -70,19 +70,19 @@ CREATE TABLE IF NOT EXISTS `accounting_transactions` (
   `is_revenue` tinyint(1) NOT NULL,
   `amount` decimal(11,2) NOT NULL,
   `description` text NOT NULL,
-  `bank_id` tinyint(4) DEFAULT NULL,
+  `bank_id` int(11) DEFAULT NULL,
   `bank_statement_number` int(11) DEFAULT NULL,
   `to_from` text NOT NULL,
-  `category_id` tinyint(4) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `date_filed` date DEFAULT NULL,
-  `filed_by_id` tinyint(4) DEFAULT NULL,
+  `filed_by_id` int(11) DEFAULT NULL,
   `reimbursement_comments` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `bar_accounts_log` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
-  `user_id` tinyint(4) NOT NULL,
+  `id` int(50) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
   `purchase_id` int(11) DEFAULT NULL,
   `transaction_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
