@@ -14,11 +14,11 @@ api_auth = BasicAuth(app)
 @api_auth.required
 def list_stock():
     stock = DB.StockItem.query.filter_by(active=True).all()
-    items = [ {
-        'id': str(item.id),
-        'name': str(item.name),
-        'price': str(item.price),
-        'category': str(item.category.name)} for item in stock if item.stock > 0 ]
+    items = [{'id': str(item.id),
+              'name': str(item.name),
+              'price': str(item.price),
+              'category': str(item.category.name)
+             } for item in stock]
     return Response(json.dumps(items), mimetype='application/json')
 
 
