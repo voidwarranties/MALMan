@@ -363,7 +363,7 @@ def accounting_dagboek():
     # filter by year
     if years:
         year = int(request.args.get('year') or years[0])
-        log = [transaction for transaction in log if transaction.date.year == year]
+        log = [transaction for transaction in log if transaction.facturation_date.year == year]
         form.year.data = year
 
     # We build the list over here instead of in the template because the numbering is too complex
