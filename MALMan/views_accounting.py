@@ -316,6 +316,7 @@ def accounting_kasboek():
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
+    years = sorted(years, reverse=True)
 
     form = forms.FilterKasboek()
 
@@ -347,6 +348,7 @@ def accounting_dagboek():
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
     years = [transaction.facturation_date.year for transaction in log]
     years = list(set(years)) # remove duplicates
+    years = sorted(years, reverse=True)
 
     form = forms.FilterDagboek()
     form.year.choices = [(year, year) for year in years]
