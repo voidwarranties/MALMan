@@ -40,9 +40,13 @@ def give_perm(email, permission):
 @manager.command
 def test():
     """Test the build, without starting a web service"""
+    app.config['TESTING'] = True
+    app.config['CSRF_ENABLED'] = False
+    app.config['WTF_CSRF_ENABLED'] = False
     with app.test_client() as c:
-        resp = c.get('/login')
-        assert '200 OK' in resp.status # assertion OK
+        resp = c.post('/login', data={'email':"doesnotexists", 'password':"pass", 'submit':"Login", 'next':" ", 'csrf_token':" "}, follow_redirects=True)
+        assert '200 OK' in resp.status
+        assert 'Specified user does not exist' in resp.data
 
 if __name__ == "__main__":
     manager.run()
