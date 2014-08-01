@@ -37,5 +37,10 @@ def give_perm(email, permission):
     DB.db.session.commit()
     return "%s was granted the permission %s" % (email, permission)
 
+@manager.command
+def test():
+    """Test the build, without running it"""
+    app.test_client()
+
 if __name__ == "__main__":
     manager.run()
