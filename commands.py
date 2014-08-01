@@ -39,8 +39,10 @@ def give_perm(email, permission):
 
 @manager.command
 def test():
-    """Test the build, without running it"""
-    app.test_client()
+    """Test the build, without starting a web service"""
+    with app.test_client() as c:
+        resp = c.get('/login')
+        assert '200 OK' in resp.status # assertion OK
 
 if __name__ == "__main__":
     manager.run()
