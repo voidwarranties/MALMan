@@ -1,6 +1,6 @@
 """MALMan stands for Members, Accounting and Library Managment
 
-This file wil initialize, configure and run the application.
+This file will initialize, configure and run the application.
 """
 
 import os
