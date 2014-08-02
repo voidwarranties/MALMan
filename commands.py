@@ -48,5 +48,33 @@ def test():
         assert '200 OK' in resp.status
         assert 'Specified user does not exist' in resp.data
 
+@manager.command
+def init_database():
+    """Adds all tables and default data to the database"""
+    from MALMan.database import db
+    db.create_all()
+    #check if StockCategory is empty, and if so put default values in database
+    if not DB.StockCategory.query.first():
+        DB.db.session.add(DB.StockCategory(name = "food"))
+        DB.db.session.add(DB.StockCategory(name = "alcoholic drink"))
+        DB.db.session.add(DB.StockCategory(name = "non-alcoholic drink"))
+        DB.db.session.add(DB.Bank(id=1, name="bank 1"))
+        DB.db.session.add(DB.Bank(id=2, name="bank 2"))
+        DB.db.session.add(DB.Bank(id=99, name="cash"))
+        DB.db.session.add(DB.AccountingCategory(name='vaste kosten', legal_category='Diverse Goederen en Diensten', is_revenue=0))
+        DB.db.session.add(DB.AccountingCategory(name='Aankopen diverse goederen en diensten', legal_category='Diverse Goederen en Diensten', is_revenue=0))
+        DB.db.session.add(DB.AccountingCategory(name='investeringen', legal_category='Diverse Goederen en Diensten', is_revenue=0))
+        DB.db.session.add(DB.AccountingCategory(name='aankopen verbruiksgoederen', legal_category='Goederen en Diensten', is_revenue=0))
+        DB.db.session.add(DB.AccountingCategory(name='verkoop verbruiksgoederen', legal_category='Verkopen Handelsgoederen', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Aanvullen drankrekening', legal_category='Verkopen Handelsgoederen', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Transfer', legal_category='Transfer', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Lidgelden', legal_category='Bijdragen', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Deelname workshops', legal_category='Giften', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='feed the hackers', legal_category='Giften', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Geld donaties', legal_category='Giften', is_revenue=1))
+        DB.db.session.add(DB.AccountingCategory(name='Bankkosten', legal_category='Overige', is_revenue=0))
+        DB.db.session.add(DB.AccountingCategory(name='Transfer', legal_category='Transfer', is_revenue=0))
+        DB.db.session.commit()
+
 if __name__ == "__main__":
     manager.run()
