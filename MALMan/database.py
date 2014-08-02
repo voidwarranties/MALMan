@@ -58,7 +58,7 @@ class User(db.Model, UserMixin):
     active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
     show_email = db.Column(db.Boolean())
-    motivation = db.Column(db.String())
+    motivation = db.Column(db.Text())
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users,
         backref=db.backref('Roleusers', lazy='dynamic'))
@@ -183,7 +183,7 @@ class Bank(db.Model):
     """Define the acounting_banks database table"""
     __tablename__ = 'accounting_banks'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String())
+    name = db.Column(db.String(256))
     transactions = db.relationship("Transaction")
 
     @property
@@ -205,7 +205,7 @@ class CashTransaction(db.Model):
     purchase = db.relationship('BarLog', backref="cash_transaction", lazy="joined")
     is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
-    description = db.Column(db.String())
+    description = db.Column(db.Text())
     datetime = db.Column(db.DateTime())
 
 
@@ -213,8 +213,8 @@ class AccountingCategory(db.Model):
     """Define the accounting_categories database table"""
     __tablename__ = 'accounting_categories'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    legal_category = db.Column(db.String)
+    name = db.Column(db.String(256))
+    legal_category = db.Column(db.String(256))
     is_revenue = db.Column(db.Boolean())
 
 
@@ -222,7 +222,7 @@ class AccountingAttachment(db.Model):
     """Define the accounting_attachments database table"""
     __tablename__ = 'accounting_attachments'
     id = db.Column(db.Integer, primary_key=True)
-    extension = db.Column(db.String)
+    extension = db.Column(db.String(50))
 
     @property
     def filename(self):
@@ -248,12 +248,12 @@ class Transaction(db.Model):
     is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
         # positive is it is a revenue, negative if it's an expense
-    to_from = db.Column(db.String)
+    to_from = db.Column(db.String(256))
         # the second party involved in the transaction
     category_id = db.Column(db.Integer, db.ForeignKey('accounting_categories.id'))
         # which kind of revenue or expense the transaction is
     category = db.relationship("AccountingCategory")
-    description = db.Column(db.String)
+    description = db.Column(db.Text)
     bank_id = db.Column(db.Integer, db.ForeignKey('accounting_banks.id'))
         # the bankaccount involved. cash transactions are considered an account too (id=99)
     bank = db.relationship("Bank", backref="Transaction", lazy="joined")
@@ -264,7 +264,7 @@ class Transaction(db.Model):
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))
         # if it is a reimbursement this is the user that approved the request
     filed_by = db.relationship('User')
-    reimbursement_comments = db.Column(db.String)
+    reimbursement_comments = db.Column(db.Text)
     attachments = db.relationship('AccountingAttachment', secondary=attachments_transactions,
         backref=db.backref('transactions', lazy='dynamic'))
 
