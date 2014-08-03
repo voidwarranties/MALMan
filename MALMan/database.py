@@ -49,17 +49,17 @@ class User(db.Model, UserMixin):
     bus = db.Column(db.String(255))
     postalcode = db.Column(db.Integer)
     city = db.Column(db.String(255))
-    date_of_birth = db.Column(db.DateTime())
+    date_of_birth = db.Column(db.Date())
     telephone = db.Column(db.String(255))
-    membership_start = db.Column(db.DateTime())
-    membership_end = db.Column(db.DateTime())
+    membership_start = db.Column(db.Date())
+    membership_end = db.Column(db.Date())
     membership_dues = db.Column(db.Numeric(5, 2), default=0)
     password = db.Column(db.String(255))
     active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
     show_email = db.Column(db.Boolean())
     motivation = db.Column(db.Text())
-    confirmed_at = db.Column(db.DateTime())
+    confirmed_at = db.Column(db.Date())
     roles = db.relationship('Role', secondary=roles_users,
         backref=db.backref('Roleusers', lazy='dynamic'))
 
@@ -123,7 +123,7 @@ class MembershipFee(db.Model):
     user = db.relationship('User', backref=db.backref("Membership_Fee", order_by="desc(MembershipFee.until)"), lazy="joined")
     transaction_id = db.Column(db.Integer, db.ForeignKey('accounting_transactions.id'))
     transaction = db.relationship('Transaction')
-    until = db.Column(db.DateTime())
+    until = db.Column(db.Date())
 
 
 class StockItem(db.Model):
@@ -239,11 +239,11 @@ class Transaction(db.Model):
     __tablename__ = 'accounting_transactions'
     id = db.Column(db.Integer, primary_key=True)
         # Could be used to tag (paper, or scanned) receipts to transactions.
-    date = db.Column(db.DateTime())
+    date = db.Column(db.Date())
         # date the bank transaction took place
-    advance_date = db.Column(db.DateTime())
+    advance_date = db.Column(db.Date())
         # only applicable if the money was advanced
-    facturation_date = db.Column(db.DateTime())
+    facturation_date = db.Column(db.Date())
         # same as 'date' if there is no invoice
     is_revenue = db.Column(db.Boolean())
     amount = db.Column(db.Integer)
@@ -259,7 +259,7 @@ class Transaction(db.Model):
     bank = db.relationship("Bank", backref="Transaction", lazy="joined")
     bank_statement_number = db.Column(db.Integer)
         # number in the bank's account statements
-    date_filed = db.Column(db.DateTime())
+    date_filed = db.Column(db.Date())
         # if it is a reimbursement this is the date the request was approved
     filed_by_id = db.Column(db.Integer, db.ForeignKey('members.id'))
         # if it is a reimbursement this is the user that approved the request
