@@ -37,24 +37,11 @@ Install the required python packages into the enviroment.
 
 Setting up the database
 -----------------------
-You need to have a database server running on your system, such as MariaDB or MySQL.
-The following can also be done through a gui such as phpMyAdmin.
-
-Start a MySQL shell and create a database called 'MALMan'.
-Then create a user which we will also call MALMan and give him access to the database we just made.
-Substitute a secure password for 'password'.
-Close the shell and import the contents of database.sql into the MALMan database.
-
-    mysql -p -u root
-    > CREATE DATABASE MALMan;
-    > CREATE USER MALMan@localhost IDENTIFIED BY 'password';
-    > GRANT ALL PRIVILEGES ON MALMan.* TO MALMan@localhost;
-    > EXIT
-    mysql -u MALMan -p -h localhost MALMan < database.sql
+Create a mysql or mariadb database for MALMan, you need it in the next step.
 
 Configuration
 -------------
-Copy MALMan.cfg.template to MALMan.cfg and fill in the apropriate MySQL, SMTP and security parameters.
+Copy MALMan.cfg.template to MALMan.cfg and fill in the apropriate MySQL (username, password & database), SMTP and security parameters.
 
     cp MALMan/MALMan.cfg{.template,}
 
@@ -64,6 +51,12 @@ For development purposes you might want to use Python's SMTP debugging server:
 
 This will start an SMTP server on port 1025 of localhost.
 All mails sent will be displayed in the console output.
+
+Before the first run
+--------------------
+Test the database connection create the tables we need:
+
+    env/bin/python commands.py init_database
 
 Running in debug mode
 ---------------------
