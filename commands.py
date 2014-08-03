@@ -74,6 +74,9 @@ def init_database():
         DB.db.session.add(DB.AccountingCategory(name='Geld donaties', legal_category='Giften', is_revenue=1))
         DB.db.session.add(DB.AccountingCategory(name='Bankkosten', legal_category='Overige', is_revenue=0))
         DB.db.session.add(DB.AccountingCategory(name='Transfer', legal_category='Transfer', is_revenue=0))
+        DB.db.session.add(DB.Role(name = "bar", description="Manage bar stock"))
+        DB.db.session.add(DB.Role(name = "members", description="membership management"))
+        DB.db.session.add(DB.Role(name = "finances", description="edit accounting information"))
         DB.db.session.commit()
 
 if __name__ == "__main__":
