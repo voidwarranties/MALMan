@@ -103,7 +103,7 @@ class RegisterForm(MembersEditOwnAccount, ConfirmRegisterForm):
             telephone = self.telephone.data,
             show_telephone = self.show_telephone.data,
             show_email = self.show_email.data,
-            motivation = self.motivation)
+            motivation = self.motivation.data)
 
 
 class MembersRemoveMember(Form):
