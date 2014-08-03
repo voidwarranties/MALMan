@@ -204,7 +204,7 @@ class CashTransaction(db.Model):
     purchase_id = db.Column(db.Integer, db.ForeignKey('bar_log.id'))
     purchase = db.relationship('BarLog', backref="cash_transaction", lazy="joined")
     is_revenue = db.Column(db.Boolean())
-    amount = db.Column(db.Integer)
+    amount = db.Column(db.Numeric(10, 2))
     description = db.Column(db.Text())
     datetime = db.Column(db.DateTime())
 
@@ -246,7 +246,7 @@ class Transaction(db.Model):
     facturation_date = db.Column(db.Date())
         # same as 'date' if there is no invoice
     is_revenue = db.Column(db.Boolean())
-    amount = db.Column(db.Integer)
+    amount = db.Column(db.Numeric(11, 2))
         # positive is it is a revenue, negative if it's an expense
     to_from = db.Column(db.String(256))
         # the second party involved in the transaction
