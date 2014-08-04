@@ -10,7 +10,7 @@ from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
 from flask.ext.wtf import file_allowed
 
 from werkzeug import secure_filename
-from datetime import date
+from datetime import date, datetime
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
@@ -102,7 +102,7 @@ def accounting_request_reimbursement():
 
     if form.validate_on_submit():
         transaction = DB.Transaction(
-            advance_date = request.form["advance_date"],
+            advance_date = datetime.strptime(request.form["advance_date"], '%Y-%m-%d').date(),
             is_revenue = False,
             amount = request.form["amount"],
             description = request.form["description"],
@@ -142,8 +142,8 @@ def accounting_approve_reimbursement(transaction_id):
     form.category_id.choices = accounting_categories(IN=False)
     del form.is_revenue
     if form.validate_on_submit():
-        transaction.date = request.form["date"]
-        transaction.facturation_date = request.form["date"]
+        transaction.date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
+        transaction.facturation_date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
         transaction.amount = request.form["amount"]
         transaction.to_from = request.form["to_from"]
         transaction.description = request.form["description"]
@@ -170,11 +170,11 @@ def accounting_add_transaction():
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         if request.form["facturation_date"] != '':
-            facturation_date = request.form["facturation_date"]
+            facturation_date = datetime.strptime(request.form["facturation_date"], '%Y-%m-%d').date()
         else:
-            facturation_date = request.form["date"]
+            facturation_date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
         transaction = DB.Transaction(
-            date = request.form["date"],
+            date = datetime.strptime(request.form["date"], '%Y-%m-%d').date(),
             facturation_date = facturation_date,
             is_revenue = request.form["is_revenue"],
             amount = request.form["amount"],
