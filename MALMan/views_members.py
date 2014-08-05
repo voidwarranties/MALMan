@@ -2,7 +2,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, string_to_date
 
 from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.wtf import BooleanField
@@ -96,6 +96,9 @@ def members_edit_member(user_id):
             elif atribute in ['show_telephone', 'show_email']:
                 old_value = getattr(userdata, atribute)
                 new_value = atribute in request.form
+            elif atribute in ['date_of_birth']:
+                old_value = getattr(userdata, atribute)
+                new_value = string_to_date(request.form.get(atribute))
             else:
                 old_value = getattr(userdata, atribute)
                 new_value = request.form.get(atribute)
