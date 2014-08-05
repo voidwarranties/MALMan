@@ -4,14 +4,15 @@ python:
 install:
   - cp MALMan/MALMan.cfg{.template,}
   - pip install -r requirements.txt
+  - pip install MySQL-python==1.2.5
 before_script:
   - mysql -e 'create database MALMan;' -uroot
   - mysql -e "CREATE USER user@localhost IDENTIFIED BY 'password';" -uroot
   - mysql -e 'GRANT ALL PRIVILEGES ON MALMan.* TO user@localhost;' -uroot
   - python commands.py init_database
-  - sed -i 's,mysql://user:password@localhost/MALMan,sqlite:///test.db,g' MALMan/MALMan.cfg
+  - sed -i 's,sqlite:///MALMan.db,mysql://user:password@localhost/MALMan,g' MALMan/MALMan.cfg
   - python commands.py init_database
 script:
   - python commands.py test
-  - sed -i 's,sqlite:///test.db,mysql://user:password@localhost/MALMan,g' MALMan/MALMan.cfg
+  - sed -i 's,mysql://user:password@localhost/MALMan,sqlite:///MALMan.db,g' MALMan/MALMan.cfg
   - python commands.py test
