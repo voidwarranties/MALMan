@@ -9,5 +9,9 @@ before_script:
   - mysql -e "CREATE USER user@localhost IDENTIFIED BY 'password';" -uroot
   - mysql -e 'GRANT ALL PRIVILEGES ON MALMan.* TO user@localhost;' -uroot
   - python commands.py init_database
+  - sed -i 's,mysql://user:password@localhost/MALMan,sqlite:///test.db,g' MALMan/MALMan.cfg
+  - python commands.py init_database
 script:
+  - python commands.py test
+  - sed -i 's,sqlite:///test.db,mysql://user:password@localhost/MALMan,g' MALMan/MALMan.cfg
   - python commands.py test
