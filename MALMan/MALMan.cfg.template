@@ -6,7 +6,9 @@ TRAP_BAD_REQUEST_ERRORS = False
 SQLALCHEMY_ECHO = False
 
 # mysql server
-SQLALCHEMY_DATABASE_URI = 'mysql://user:password@localhost/MALMan'
+#SQLALCHEMY_DATABASE_URI = 'mysql://user:password@localhost/MALMan'
+# or if you want to use sqlite, this does not need any extra configuration
+SQLALCHEMY_DATABASE_URI = 'sqlite:///MALMan.db'
 
 # mail server
 MAIL_SERVER = 'localhost'

@@ -2,7 +2,7 @@ from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
 from MALMan.view_utils import (add_confirmation, return_flash, accounting_categories,
-    permission_required, membership_required, Pagination, upload_attachments)
+    permission_required, membership_required, Pagination, upload_attachments, string_to_date)
 
 from flask import render_template, request, redirect, flash, abort, url_for, send_file
 from flask.ext.login import current_user
@@ -10,7 +10,7 @@ from flask.ext.uploads import UploadSet, configure_uploads, patch_request_class
 from flask.ext.wtf import file_allowed
 
 from werkzeug import secure_filename
-from datetime import date, datetime
+from datetime import date
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
@@ -102,7 +102,7 @@ def accounting_request_reimbursement():
 
     if form.validate_on_submit():
         transaction = DB.Transaction(
-            advance_date = datetime.strptime(request.form["advance_date"], '%Y-%m-%d').date(),
+            advance_date = string_to_date(request.form["advance_date"]),
             is_revenue = False,
             amount = request.form["amount"],
             description = request.form["description"],
@@ -142,8 +142,8 @@ def accounting_approve_reimbursement(transaction_id):
     form.category_id.choices = accounting_categories(IN=False)
     del form.is_revenue
     if form.validate_on_submit():
-        transaction.date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
-        transaction.facturation_date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
+        transaction.date = string_to_date(request.form["date"])
+        transaction.facturation_date = string_to_date(request.form["date"])
         transaction.amount = request.form["amount"]
         transaction.to_from = request.form["to_from"]
         transaction.description = request.form["description"]
@@ -170,11 +170,11 @@ def accounting_add_transaction():
     form.category_id.choices = accounting_categories()
     if form.validate_on_submit():
         if request.form["facturation_date"] != '':
-            facturation_date = datetime.strptime(request.form["facturation_date"], '%Y-%m-%d').date()
+            facturation_date = string_to_date(request.form["facturation_date"])
         else:
-            facturation_date = datetime.strptime(request.form["date"], '%Y-%m-%d').date()
+            facturation_date = string_to_date(request.form["date"])
         transaction = DB.Transaction(
-            date = datetime.strptime(request.form["date"], '%Y-%m-%d').date(),
+            date = string_to_date(request.form["date"]),
             facturation_date = facturation_date,
             is_revenue = request.form["is_revenue"],
             amount = request.form["amount"],
@@ -241,6 +241,8 @@ def accounting_edit_transaction(transaction_id):
                     new_value = True
                 elif new_value == '0':
                     new_value = False
+            elif atribute in ['date', 'facturation_date']:
+                new_value = string_to_date(request.form.get(atribute))
             if str(new_value) != str(old_value):
                 if atribute == 'facturation_date' and new_value == '':
                     new_value = request.form.get('date')
@@ -300,7 +302,7 @@ def file_membershipfee(transaction_id):
         item = DB.MembershipFee(
             user_id = request.form["user_id"],
             transaction_id = transaction_id,
-            until = request.form["until"])
+            until = string_to_date(request.form["until"]))
         DB.db.session.add(item)
         DB.db.session.commit()
         user = users.get(request.form["user_id"])

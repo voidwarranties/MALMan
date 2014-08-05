@@ -1,5 +1,6 @@
 #compiled python files
 *.pyc
+*.db
 
 #settings, logs, ...
 env/

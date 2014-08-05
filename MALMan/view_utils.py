@@ -151,3 +151,6 @@ def upload_attachments(request, attachments, transaction, DB):
         DB.db.session.commit()
         confirmation = add_confirmation(confirmation, "added the attachment " + uploaded_attachment.filename)
     return confirmation
+
+def string_to_date(strdate):
+    return datetime.datetime.strptime(strdate, '%Y-%m-%d').date()

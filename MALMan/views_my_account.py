@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required
+from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, string_to_date
 from flask_security.recoverable import update_password
 from flask_security.utils import url_for_security
 
@@ -46,6 +46,8 @@ def account_edit_own_account():
             old_value = getattr(userdata, atribute)
             if atribute in ['show_telephone', 'show_email']:
                 new_value = atribute in request.form
+            elif atribute in ['date_of_birth']:
+                new_value = string_to_date(request.form.get(atribute))
             else:
                 new_value = request.form.get(atribute)
             if str(new_value) != str(old_value):

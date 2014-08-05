@@ -37,11 +37,16 @@ Install the required python packages into the enviroment.
 
 Setting up the database
 -----------------------
-Create a mysql or mariadb database for MALMan, you need it in the next step.
+If you want to use sqlite skip this step.
+
+If you want to use mysql create a new database with your favorite mysql client.
+For mysql you also have to install one more requirement:
+
+    env/bin/pip install MySQL-python==1.2.5
 
 Configuration
 -------------
-Copy MALMan.cfg.template to MALMan.cfg and fill in the apropriate MySQL (username, password & database), SMTP and security parameters.
+Copy MALMan.cfg.template to MALMan.cfg and fill in the database, SMTP and security parameters.
 
     cp MALMan/MALMan.cfg{.template,}
 
