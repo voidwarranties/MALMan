@@ -1,12 +1,14 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, accounting_categories, permission_required, membership_required, Pagination
+from MALMan.view_utils import (add_confirmation, return_flash, permission_required,
+                               membership_required, Pagination)
 
 from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.login import current_user
 from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
-    IntegerField, validators)
+                           IntegerField, validators)
+
 
 @app.route("/bar")
 @membership_required()
@@ -14,13 +16,14 @@ def bar():
     items = DB.StockItem.query.filter_by(active=True).order_by(DB.StockItem.name.asc()).all()
     return render_template('bar/list_items.html', items=items)
 
+
 @app.route("/bar/activate_stockitems", methods=['GET', 'POST'])
 @permission_required('bar')
 def bar_activate_stockitems():
     stockitems = DB.StockItem.query.filter_by(active=False).all()
     for stockitem in stockitems:
         setattr(forms.BarActivateItem, 'activate_' + str(stockitem.id),
-            BooleanField('activate item'))
+                BooleanField('activate item'))
     form = forms.BarActivateItem()
 
     if form.validate_on_submit():
@@ -35,6 +38,7 @@ def bar_activate_stockitems():
         return redirect(request.url)
 
     return render_template('bar/activate_stockitems.html', stockitems=stockitems, form=form)
+
 
 @app.route("/bar/remove_<int:item_id>", methods=['GET', 'POST'])
 @permission_required('bar')
@@ -57,24 +61,22 @@ def bar_edit_item_amounts():
     items = DB.StockItem.query.filter_by(active=True).order_by(DB.StockItem.name.asc()).all()
     for item in items:
         setattr(forms.BarEditAmounts, 'amount_' + str(item.id),
-            IntegerField(item.name, [validators.NumberRange(min=0,
-                message='please enter a positive number')],
-            default=item.stock))
+                IntegerField(item.name, [validators.NumberRange(min=0,
+                             message='please enter a positive number')],
+                             default=item.stock))
     form = forms.BarEditAmounts()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for item in items:
             if int(request.form["amount_" + str(item.id)]) != int(item.stock):
-                changes = DB.BarLog(
-                    item_id = item.id,
-                    amount = int(request.form["amount_" + str(item.id)]) - int(item.stock),
-                    user_id = current_user.id,
-                    transaction_type = "correction")
+                changes = DB.BarLog(item_id=item.id,
+                                    amount=int(request.form["amount_" + str(item.id)]) - int(item.stock),
+                                    user_id=current_user.id,
+                                    transaction_type="correction")
                 DB.db.session.add(changes)
                 DB.db.session.commit()
-                confirmation = add_confirmation(confirmation, "stock " +
-                    item.name + " = " + request.form["amount_" +
-                    str(item.id)])
+                confirmation = add_confirmation(confirmation, "stock " + item.name + " = " +
+                                                request.form["amount_" + str(item.id)])
         return_flash(confirmation)
         return redirect(request.url)
     return render_template('bar/edit_amounts.html', form=form)
@@ -87,7 +89,7 @@ def bar_edit_items():
     categories = DB.StockCategory.query.all()
     for item in items:
         setattr(forms.BarEdit, str(item.id),
-            FormField(forms.BarEditItem, default=item, separator='_'))
+                FormField(forms.BarEditItem, default=item, separator='_'))
     form = forms.BarEdit()
     for item in form:
         if item.name != 'csrf_token' and item.name != 'submit':
@@ -95,8 +97,9 @@ def bar_edit_items():
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for item in items:
-            # only write to DB and display a confirmation if the value given in the POST does not equal the value in the DB
-            atributes = ['name' , 'price' , 'stock_max', 'category_id', 'josto']
+            # only write to DB and display a confirmation if the value given in the POST
+            # does not equal the value in the DB
+            atributes = ['name', 'price', 'stock_max', 'category_id', 'josto']
             for atribute in atributes:
                 old_value = getattr(item, atribute)
                 if atribute == 'josto':
@@ -108,17 +111,18 @@ def bar_edit_items():
                     DB.db.session.commit()
                     if atribute == "name":
                         confirmation = add_confirmation(confirmation,
-                            old_value + " => " + new_value)
+                                                        old_value + " => " + new_value)
                     elif atribute == "category_id":
                         newcat = DB.StockCategory.query.get(new_value).name
                         oldcat = DB.StockCategory.query.get(old_value).name
                         confirmation = add_confirmation(confirmation,
-                            "category" + " " + item.name + " = \"" + newcat +
-                            "\" (was \"" + oldcat + "\")")
+                                                        "category" + " " + item.name + " = \"" +
+                                                        newcat + "\" (was \"" + oldcat + "\")")
                     else:
                         confirmation = add_confirmation(confirmation,
-                            atribute + " " + item.name + " = " +
-                            str(new_value) + " (was " + str(old_value) + ")")
+                                                        atribute + " " + item.name + " = " +
+                                                        str(new_value) + " (was " +
+                                                        str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.url)
     return render_template('bar/edit_items.html', form=form)
@@ -140,25 +144,24 @@ def bar_stockup_josto():
                 str(item.id),
                 FormField(forms.StockupJostoFormMixin,
                           label=item.name,
-                          default={'amount':item.stockup}))
+                          default={'amount': item.stockup}))
     form = StockupForm()
 
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         for item in items:
-            checked = str(item.id) + '-check'  in request.form
+            checked = str(item.id) + '-check' in request.form
             if checked:
-                amount = int(request.form[str(item.id) + "-amount" ])
+                amount = int(request.form[str(item.id) + "-amount"])
                 if amount != 0:
-                    changes = DB.BarLog(
-                        item_id = item.id,
-                        amount = amount,
-                        user_id = current_user.id,
-                        transaction_type = "stock up")
+                    changes = DB.BarLog(item_id=item.id,
+                                        amount=amount,
+                                        user_id=current_user.id,
+                                        transaction_type="stock up")
                     DB.db.session.add(changes)
                     DB.db.session.commit()
                     confirmation = add_confirmation(confirmation, "stock " +
-                        item.name + " = +" + str(amount))
+                                                    item.name + " = +" + str(amount))
         return_flash(confirmation)
         return redirect(request.url)
     return render_template('bar/stockup_josto.html', form=form)
@@ -188,11 +191,10 @@ def bar_stockup_own():
         for item in items:
             amount = int(request.form["amount-" + str(item.id)])
             if amount != 0:
-                changes = DB.BarLog(
-                    item_id = item.id,
-                    amount = amount,
-                    user_id = current_user.id,
-                    transaction_type = "stock up")
+                changes = DB.BarLog(item_id=item.id,
+                                    amount=amount,
+                                    user_id=current_user.id,
+                                    transaction_type="stock up")
                 DB.db.session.add(changes)
                 confirmation_string = "%s (+%i)" % (item.name, amount)
                 item_confirmation.append(confirmation_string)
@@ -245,13 +247,12 @@ def bar_add_item():
 
     if form.validate_on_submit():
         josto = 'josto' in request.form
-        item = DB.StockItem(
-            name = request.form["name"],
-            stock_max = request.form["stock_max"],
-            price = request.form["price"],
-            category_id = request.form["category_id"],
-            josto = josto,
-            active = 1)
+        item = DB.StockItem(name=request.form["name"],
+                            stock_max=request.form["stock_max"],
+                            price=request.form["price"],
+                            category_id=request.form["category_id"],
+                            josto=josto,
+                            active=1)
         DB.db.session.add(item)
         DB.db.session.commit()
         flash("added stock item: " + request.form["name"], "confirmation")

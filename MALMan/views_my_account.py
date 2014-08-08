@@ -1,7 +1,7 @@
 from MALMan import app
 import MALMan.database as DB
 import MALMan.forms as forms
-from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, string_to_date
+from MALMan.view_utils import add_confirmation, return_flash, membership_required, string_to_date
 from flask_security.recoverable import update_password
 from flask_security.utils import url_for_security
 
@@ -9,6 +9,7 @@ from flask import render_template, request, redirect, flash, current_app
 from flask.ext.login import current_user, login_required
 
 from werkzeug.local import LocalProxy
+
 
 @app.route("/")
 def index():
@@ -28,7 +29,7 @@ def index():
 @membership_required()
 def account_bar_account():
     log = DB.BarAccountLog.query.filter_by(user_id=current_user.id)
-    log = sorted(log, key=lambda i: i.datetime, reverse=True) #sort descending
+    log = sorted(log, key=lambda i: i.datetime, reverse=True)  # sort descending
     return render_template('my_account/bar_account_log.html', log=log)
 
 
@@ -40,8 +41,8 @@ def account_edit_own_account():
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         atributes = ['name', 'date_of_birth', 'email', 'telephone', 'city',
-            'postalcode', 'bus', 'number', 'street', 'show_telephone',
-            'show_email']
+                     'postalcode', 'bus', 'number', 'street', 'show_telephone',
+                     'show_email']
         for atribute in atributes:
             old_value = getattr(userdata, atribute)
             if atribute in ['show_telephone', 'show_email']:
@@ -55,11 +56,12 @@ def account_edit_own_account():
                 setattr(user, atribute, new_value)
                 DB.db.session.commit()
                 confirmation = add_confirmation(confirmation, atribute +
-                    " = " + str(new_value) + " (was " + str(old_value) + ")")
+                                                " = " + str(new_value) +
+                                                " (was " + str(old_value) + ")")
         return_flash(confirmation)
         return redirect(request.url)
     return render_template('my_account/edit_own_account.html', userdata=userdata,
-        form=form)
+                           form=form)
 
 
 @app.route('/my_account/edit_password', methods=['GET', 'POST'])
