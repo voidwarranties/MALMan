@@ -1,8 +1,6 @@
 MALMan is a WSGI app
 
-Installation [![Build Status](https://travis-ci.org/voidwarranties/MALMan.svg?branch=master)](https://travis-ci.org/voidwarranties/MALMan)
-[![Requirements Status](https://requires.io/github/voidwarranties/MALMan/requirements.png?branch=master)](https://requires.io/github/voidwarranties/MALMan/requirements/?branch=master)
-
+Installation [![Build Status](https://travis-ci.org/voidwarranties/MALMan.svg?branch=master)](https://travis-ci.org/voidwarranties/MALMan) [![Requirements Status](https://requires.io/github/voidwarranties/MALMan/requirements.png?branch=master)](https://requires.io/github/voidwarranties/MALMan/requirements/?branch=master)
 ============
 
 Getting the code
