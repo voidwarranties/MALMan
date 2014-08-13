@@ -38,6 +38,19 @@ def give_perm(email, permission):
     return "%s was granted the permission %s" % (email, permission)
 
 @manager.command
+def confirm_email(email):
+    """Manually confirm an email adress"""
+
+    user = DB.User.query.filter_by(email=email).first()
+    if not user:
+        return 'There is no registered user with this email adress'
+    if user.confirmed_at:
+        return "%s is already confirmed" % email
+    setattr(user, 'confirmed_at', date.today())
+    DB.db.session.commit()
+    return "%s has been confirmed and can login now" % email
+
+@manager.command
 def test():
     """Test the build, without starting a web service"""
     app.config['TESTING'] = True
