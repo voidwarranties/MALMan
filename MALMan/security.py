@@ -2,7 +2,7 @@ from MALMan import app
 import MALMan.database as DB
 from flask_security import Security
 from flask import session
-from flask.ext.principal import Principal, RoleNeed, identity_loaded
+from flask.ext.principal import Principal
 from flask.ext.mail import Mail
 from flask.ext.login import current_user
 
@@ -23,16 +23,17 @@ mail = Mail(app)
 
 # Setup Flask-Security
 from MALMan.forms import RegisterForm
-security = Security(app, DB.user_datastore, confirm_register_form=RegisterForm )
+security = Security(app, DB.user_datastore, confirm_register_form=RegisterForm)
 
 # Setup Principal extension
 principals = Principal(app)
+
 
 @app.before_request
 def before_request():
     # add the role and email variables to the session if they are missing but user is logged in.
     # this happens after a session is resumed from a cookie
-    if session and ('user_id' in session) and (not 'email' in session):
+    if session and ('user_id' in session) and ('email' not in session):
         user = DB.User.query.get(current_user.id)
         session['email'] = user.email
         session['roles'] = [role.name for role in user.roles]

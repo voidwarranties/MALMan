@@ -1,6 +1,7 @@
 from MALMan import app
 from flask import render_template, request
 
+
 @app.errorhandler(401)
 def error_401(error):
     message = "You need to login to access this page"
@@ -21,11 +22,13 @@ def error_404(error):
     lastpage = request.referrer
     return render_template('error.html', error=error, message=message, lastpage=lastpage), 404
 
+
 @app.errorhandler(413)
 def error_413(error):
     message = "You probably tried to send a file larger than we allow."
     lastpage = request.referrer
     return render_template('error.html', error=error, message=message, lastpage=lastpage), 413
+
 
 @app.errorhandler(500)
 def error_500(error):

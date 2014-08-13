@@ -9,6 +9,7 @@ from flask.ext.wtf import BooleanField
 
 import datetime
 
+
 @app.route("/members")
 @membership_required()
 def members():
@@ -21,8 +22,7 @@ def members():
 def members_approve_new_members():
     new_members = DB.User.query.filter_by(membership_start=None)
     for user in new_members:
-        setattr(forms.NewMembers, 'activate_' + str(user.id),
-            BooleanField('activate user'))
+        setattr(forms.NewMembers, 'activate_' + str(user.id), BooleanField('activate user'))
     form = forms.NewMembers()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
@@ -31,12 +31,11 @@ def members_approve_new_members():
             if new_value != user.active_member:
                 user.membership_start = datetime.date.today()
                 DB.db.session.commit()
-                confirmation = add_confirmation(confirmation,
-                    user.email + " was made an active member")
+                confirmation = add_confirmation(confirmation, user.email +
+                                                " was made an active member")
         return_flash(confirmation)
         return redirect(request.url)
-    return render_template('members/approve_new_members.html', new_members=new_members,
-        form=form)
+    return render_template('members/approve_new_members.html', new_members=new_members, form=form)
 
 
 @app.route("/members/former_members")
@@ -51,18 +50,17 @@ def members_former_members():
 def members_remove_member(user_id):
     user = DB.User.query.get(user_id)
     if not user:
-        flash("There is no user with this user id.","error")
+        flash("There is no user with this user id.", "error")
         abort(404)
     if user.membership_end or not user.membership_start:
-        flash("This user is not a member.","error")
+        flash("This user is not a member.", "error")
         abort(404)
     form = forms.MembersRemoveMember()
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
         user.membership_end = datetime.date.today()
         DB.db.session.commit()
-        confirmation = add_confirmation(confirmation,
-            user.email + " is no longer a member.")
+        confirmation = add_confirmation(confirmation, user.email + " is no longer a member.")
         return redirect(url_for('members'))
     return render_template('members/remove_member.html', user=user, form=form)
 
@@ -77,17 +75,17 @@ def members_edit_member(user_id):
         # check the checkbox if the user has the role
         if role in userdata.roles:
             setattr(forms.MembersEditAccount, 'perm_' + str(role.name),
-                BooleanField(role.name, default='y'))
+                    BooleanField(role.name, default='y'))
         else:
             setattr(forms.MembersEditAccount, 'perm_' + str(role.name),
-                BooleanField(role.name))
+                    BooleanField(role.name))
     form = forms.MembersEditAccount(obj=userdata)
     del form.email
     if form.validate_on_submit():
         confirmation = app.config['CHANGE_MSG']
-        atributes = ['name', 'date_of_birth', 'telephone', 'city',
-            'postalcode', 'bus', 'number', 'street', 'show_telephone',
-            'show_email', 'membership_dues']
+        atributes = ['name', 'date_of_birth', 'telephone', 'city', 'postalcode',
+                     'bus', 'number', 'street', 'show_telephone', 'show_email',
+                     'membership_dues']
         atributes.extend([role for role in roles])
         for atribute in atributes:
             if atribute in roles:
@@ -111,8 +109,8 @@ def members_edit_member(user_id):
                 else:
                     user = DB.User.query.get(user_id)
                     setattr(user, atribute, new_value)
-                confirmation = add_confirmation(confirmation, str(atribute) +
-                    " = " + str(new_value) + " (was " + str(old_value) + ")")
+                confirmation = add_confirmation(confirmation, str(atribute) + " = " +
+                                                str(new_value) + " (was " + str(old_value) + ")")
                 DB.db.session.commit()
         return_flash(confirmation)
         return redirect(request.url)

@@ -3,14 +3,13 @@ import MALMan.database as DB
 
 from flask import request, flash, abort, url_for, current_app
 from flask.ext.principal import Permission, RoleNeed
-from flask.ext.login import current_user, login_required
+from flask.ext.login import current_user
 
-import os
 from functools import wraps
 from urlparse import urlparse
 from math import ceil
-from werkzeug import secure_filename
 import datetime
+
 
 def add_confirmation(var, confirmation):
     """add a confirmation message to a string"""
@@ -20,7 +19,7 @@ def add_confirmation(var, confirmation):
     return var
 
 
-def return_flash (confirmation):
+def return_flash(confirmation):
     """return a confirmation if sometshing changed or an error if there are
     no changes
     """
@@ -31,7 +30,8 @@ def return_flash (confirmation):
 
 
 def accounting_categories(IN=True, OUT=True):
-    """build the choices for the accounting_category_id select element, adding the type of transaction (IN or OUT) to the category name"""
+    """build the choices for the accounting_category_id select element,
+    adding the type of transaction (IN or OUT) to the category name"""
     categories = DB.AccountingCategory.query.order_by(DB.AccountingCategory.id).all()
     choices = []
     if IN:
@@ -55,11 +55,11 @@ def membership_required():
                 end = current_user.membership_end
                 if start:
                     if start > datetime.date.today():
-                        flash ("You will become a member in the future, but at the moment you're not. Odd.", 'error')
+                        flash("You will become a member in the future, but at the moment you're not. Odd.", 'error')
                     if end and end > start:
-                       flash ('You are no longer a member. Only members can access this resource', 'error')
+                        flash('You are no longer a member. Only members can access this resource', 'error')
                 else:
-                    flash ('You need to be aproved as a member to access this resource', 'error')
+                    flash('You need to be aproved as a member to access this resource', 'error')
                 abort(403)
             return fn(*args, **kwargs)
         return decorated_view
@@ -74,12 +74,12 @@ def permission_required(*roles):
             if not current_user.is_authenticated():
                 return current_app.login_manager.unauthorized()
             if not current_user.active_member:
-                flash ('You need to be aproved as a member to access this resource', 'error')
+                flash('You need to be aproved as a member to access this resource', 'error')
                 abort(403)
             for role in roles:
                 if not Permission(RoleNeed(role)).can():
                     flash('You need the permission \'' + str(role) +
-                        '\' to access this resource.', 'error')
+                          '\' to access this resource.', 'error')
                     abort(403)
             return fn(*args, **kwargs)
         return decorated_view
@@ -109,7 +109,7 @@ class Pagination(object):
         last = 0
         for num in xrange(1, self.pages + 1):
             if num <= left_edge or \
-               (num > self.page - left_current - 1 and \
+               (num > self.page - left_current - 1 and
                 num < self.page + right_current) or \
                num > self.pages - right_edge:
                 if last + 1 != num:
@@ -135,13 +135,11 @@ def upload_attachments(request, attachments, transaction, DB):
             break
         # add the attachment to the accounting_attachments DB table
         extension = uploaded_attachment.filename.rsplit('.', 1)[1]
-        accounting_attachment = DB.AccountingAttachment(extension = extension)
+        accounting_attachment = DB.AccountingAttachment(extension=extension)
         DB.db.session.add(accounting_attachment)
         DB.db.session.commit()
         # save attachment
-        url = attachments.save(
-            uploaded_attachment,
-            name = str(accounting_attachment.id) + '.')
+        attachments.save(uploaded_attachment, name=str(accounting_attachment.id) + '.')
         # link the attachment to the transaction
         if transaction.attachments:
             getattr(transaction, 'attachments').append(accounting_attachment)
@@ -151,6 +149,7 @@ def upload_attachments(request, attachments, transaction, DB):
         DB.db.session.commit()
         confirmation = add_confirmation(confirmation, "added the attachment " + uploaded_attachment.filename)
     return confirmation
+
 
 def string_to_date(strdate):
     return datetime.datetime.strptime(strdate, '%Y-%m-%d').date()
