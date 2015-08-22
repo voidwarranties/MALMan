@@ -26,6 +26,6 @@
 {% endblock %}
 {% block scripts %}
     {{ filtercategories() }}
-    {{ datepicker('date') }}
-    {{ datepicker('facturation_date') }}
+    {{ datepicker('date', "clearBtn: true, autoclose: true") }}
+    {{ datepicker('facturation_date', "clearBtn: true, autoclose: true") }}
 {% endblock %}
