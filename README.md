@@ -81,6 +81,7 @@ After registering a user's membership request will have to be accepted by an
 active member with member management permissions. With no one to activate the
 first user we will have to do this outside of MALMan:
 
+    env/bin/python commands.py confirm_email user@example.org
     env/bin/python commands.py activate_member user@example.org
     env/bin/python commands.py give_perm user@example.org members
 
