@@ -27,7 +27,7 @@ def accounting():
 @app.route('/accounting/log/page/<int:page>', methods=['GET', 'POST'])
 @membership_required()
 def accounting_log(page):
-    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.date.desc())
+    log = DB.Transaction.query.filter(DB.Transaction.date_filed != None).order_by(DB.Transaction.date.desc(), DB.Transaction.bank_statement_number.desc())
     banks = DB.Bank.query.order_by(DB.Bank.id).all()
 
     form = forms.FilterTransaction()
