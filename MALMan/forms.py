@@ -3,10 +3,10 @@
 from MALMan import app
 import MALMan.database as DB
 
-from wtforms import Form as wtforms_Form
-from flask.ext.wtf import (Form, BooleanField, TextField, PasswordField,
-    DateField, IntegerField, SubmitField, SelectField, DecimalField,
-    TextAreaField, FileField, validators, EqualTo, ValidationError)
+from flask_wtf import Form
+from wtforms import validators, ValidationError
+from wtforms.fields import TextField, BooleanField, PasswordField, DateField, IntegerField, SubmitField, SelectField, DecimalField, TextAreaField, FileField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from flask.ext.uploads import UploadSet, configure_uploads
 
 from flask_security.forms import ConfirmRegisterForm, unique_user_email
@@ -77,7 +77,7 @@ class MembersEditPassword(Form):
         validators.Length(
             message="Password must be at least 6 characters long", min=6)])
     password_confirm = PasswordField("Retype Password", [
-        EqualTo('password', message="Passwords do not match")])
+        validators.EqualTo('password', message="Passwords do not match")])
     submit = SubmitField("change my password")
 
 
@@ -125,7 +125,7 @@ class BarEditAmounts(Form):
     submit = SubmitField('ok!')
 
 
-class BarEditItem(wtforms_Form):
+class BarEditItem(Form):
     # some fields are added by the view
     name = TextField('name', [validators.Required()])
     price = DecimalField('price (e.g. 1.52)',
@@ -143,7 +143,7 @@ class BarEdit(Form):
     submit = SubmitField('edit stock items')
 
 
-class StockupJostoFormMixin(wtforms_Form):
+class StockupJostoFormMixin(Form):
     amount = IntegerField([validators.NumberRange(min=0, message='please enter a positive number')])
     check = BooleanField()
 
@@ -180,7 +180,7 @@ class AddTransaction(Form):
         [validators.Optional(), validators.NumberRange(min=0,
             message='please enter a positive number')])
     attachment = FileField("add attachment",
-        [validators.file_allowed(attachments, "This filetype is not whitelisted")])
+        [FileAllowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('file transaction')
 
 
@@ -199,7 +199,7 @@ class FileMembershipFee(Form):
 
 class EditTransaction(AddTransaction):
     attachment = FileField("add attachment",
-        [validators.file_allowed(attachments, "This filetype is not whitelisted")])
+        [FileAllowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('edit transaction')
 
 
@@ -212,7 +212,7 @@ class RequestReimbursement(Form):
     description = TextField('description', [validators.Required()])
     comments = TextField('comments (optional, e.g. how you prefer to be reimbursed)', [validators.Optional()])
     attachment = FileField("add attachment",
-        [validators.file_allowed(attachments, "This filetype is not whitelisted")])
+        [FileAllowed(attachments, "This filetype is not whitelisted")])
     submit = SubmitField('request reimbursement')
 
 

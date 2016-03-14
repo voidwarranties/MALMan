@@ -6,8 +6,9 @@ from MALMan.view_utils import (add_confirmation, return_flash, permission_requir
 
 from flask import render_template, request, redirect, flash, abort, url_for
 from flask.ext.login import current_user
-from flask.ext.wtf import (Form, SubmitField, FormField, BooleanField,
-                           IntegerField, validators)
+from wtforms import validators
+from flask_wtf import Form
+from wtforms.fields import SubmitField, FormField, BooleanField, IntegerField
 
 
 @app.route("/bar")

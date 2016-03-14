@@ -5,7 +5,7 @@ import MALMan.forms as forms
 from MALMan.view_utils import add_confirmation, return_flash, permission_required, membership_required, string_to_date
 
 from flask import render_template, request, redirect, flash, abort, url_for
-from flask.ext.wtf import BooleanField
+from wtforms.fields import BooleanField
 
 import datetime
 
