@@ -10,7 +10,7 @@ Create a directory to contain the program and get the source code:
     mkdir -p /usr/local/share/webapps
     git clone git://github.com/voidwarranties/MALMan.git /usr/local/share/webapps/MALMan
 
-From here on on I will asume you are located in the directory you installed MALMan in,
+From here on on I will assume you are located in the directory you installed MALMan in,
 so move into this directory.
 
     cd /usr/local/share/webapps/MALMan
@@ -86,7 +86,7 @@ first user we will have to do this outside of MALMan:
     env/bin/python commands.py give_perm user@example.org members
 
 This will accept the membership request of your first user and grant her
-membership managment permissions, so further request can be handled through
+membership management permissions, so further request can be handled through
 MALMan.
 
 Running in production mode

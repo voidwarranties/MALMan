@@ -302,7 +302,7 @@ def file_membershipfee(transaction_id):
         DB.db.session.add(item)
         DB.db.session.commit()
         user = users.get(request.form["user_id"])
-        flash(user.name + "'s membership dues are payed until " + request.form["until"], "confirmation")
+        flash(user.name + "'s membership dues are paid until " + request.form["until"], "confirmation")
         return redirect(url_for('accounting_log'))
 
     return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)
