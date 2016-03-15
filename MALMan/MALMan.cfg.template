@@ -4,6 +4,7 @@
 DEBUG = False
 TRAP_BAD_REQUEST_ERRORS = False
 SQLALCHEMY_ECHO = False
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # mysql server
 #SQLALCHEMY_DATABASE_URI = 'mysql://user:password@localhost/MALMan'
