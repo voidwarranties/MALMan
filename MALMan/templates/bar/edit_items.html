@@ -9,6 +9,7 @@
         <table id="stockitems" class="broadtable">
             <thead>
                 <tr>
+				    <th style="display:none;"> </th>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Stock maximum</th>
@@ -21,12 +22,18 @@
             {%- if item.name != 'csrf_token' and item.name != 'submit' %}
                 <tr>
                     {%- for field in item %}
-                    <td>
-                        {{ field }}
-                        {%- for error in field.errors -%}
-                            <span style="color: red; display: block;">{{ error }}</span>
-                          {%- endfor -%}
-                      </td>
+                        {%- if not 'csrf_token' in field.name %}
+                            <td>
+                            {{ field }}
+                            {%- for error in field.errors -%}
+                                <span style="color: red; display: block;">{{ error }}</span>
+                            {%- endfor -%}
+                            </td>
+                        {% else %}
+                            <td style="display:none;">
+                            {{ field }}
+                            </td>
+                        {%- endif -%}
                     {%- endfor %}
                 </tr>
             {%- endif -%}
