@@ -46,7 +46,7 @@
                     NA
                     {%- endif -%}
                 </td>
-                <td>{% if transaction.is_revenue %}<span class="green">+{% else %}<span class="red">-{% endif%}€{{ transaction.amount }}</span></td>
+                <td>{% if transaction.is_revenue and transaction.amount >= 0 or (transaction.is_revenue == False and transaction.amount < 0) %}<span class="green">+{% else %}<span class="red">-{% endif%}€{{ transaction.amount|abs }}</span></td>
                 <td>{{ transaction.to_from }}</td>
                 <td>{{ transaction.description }}</td>
                 <td>{{ transaction.category.name }}</td>
