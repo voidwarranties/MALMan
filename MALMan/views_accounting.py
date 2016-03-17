@@ -7,7 +7,7 @@ from MALMan.view_utils import (add_confirmation, return_flash, accounting_catego
 from flask import render_template, request, redirect, flash, abort, url_for, send_file
 from flask.ext.login import current_user
 from flask.ext.uploads import UploadSet, configure_uploads
-from datetime import date
+from datetime import date, timedelta
 
 attachments = UploadSet(name='attachments')
 configure_uploads(app, attachments)
@@ -296,13 +296,15 @@ def file_membershipfee(transaction_id):
     transaction = DB.Transaction.query.get(transaction_id)
 
     if form.validate_on_submit():
+        payeduntil = string_to_date(request.form["until"])
+        payeduntil = payeduntil.replace(month=payeduntil.month+1, day=1) - timedelta(days=1)
         item = DB.MembershipFee(user_id=request.form["user_id"],
                                 transaction_id=transaction_id,
-                                until=string_to_date(request.form["until"]))
+                                until=payeduntil)
         DB.db.session.add(item)
         DB.db.session.commit()
         user = users.get(request.form["user_id"])
-        flash(user.name + "'s membership dues are paid until " + request.form["until"], "confirmation")
+        flash(user.name + "'s membership dues are paid until then end of " + payeduntil.strftime('%Y-%m'), "confirmation")
         return redirect(url_for('accounting_log'))
 
     return render_template('accounting/file_membershipfee.html', form=form, transaction=transaction)
