@@ -171,6 +171,11 @@ def accounting_add_transaction():
             facturation_date = string_to_date(request.form["facturation_date"])
         else:
             facturation_date = string_to_date(request.form["date"])
+        # convert empty string to None if necessary to prevent a crash
+        if request.form["bank_statement_number"] == '':
+            bank_statement_number = None
+        else:
+            bank_statement_number = request.form["bank_statement_number"]
         transaction = DB.Transaction(date=string_to_date(request.form["date"]),
                                      facturation_date=facturation_date,
                                      is_revenue=request.form["is_revenue"],
@@ -179,7 +184,7 @@ def accounting_add_transaction():
                                      description=request.form["description"],
                                      category_id=request.form["category_id"],
                                      bank_id=request.form["bank_id"],
-                                     bank_statement_number=request.form["bank_statement_number"],
+                                     bank_statement_number=bank_statement_number,
                                      date_filed=date.today(),
                                      filed_by_id=current_user.id)
         DB.db.session.add(transaction)
