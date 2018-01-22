@@ -32,13 +32,12 @@ Getting the code
 ----------------
 Create a directory to contain the program and get the source code:
 
-    mkdir -p /usr/local/share/webapps
-    git clone git://github.com/voidwarranties/MALMan.git /usr/local/share/webapps/MALMan
+    git clone git://github.com/voidwarranties/MALMan.git /var/www/MALMan
 
 From here on on I will assume you are located in the directory you installed MALMan in,
 so move into this directory.
 
-    cd /usr/local/share/webapps/MALMan
+    cd /var/www/MALMan
 
 Setting up the virtualenv and getting dependencies
 --------------------------------------------------
@@ -126,14 +125,14 @@ A runner is provided for both (MALMan.wsgi and MALMan.fcgi).
 Include this in /etc/httpd/conf/httpd.conf:
 
     LoadModule wsgi_module modules/mod_wsgi.so
-    WSGIScriptAlias /MALMan /usr/local/share/webapps/MALMan/MALMan.wsgi
-    <Directory /usr/local/share/webapps/MALMan>
+    WSGIScriptAlias /MALMan /var/www/MALMan/MALMan.wsgi
+    <Directory /var/www/MALMan/MALMan>
         Order deny,allow
         Allow from all
         WSGIScriptReloading On
     </Directory>
 
-This tells apache to load the wsgi module at /usr/local/share/webapps/MALMan/MALMan.wsgi
+This tells apache to load the wsgi module at /var/www/MALMan/MALMan.wsgi
 and serve it under /MALMan.
 
 ### Serve with Lighttpd
@@ -148,7 +147,7 @@ and serve it under /MALMan.
         "/MALMan" =>
         ((
             "socket" => "/tmp/MALMan-fcgi.sock",
-               "bin-path" => "/usr/local/share/webapps/MALMan/MALMan.fcgi",
+               "bin-path" => "/var/www/MALMan/MALMan.fcgi",
             "check-local" => "disable",
             "max-procs" => 1
         ))
@@ -160,7 +159,7 @@ and serve it under /MALMan.
 
 4. change owner of the files to www-data:
 
-    chown www-data:www-data /usr/local/share/webapps/MALMan -R
+    chown www-data:www-data /var/www/MALMan/MALMan -R
 
 4. restart lighttpd:
 
