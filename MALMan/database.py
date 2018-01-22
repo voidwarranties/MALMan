@@ -55,7 +55,6 @@ class User(db.Model, UserMixin):
     membership_end = db.Column(db.Date())
     membership_dues = db.Column(db.Numeric(5, 2), default=0)
     password = db.Column(db.String(255))
-    active = db.Column(db.Boolean())
     show_telephone = db.Column(db.Boolean())
     show_email = db.Column(db.Boolean())
     motivation = db.Column(db.Text())
