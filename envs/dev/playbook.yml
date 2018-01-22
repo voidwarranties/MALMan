@@ -170,6 +170,15 @@
         - python-mysqldb
         - build-essential
 
+    - name: configure MySQL
+      blockinfile:
+        path: /etc/mysql/conf.d/disable_strict_mode.cnf
+        create: true
+        block: |
+          [mysqld]
+          sql_mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+      notify: restart mysql
+
     - name: Create database
       mysql_db:
         name: "MALMan"
@@ -237,6 +246,8 @@
       service: name=ssh state=restarted
     - name: restart apache
       service: name=apache2 state=restarted
+    - name: restart mysql
+      service: name=mysql state=restarted
     - name: import MALMan database
       mysql_db:
         name: "MALMan"
