@@ -27,3 +27,5 @@ SECRET_KEY = 'other secret'
 # API security
 BASIC_AUTH_USERNAME = 'api_user'
 BASIC_AUTH_PASSWORD = 'api_password'
+
+LOGPATH="/var/www/MALMan/errors.log"

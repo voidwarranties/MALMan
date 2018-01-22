@@ -1,12 +1,12 @@
-#compiled python files
+# compiled python files
 *.pyc
 *.db
 
-#settings, logs, ...
+# settings, logs, ...
 env/
-/MALMan.log
+/errors.log
 /MALMan/MALMan.cfg
 /MALMan/attachments/*
 
-#gedit temp files
+# temp files
 *.*~
