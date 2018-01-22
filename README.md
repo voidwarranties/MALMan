@@ -22,18 +22,18 @@ On debian-based systems these are provided by the packages python, python-pip an
 If installing on Arch linux you will need the packages python2, python2-pip and python2-virtualenv
 and will have to substitute 'virtualenv-2' for 'virtualenv' in the following command.
 
-Set up a isolated Python environment in the directory 'env'.
+Set up a isolated Python environment in the directory 'virtualenv'.
 
-    virtualenv env
+    virtualenv virtualenv
 
 Fetch the latest version of distribute, which is needed to fetch some of the dependencies:
 
-    env/bin/pip install distribute --upgrade
+    virtualenv/bin/pip install distribute --upgrade
 
 
 Install the required python packages into the enviroment.
 
-    env/bin/pip install -r requirements.txt
+    virtualenv/bin/pip install -r requirements.txt
 
 Setting up the database
 -----------------------
@@ -42,7 +42,7 @@ If you want to use sqlite skip this step.
 If you want to use mysql create a new database with your favorite mysql client.
 For mysql you also have to install one more requirement:
 
-    env/bin/pip install MySQL-python==1.2.5
+    virtualenv/bin/pip install MySQL-python==1.2.5
 
 Configuration
 -------------
@@ -61,19 +61,19 @@ Before the first run
 --------------------
 Test the database connection create the tables we need:
 
-    env/bin/python commands.py init_database
+    virtualenv/bin/python commands.py init_database
 
 Running in debug mode
 ---------------------
 You should now be able to run MALMan in development mode. This isn't suitable for production use.
 
-    env/bin/python commands.py runserver
+    virtualenv/bin/python commands.py runserver
 
 MALMan should be running locally on 0.0.0.0:5000.
 
 Specify a host to make it accessible to other devices on the network:
 
-    env/bin/python commands.py runserver --host ::
+    virtualenv/bin/python commands.py runserver --host ::
 
 Activating the first account
 ----------------------------
@@ -81,9 +81,9 @@ After registering a user's membership request will have to be accepted by an
 active member with member management permissions. With no one to activate the
 first user we will have to do this outside of MALMan:
 
-    env/bin/python commands.py confirm_email user@example.org
-    env/bin/python commands.py activate_member user@example.org
-    env/bin/python commands.py give_perm user@example.org members
+    virtualenv/bin/python commands.py confirm_email user@example.org
+    virtualenv/bin/python commands.py activate_member user@example.org
+    virtualenv/bin/python commands.py give_perm user@example.org members
 
 This will accept the membership request of your first user and grant her
 membership management permissions, so further request can be handled through

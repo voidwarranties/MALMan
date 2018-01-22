@@ -3,7 +3,7 @@
 *.db
 
 # settings, logs, ...
-env/
+virtualenv/
 /errors.log
 /MALMan/MALMan.cfg
 /MALMan/attachments/*
