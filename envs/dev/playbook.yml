@@ -1,0 +1,246 @@
+---
+# install python if necessary
+- hosts: all
+  become: true
+  gather_facts: False
+  tasks:
+  - name: install python
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    changed_when: false
+
+- hosts: all
+  vars:
+    mysql_root_pass: 'CLUBMATE2010'
+  become: true
+  tasks:
+
+## General ###
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+      notify: restart ssh
+
+    - name: install locales
+      locale_gen: name={{item}} state=present
+      with_items: ['en_US.UTF-8', 'nl_BE.UTF-8']
+
+    - name: set timezone to Europe/Brussels
+      timezone: name=Europe/Brussels
+
+    - name: update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: upgrade all apt packages
+      apt: upgrade=dist
+
+    - name: install acl
+      apt: name=acl state=present
+
+    - name: install various utilies
+      apt: name={{item}} state=present
+      with_items:
+       - figlet # make a nice banner
+       - htop
+       - git
+
+    - name: autoremove unnecessary packages
+      apt: autoremove=yes
+
+    - name: set hostname
+      hostname: name={{inventory_hostname}}
+
+    - name: change hostname in /etc/hosts
+      lineinfile: dest=/etc/hosts
+                  regexp="^127.0.1.1"
+                  line="127.0.1.1   {{inventory_hostname}}"
+                  state=present
+
+    - name: display hostname in MOTD
+      shell: echo `md5sum /etc/motd` > /tmp/md5; figlet {{inventory_hostname}} > /etc/motd; md5sum -c /tmp/md5
+      failed_when: false # override md5sum error code when file changes
+      register: md5_output
+      changed_when: "'checksum did NOT match' in md5_output.stderr"
+
+    - name: disable motd spam
+      file:
+        path: /etc/update-motd.d/
+        mode: a-x
+        recurse: yes
+#############
+
+### apache ###
+    - name: install apache packages
+      apt: name={{item}} state=latest
+      with_items: ["apache2", "libapache2-mod-wsgi"]
+
+    - name: make www-data owner of /var/www
+      file:
+        path: /var/www
+        owner: www-data
+        group: www-data
+
+    - name: remove default apache site config
+      file:
+        state: absent
+        path: "/etc/apache2/sites-enabled/000-default.conf"
+      notify: restart apache
+
+    - name: remove default apache site dir
+      file:
+        state: absent
+        path: "/var/www/html"
+
+    - name: create apache site for malman
+      copy: src=apache-site.conf dest=/etc/apache2/sites-available/MALMan.conf
+
+    - name: enable malman site
+      file:
+        src: /etc/apache2/sites-available/MALMan.conf
+        dest: /etc/apache2/sites-enabled/MALMan.conf
+        state: link
+      notify: restart apache
+#############
+
+### python ###
+    - name: install python packages
+      apt: name={{item}} state=latest
+      with_items:
+        - python-pip
+        - python-dev
+        - virtualenv
+        - build-essential
+        - libmysqlclient-dev
+#############
+
+### MALMan ###
+
+# these are only necessary when you don't already have a dir containing MALMan code
+    # - name: get MALMan code from git
+    #   git:
+    #     repo: 'https://github.com/voidwarranties/MALMan.git'
+    #     dest: /var/www/MALMan
+    #     update: yes
+    #     force: yes
+    #   become_user: www-data
+
+    # - name: get MALMan dependencies using pip
+    #   pip:
+    #     requirements: /var/www/MALMan/requirements.txt
+    #     virtualenv: /var/www/MALMan/virtualenv
+    #   become_user: www-data
+
+    # - name: copy example config
+    #   copy:
+    #     remote_src: True
+    #     force: no
+    #     src: /var/www/MALMan/MALMan/MALMan.cfg.template
+    #     dest: /var/www/MALMan/MALMan/MALMan.cfg
+    #   become_user: www-data
+
+    # - name: configure malman
+    #   lineinfile:
+    #     dest: /var/www/MALMan/MALMan/MALMan.cfg
+    #     regexp: "{{ item.regexp }}"
+    #     line: "{{ item.line }}"
+    #   with_items:
+    #     - { regexp: "^SQLALCHEMY_DATABASE_URI", line: "SQLALCHEMY_DATABASE_URI = 'mysql://MALMan:CLUBMATE2010@localhost/MALMan'" }
+    #     - { regexp: "^MAIL_PORT", line: "MAIL_PORT = 1025" }
+
+    # - name: copy attachments
+    #   synchronize:
+    #     src: /home/qvdb/projects/MALMan/envs/dev/data/attachments
+    #     dest: /var/www/MALMan/MALMan
+#############
+
+### mysql ###
+    - name: Specify MySQL root password before installing
+      debconf: name='mysql-server' question='mysql-server/root_password' value='{{mysql_root_pass}}' vtype='password'
+      changed_when: false
+    - name: Confirm MySQL root password before installing
+      debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass}}' vtype='password'
+      changed_when: false
+    - name: Install MySQL packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - bundler
+        - mysql-server
+        - mysql-client
+        - libmysqlclient-dev
+        - python-mysqldb
+        - build-essential
+
+    - name: Create database
+      mysql_db:
+        name: "MALMan"
+        login_user: "root"
+        login_password: "{{ mysql_root_pass }}"
+        state: present
+        collation: "utf8_general_ci"
+      notify: import MALMan database
+
+    - name: create database user
+      mysql_user:
+        name: MALMan
+        password: "{{ mysql_root_pass }}"
+        login_user: root
+        login_password: "{{ mysql_root_pass }}"
+        priv: 'MALMan.*:ALL'
+        state: present
+#############
+
+### PHPmyadmin ###
+    - name: debconf for pma
+      debconf: name=phpmyadmin question='phpmyadmin/dbconfig-install' value='true' vtype='boolean'
+      changed_when: false
+    - name: debconf for pma
+      debconf: name=phpmyadmin question='phpmyadmin/app-password-confirm' value='{{mysql_root_pass}}' vtype='password'
+      changed_when: false
+    - name: debconf for pma
+      debconf: name=phpmyadmin question='phpmyadmin/mysql/admin-pass' value='{{mysql_root_pass}}' vtype='password'
+      changed_when: false
+    - name: debconf for pma
+      debconf: name=phpmyadmin question='phpmyadmin/mysql/app-pass' value='{{mysql_root_pass}}' vtype='password'
+      changed_when: false
+    - name: debconf for pma
+      debconf: name=phpmyadmin question='phpmyadmin/reconfigure-webserver' value='apache2' vtype='multiselect'
+      changed_when: false
+    - name: install pma
+      apt: pkg=phpmyadmin state=present
+      notify: restart apache
+##################
+
+### maildev ###
+    - name: Install maildev packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+        - nodejs-legacy
+        - npm
+    - name: Install maildev
+      npm:
+        global: yes
+        state: present
+        name: "{{ item }}"
+      with_items:
+        - maildev
+        - forever
+        - forever-service
+    - name: enable and start maildev service
+      shell: forever-service install maildev -s $(which maildev) --start
+      args:
+        creates: /etc/init.d/maildev
+#############
+
+###########
+  handlers:
+    - name: restart ssh
+      service: name=ssh state=restarted
+    - name: restart apache
+      service: name=apache2 state=restarted
+    - name: import MALMan database
+      mysql_db:
+        name: "MALMan"
+        login_user: "MALMan"
+        login_password: "{{ mysql_root_pass }}"
+        state: import
+        target: '/var/www/MALMan/envs/dev/data/MALMan.db'

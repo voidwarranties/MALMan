@@ -3,6 +3,31 @@ MALMan is a WSGI app
 Installation [![Build Status](https://travis-ci.org/voidwarranties/MALMan.svg?branch=master)](https://travis-ci.org/voidwarranties/MALMan) [![Requirements Status](https://requires.io/github/voidwarranties/MALMan/requirements.png?branch=master)](https://requires.io/github/voidwarranties/MALMan/requirements/?branch=master)
 ============
 
+Setting up a development environment using vagrant and ansible.
+---------------------------------------------------------------
+If vagrant, virtualbox and ansible are installed creating a development environment in a virtual machine is as simple as executing `vagrant up` and adding an entry for the VM to /etc/hosts:
+
+    vagrant up
+    echo "172.16.12.2  malman-dev" | sudo tee -a /etc/hosts
+
+This should bring up a whole environment:
+
+- MALMan: http://malman-dev/ (runs as a WSGI app in production mode under apache)
+- PHPMyAdmin: http://malman-dev/phpmyadmin
+- Maildev: http://malman-dev:1080/ (displays sent emails)
+
+To run the app in debug mode you need to log in to the VM and start the app manually:
+
+    $ vagrant ssh
+    $ cd /var/www/MALMan
+    $ export WERKZEUG_DEBUG_PIN=off; virtualenv/bin/python commands.py rundebug
+
+A debug version of MALMan should now be available at http://malman-dev:5000/.
+In debug mode the app will auto-reload when source files change and an interactive stack trace will be displayed in the browser if an error occurs.
+
+** Warning: the rest of this README file might not be up to date anymore. **
+
+
 Getting the code
 ----------------
 Create a directory to contain the program and get the source code:

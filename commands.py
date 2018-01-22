@@ -123,5 +123,12 @@ def init_database():
         DB.db.session.add(DB.Role(name="finances", description="edit accounting information"))
         DB.db.session.commit()
 
+
+@manager.command
+def rundebug():
+    app.debug = True
+    app.run(host='0.0.0.0', debug=True)
+
+
 if __name__ == "__main__":
     manager.run()

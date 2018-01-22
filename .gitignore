@@ -8,5 +8,8 @@ virtualenv/
 /MALMan/MALMan.cfg
 /MALMan/attachments/*
 
+.vagrant/
+envs/dev/data/*
+
 # temp files
 *.*~
