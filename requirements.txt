@@ -1,5 +1,6 @@
 Flask==0.10.1
 Flask-BasicAuth==0.2.0
+# flask-debugtoolbar
 Flask-Login==0.2.11
 Flask-Mail==0.9.1
 Flask-Principal==0.4.0
@@ -12,3 +13,18 @@ Flup==1.0.3.dev20110405
 Requests==2.9.1
 MySQL-python==1.2.5
 SQLAlchemy==1.1.11
+
+## might be necessary to pin these
+# Jinja2==2.9.6
+# Werkzeug==0.12.2
+# WTForms==2.1
+# itsdangerous==0.24
+# MarkupSafe==1.0
+# passlib==1.7.1
+# blinker==1.4
+
+## probably unnecessary to pin
+# setuptools==36.2.0
+# wheel==0.30.0a0
+# pip==9.0.1
+# pkg-resources==0.0.0
