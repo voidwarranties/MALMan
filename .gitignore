@@ -13,3 +13,7 @@ envs/dev/data/*
 
 # temp files
 *.*~
+
+# editor files
+*.sublime-project
+*.sublime-workspace

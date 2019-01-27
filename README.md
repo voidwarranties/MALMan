@@ -113,14 +113,14 @@ This will accept the membership request of your first user and grant her
 membership management permissions, so further request can be handled through
 MALMan.
 
-Running in production mode
---------------------------
+### Running in production mode
+
 Be sure to disable the DEBUG mode in MALMan/MALMan.cfg when running in production.
 
 MALMan can run as a WSGI app under Apache or as a fastcgi app under various other web servers.
 A runner is provided for both (MALMan.wsgi and MALMan.fcgi).
 
-### Serve under apache
+#### Using apache
 
 Include this in /etc/httpd/conf/httpd.conf:
 
