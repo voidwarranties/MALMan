@@ -33,14 +33,15 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   ## mount using vboxsf (slow)
-  # APACHE_UID = 33
-  # APACHE_GID = 33
-  # config.vm.synced_folder "/nfs/MALMan/", "/var/www/MALMan", type: 'virtualbox', create: true, owner: APACHE_UID, group: APACHE_GID
+  APACHE_UID = 33
+  APACHE_GID = 33
+  config.vm.synced_folder ".", "/var/www/MALMan", type: 'virtualbox', create: true, owner: APACHE_UID, group: APACHE_GID
 
-  ## mount using NFS (fast)
-  config.nfs.map_uid = Process.uid   # give www-data user write access
-  config.nfs.map_gid = Process.gid   # give www-data user write access
-  config.vm.synced_folder "/nfs/MALMan/", "/var/www/MALMan", type: 'nfs', create: true
+  ## mount using NFS (faster)
+  # config.nfs.map_uid = Process.uid   # give www-data user write access
+  # config.nfs.map_gid = Process.gid   # give www-data user write access
+  # add directory to /etc/exports if necessary and restart nfs
+  # config.vm.synced_folder "/nfs/MALMan/", "/var/www/MALMan", type: 'nfs', create: true, nfs_export: false
 
   # Prevent TTY Errors
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
@@ -53,7 +54,7 @@ Vagrant.configure("2") do |config|
     add '172.16.12.2 malman-dev' to /etc/hosts if necessary.
 
     - MALMan: http://malman-dev/  (running in production mode as a WSGI app under apache)
-    - PHPMyAdmin: http://malman-dev/phpmyadmin
+    - PHPMyAdmin: http://malman-dev/phpmyadmin (u:MALMan p:CLUBMATE2010)
     - Maildev: http://malman-dev:1080/
 
     to run in debug mode:

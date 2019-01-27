@@ -114,43 +114,36 @@
 #############
 
 ### MALMan ###
+    # these tasks only run if malman is not set up yet, e.g. after getting the code from git.
+    - name: get MALMan dependencies using pip
+      pip:
+        requirements: /var/www/MALMan/requirements.txt
+        virtualenv: /var/www/MALMan/virtualenv
+      become_user: www-data
 
-# these are only necessary when you don't already have a dir containing MALMan code
-    # - name: get MALMan code from git
-    #   git:
-    #     repo: 'https://github.com/voidwarranties/MALMan.git'
-    #     dest: /var/www/MALMan
-    #     update: yes
-    #     force: yes
-    #   become_user: www-data
+    - name: copy example config
+      copy:
+        remote_src: True
+        force: no
+        src: /var/www/MALMan/MALMan/MALMan.cfg.template
+        dest: /var/www/MALMan/MALMan/MALMan.cfg
+      become_user: www-data
+      register: newconfig
 
-    # - name: get MALMan dependencies using pip
-    #   pip:
-    #     requirements: /var/www/MALMan/requirements.txt
-    #     virtualenv: /var/www/MALMan/virtualenv
-    #   become_user: www-data
+    - name: configure malman
+      lineinfile:
+        dest: /var/www/MALMan/MALMan/MALMan.cfg
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: "^SQLALCHEMY_DATABASE_URI", line: "SQLALCHEMY_DATABASE_URI = 'mysql://MALMan:CLUBMATE2010@localhost/MALMan'" }
+        - { regexp: "^MAIL_PORT", line: "MAIL_PORT = 1025" }
+      when: newconfig.changed
 
-    # - name: copy example config
-    #   copy:
-    #     remote_src: True
-    #     force: no
-    #     src: /var/www/MALMan/MALMan/MALMan.cfg.template
-    #     dest: /var/www/MALMan/MALMan/MALMan.cfg
-    #   become_user: www-data
-
-    # - name: configure malman
-    #   lineinfile:
-    #     dest: /var/www/MALMan/MALMan/MALMan.cfg
-    #     regexp: "{{ item.regexp }}"
-    #     line: "{{ item.line }}"
-    #   with_items:
-    #     - { regexp: "^SQLALCHEMY_DATABASE_URI", line: "SQLALCHEMY_DATABASE_URI = 'mysql://MALMan:CLUBMATE2010@localhost/MALMan'" }
-    #     - { regexp: "^MAIL_PORT", line: "MAIL_PORT = 1025" }
-
-    # - name: copy attachments
-    #   synchronize:
-    #     src: /home/qvdb/projects/MALMan/envs/dev/data/attachments
-    #     dest: /var/www/MALMan/MALMan
+    #- name: copy attachments
+    #  synchronize:
+    #    src: ./data/attachments
+    #    dest: /var/www/MALMan/MALMan
 #############
 
 ### mysql ###
@@ -161,7 +154,7 @@
       debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass}}' vtype='password'
       changed_when: false
     - name: Install MySQL packages
-      apt: pkg={{ item }} state=installed
+      apt: pkg={{ item }} state=present
       with_items:
         - bundler
         - mysql-server
@@ -186,7 +179,7 @@
         login_password: "{{ mysql_root_pass }}"
         state: present
         collation: "utf8_general_ci"
-      notify: import MALMan database
+      notify: create MALMan database structure
 
     - name: create database user
       mysql_user:
@@ -221,7 +214,7 @@
 
 ### maildev ###
     - name: Install maildev packages
-      apt: pkg={{ item }} state=installed
+      apt: pkg={{ item }} state=present
       with_items:
         - nodejs-legacy
         - npm
@@ -248,10 +241,5 @@
       service: name=apache2 state=restarted
     - name: restart mysql
       service: name=mysql state=restarted
-    - name: import MALMan database
-      mysql_db:
-        name: "MALMan"
-        login_user: "MALMan"
-        login_password: "{{ mysql_root_pass }}"
-        state: import
-        target: '/var/www/MALMan/envs/dev/data/MALMan.db'
+    - name: create MALMan database structure
+      shell: /var/www/MALMan/virtualenv/bin/python /var/www/MALMan/commands.py init_database
