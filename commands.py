@@ -2,6 +2,7 @@ from MALMan import app
 import MALMan.database as DB
 
 from flask.ext.script import Manager
+from flask_security.utils import encrypt_password
 
 from datetime import date
 
@@ -122,6 +123,18 @@ def init_database():
         DB.db.session.add(DB.Role(name="members", description="membership management"))
         DB.db.session.add(DB.Role(name="finances", description="edit accounting information"))
         DB.db.session.commit()
+
+
+@manager.command
+def seed_dummy_data():
+    """Adds dummy data to the database so all features can be tested"""
+    users = [('admin@example.com', 'secret', ['members', 'bar', 'finances']),
+             ('user@example.com', 'secret', [])]
+    for u in users:
+        DB.user_datastore.create_user(email=u[0], password=encrypt_password(u[1]), roles=u[2], active=True)
+        DB.db.session.commit()
+        confirm_email(u[0])
+        activate_member(u[0])
 
 
 @manager.command

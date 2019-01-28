@@ -242,4 +242,7 @@
     - name: restart mysql
       service: name=mysql state=restarted
     - name: create MALMan database structure
-      shell: /var/www/MALMan/virtualenv/bin/python /var/www/MALMan/commands.py init_database
+      command: "/var/www/MALMan/virtualenv/bin/python /var/www/MALMan/commands.py {{ item }}"
+      with_items:
+        - init_database
+        - seed_dummy_data

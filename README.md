@@ -19,7 +19,7 @@ Add an entry for the VM to /etc/hosts so you don't have to access the vm by it's
 
 The different components of the development environment should now be accessible:
 
-- MALMan: http://malman-dev/ (runs as a WSGI app in production mode under apache)
+- MALMan: http://malman-dev/ (runs as a WSGI app in production mode under apache, u:admin@example.com p:secret)
 - PHPMyAdmin: http://malman-dev/phpmyadmin  (u:MALMan p:CLUBMATE2010)
 - Maildev: http://malman-dev:1080/ (displays sent emails)
 

@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
   config.vm.post_up_message = "
     add '172.16.12.2 malman-dev' to /etc/hosts if necessary.
 
-    - MALMan: http://malman-dev/  (running in production mode as a WSGI app under apache)
+    - MALMan: http://malman-dev/  (running in production mode as a WSGI app under apache, u:admin@example.com p:secret))
     - PHPMyAdmin: http://malman-dev/phpmyadmin (u:MALMan p:CLUBMATE2010)
     - Maildev: http://malman-dev:1080/
 
