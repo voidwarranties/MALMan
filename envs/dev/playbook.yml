@@ -35,14 +35,12 @@
       apt: upgrade=dist
 
     - name: install acl
-      apt: name=acl state=present
+      apt: pkg=acl state=present
 
     - name: install various utilies
-      apt: name={{item}} state=present
-      with_items:
-       - figlet # make a nice banner
-       - htop
-       - git
+      apt:
+        pkg: ['figlet', 'htop', 'git']
+        state: present
 
     - name: autoremove unnecessary packages
       apt: autoremove=yes
@@ -71,8 +69,9 @@
 
 ### apache ###
     - name: install apache packages
-      apt: name={{item}} state=latest
-      with_items: ["apache2", "libapache2-mod-wsgi"]
+      apt:
+        pkg: ["apache2", "libapache2-mod-wsgi"]
+        state: latest
 
     - name: make www-data owner of /var/www
       file:
@@ -104,13 +103,14 @@
 
 ### python ###
     - name: install python packages
-      apt: name={{item}} state=latest
-      with_items:
-        - python-pip
-        - python-dev
-        - virtualenv
-        - build-essential
-        - libmysqlclient-dev
+      apt:
+        pkg: [
+          'python-pip',
+          'python-dev',
+          'virtualenv',
+          'build-essential',
+          'libmysqlclient-dev']
+        state: latest
 #############
 
 ### MALMan ###
@@ -154,14 +154,15 @@
       debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{mysql_root_pass}}' vtype='password'
       changed_when: false
     - name: Install MySQL packages
-      apt: pkg={{ item }} state=present
-      with_items:
-        - bundler
-        - mysql-server
-        - mysql-client
-        - libmysqlclient-dev
-        - python-mysqldb
-        - build-essential
+      apt:
+        pkg: [
+          'bundler',
+          'mysql-server',
+          'mysql-client',
+          'libmysqlclient-dev',
+          'python-mysqldb',
+          'build-essential']
+        state: present
 
     - name: configure MySQL
       blockinfile:
@@ -214,10 +215,9 @@
 
 ### maildev ###
     - name: Install maildev packages
-      apt: pkg={{ item }} state=present
-      with_items:
-        - nodejs-legacy
-        - npm
+      apt:
+        pkg: ['nodejs-legacy', 'npm']
+        state: present
     - name: Install maildev
       npm:
         global: yes
