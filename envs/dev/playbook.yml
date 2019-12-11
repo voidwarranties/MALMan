@@ -107,6 +107,7 @@
         pkg: [
           'python-pip',
           'python-dev',
+          'libssl-dev',
           'virtualenv',
           'build-essential',
           'libmysqlclient-dev']
